@@ -1,0 +1,353 @@
+// ─── Shared College Data ─────────────────────────────────────────────────────
+// Used by: /explore/page.jsx, /explore/[slug]/page.jsx, Navbar.jsx
+
+/** Converts a display name → URL-safe slug.
+ *  "IIT Bombay"  →  "iit-bombay"
+ *  "B. Tech / B.E."  →  "b-tech-b-e"
+ */
+export const toSlug = (name) =>
+  name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+/** Reverse-lookup: find a college whose slug matches the param. */
+export const findBySlug = (slug) =>
+  COLLEGES.find((c) => toSlug(c.name) === slug) ?? null;
+
+// ─── Master List ──────────────────────────────────────────────────────────────
+
+export const COLLEGES = [
+  // ── Featured / Top ──────────────────────────────────────────────────────────
+  {
+    id: 1, name: "IIT Bombay", featured: true, rank: 1,
+    type: "IIT", state: "Maharashtra", city: "Mumbai",
+    courses: ["Engineering", "Technology", "Sciences"],
+    seats: 1050, fee: "₹2,18,000", category: "Government", estd: 1958,
+    about: "IIT Bombay is one of India's premier engineering institutes, known for research excellence and global alumni network.",
+    accreditation: "NAAC A++", nirf: 3, website: "https://www.iitb.ac.in",
+    exams: ["JEE Advanced"],
+    placements: { avg: "₹21 LPA", highest: "₹2.8 CPA", companies: 450 },
+  },
+  {
+    id: 2, name: "IIT Delhi", featured: true, rank: 2,
+    type: "IIT", state: "Delhi", city: "New Delhi",
+    courses: ["Engineering", "Technology", "Design"],
+    seats: 880, fee: "₹2,15,000", category: "Government", estd: 1961,
+    about: "IIT Delhi is a world-class institution offering programmes in engineering, technology, and design with strong industry ties.",
+    accreditation: "NAAC A++", nirf: 2, website: "https://home.iitd.ac.in",
+    exams: ["JEE Advanced"],
+    placements: { avg: "₹20 LPA", highest: "₹2.5 CPA", companies: 420 },
+  },
+  {
+    id: 3, name: "IISc Bangalore", featured: true, rank: 3,
+    type: "IISc", state: "Karnataka", city: "Bengaluru",
+    courses: ["Sciences", "Research", "Engineering"],
+    seats: 540, fee: "₹36,000", category: "Government", estd: 1909,
+    about: "IISc is India's top research university, consistently ranked #1 in research output and innovation.",
+    accreditation: "NAAC A++", nirf: 1, website: "https://www.iisc.ac.in",
+    exams: ["KVPY", "GATE", "JEST"],
+    placements: { avg: "₹18 LPA", highest: "₹1.2 CPA", companies: 200 },
+  },
+  {
+    id: 4, name: "IIM Ahmedabad", featured: true, rank: 4,
+    type: "IIM", state: "Gujarat", city: "Ahmedabad",
+    courses: ["Management", "MBA", "Business"],
+    seats: 420, fee: "₹23,00,000", category: "Government", estd: 1961,
+    about: "IIM Ahmedabad is Asia's top business school and a global leader in management education.",
+    accreditation: "AACSB", nirf: 1, website: "https://www.iima.ac.in",
+    exams: ["CAT"],
+    placements: { avg: "₹35 LPA", highest: "₹7.4 CPA", companies: 180 },
+  },
+  {
+    id: 5, name: "NLU Delhi (NLU-D)", featured: true, rank: 5,
+    type: "NLU", state: "Delhi", city: "New Delhi",
+    courses: ["Law", "LLB", "LLM"],
+    seats: 110, fee: "₹1,95,000", category: "Government", estd: 2008,
+    about: "National Law University Delhi is the top-ranked law school in India, admitting students through AILET.",
+    accreditation: "BCI", nirf: 1, website: "https://nludelhi.ac.in",
+    exams: ["AILET"],
+    placements: { avg: "₹18 LPA", highest: "₹55 LPA", companies: 120 },
+  },
+  {
+    id: 6, name: "AIIMS", featured: true, rank: 6,
+    type: "AIIMS", state: "Delhi", city: "New Delhi",
+    courses: ["Medicine", "MBBS", "Nursing"],
+    seats: 776, fee: "₹1,628", category: "Government", estd: 1956,
+    about: "AIIMS New Delhi is India's most prestigious medical institution, renowned for patient care and clinical research.",
+    accreditation: "MCI", nirf: 1, website: "https://www.aiims.edu",
+    exams: ["NEET UG"],
+    placements: { avg: "₹12 LPA", highest: "₹40 LPA", companies: 80 },
+  },
+
+  // ── Engineering ──────────────────────────────────────────────────────────────
+  {
+    id: 7, name: "IIT Madras", featured: false, rank: 7,
+    type: "IIT", state: "Tamil Nadu", city: "Chennai",
+    courses: ["Engineering", "Technology", "Sciences"],
+    seats: 910, fee: "₹2,12,000", category: "Government", estd: 1959,
+    about: "IIT Madras is NIRF's #1 ranked institution, known for cutting-edge research and its vibrant campus culture.",
+    accreditation: "NAAC A++", nirf: 1, website: "https://www.iitm.ac.in",
+    exams: ["JEE Advanced"],
+    placements: { avg: "₹19 LPA", highest: "₹2.4 CPA", companies: 400 },
+  },
+  {
+    id: 8, name: "IIT Kanpur", featured: false, rank: 8,
+    type: "IIT", state: "Uttar Pradesh", city: "Kanpur",
+    courses: ["Engineering", "Sciences", "Management"],
+    seats: 870, fee: "₹2,20,000", category: "Government", estd: 1959,
+    about: "IIT Kanpur is celebrated for its academic rigour, pioneering computer science research, and freedom of curriculum.",
+    accreditation: "NAAC A++", nirf: 4, website: "https://www.iitk.ac.in",
+    exams: ["JEE Advanced"],
+    placements: { avg: "₹18 LPA", highest: "₹2.1 CPA", companies: 380 },
+  },
+  {
+    id: 9, name: "IIT Kharagpur", featured: false, rank: 9,
+    type: "IIT", state: "West Bengal", city: "Kharagpur",
+    courses: ["Engineering", "Architecture", "Technology"],
+    seats: 1500, fee: "₹2,25,000", category: "Government", estd: 1951,
+    about: "The oldest IIT, IIT Kharagpur has the largest campus and offers the widest range of programmes among all IITs.",
+    accreditation: "NAAC A++", nirf: 5, website: "https://www.iitkgp.ac.in",
+    exams: ["JEE Advanced"],
+    placements: { avg: "₹17 LPA", highest: "₹1.8 CPA", companies: 500 },
+  },
+  {
+    id: 10, name: "BITS Pilani", featured: false, rank: 10,
+    type: "Deemed", state: "Rajasthan", city: "Pilani",
+    courses: ["Engineering", "Sciences", "Pharmacy"],
+    seats: 980, fee: "₹5,66,000", category: "Private", estd: 1964,
+    about: "BITS Pilani is India's top private engineering institution, known for its Practice School internship model and alumni network.",
+    accreditation: "NAAC A", nirf: 28, website: "https://www.bits-pilani.ac.in",
+    exams: ["BITSAT"],
+    placements: { avg: "₹16 LPA", highest: "₹1.5 CPA", companies: 350 },
+  },
+  {
+    id: 11, name: "NIT Trichy", featured: false, rank: 18,
+    type: "NIT", state: "Tamil Nadu", city: "Tiruchirappalli",
+    courses: ["Engineering", "Technology"],
+    seats: 870, fee: "₹1,25,000", category: "Government", estd: 1964,
+    about: "NIT Trichy is consistently ranked the best NIT in India, known for its strong placement record and alumni base.",
+    accreditation: "NAAC A++", nirf: 8, website: "https://www.nitt.edu",
+    exams: ["JEE Mains"],
+    placements: { avg: "₹12 LPA", highest: "₹60 LPA", companies: 280 },
+  },
+  {
+    id: 12, name: "DTU Delhi", featured: false, rank: 22,
+    type: "State", state: "Delhi", city: "New Delhi",
+    courses: ["Engineering", "Technology", "Management"],
+    seats: 1240, fee: "₹1,68,000", category: "Government", estd: 1941,
+    about: "Delhi Technological University is one of India's oldest technical universities with a strong placement ecosystem.",
+    accreditation: "NAAC A+", nirf: 35, website: "https://dtu.ac.in",
+    exams: ["JEE Mains"],
+    placements: { avg: "₹10 LPA", highest: "₹70 LPA", companies: 220 },
+  },
+  {
+    id: 13, name: "VIT Vellore", featured: false, rank: 30,
+    type: "Deemed", state: "Tamil Nadu", city: "Vellore",
+    courses: ["Engineering", "Technology", "Sciences"],
+    seats: 6000, fee: "₹2,20,000", category: "Private", estd: 1984,
+    about: "VIT Vellore is one of India's largest private universities with a global student body and strong industry connections.",
+    accreditation: "NAAC A++", nirf: 11, website: "https://vit.ac.in",
+    exams: ["VITEEE"],
+    placements: { avg: "₹8 LPA", highest: "₹55 LPA", companies: 600 },
+  },
+  {
+    id: 14, name: "Jadavpur University", featured: false, rank: 26,
+    type: "State", state: "West Bengal", city: "Kolkata",
+    courses: ["Engineering", "Sciences", "Arts"],
+    seats: 1100, fee: "₹30,000", category: "Government", estd: 1955,
+    about: "Jadavpur University is one of India's finest state universities, renowned for engineering, arts, and sciences.",
+    accreditation: "NAAC A++", nirf: 12, website: "https://jadavpuruniversity.in",
+    exams: ["JEE Mains", "WBJEE"],
+    placements: { avg: "₹9 LPA", highest: "₹45 LPA", companies: 180 },
+  },
+
+  // ── Management ───────────────────────────────────────────────────────────────
+  {
+    id: 15, name: "IIM Bangalore", featured: false, rank: 11,
+    type: "IIM", state: "Karnataka", city: "Bengaluru",
+    courses: ["Management", "MBA", "Business"],
+    seats: 510, fee: "₹24,50,000", category: "Government", estd: 1973,
+    about: "IIM Bangalore is renowned for its EPGP programme and strong focus on entrepreneurship and global management.",
+    accreditation: "AACSB", nirf: 2, website: "https://www.iimb.ac.in",
+    exams: ["CAT"],
+    placements: { avg: "₹33 LPA", highest: "₹6.5 CPA", companies: 160 },
+  },
+  {
+    id: 16, name: "IIM Calcutta", featured: false, rank: 12,
+    type: "IIM", state: "West Bengal", city: "Kolkata",
+    courses: ["Management", "MBA", "Finance"],
+    seats: 480, fee: "₹27,00,000", category: "Government", estd: 1961,
+    about: "IIM Calcutta is one of Asia's top B-schools, with particular strength in Finance and Consulting.",
+    accreditation: "AACSB", nirf: 3, website: "https://www.iimcal.ac.in",
+    exams: ["CAT"],
+    placements: { avg: "₹32 LPA", highest: "₹6.2 CPA", companies: 155 },
+  },
+  {
+    id: 17, name: "FMS Delhi", featured: false, rank: 15,
+    type: "Central", state: "Delhi", city: "New Delhi",
+    courses: ["Management", "MBA"],
+    seats: 250, fee: "₹22,000", category: "Government", estd: 1954,
+    about: "FMS Delhi offers one of India's best MBA programmes at a fraction of the cost of other top B-schools.",
+    accreditation: "NAAC A++", nirf: 7, website: "https://fms.edu",
+    exams: ["CAT"],
+    placements: { avg: "₹28 LPA", highest: "₹80 LPA", companies: 130 },
+  },
+  {
+    id: 18, name: "XLRI Jamshedpur", featured: false, rank: 20,
+    type: "Private", state: "Jharkhand", city: "Jamshedpur",
+    courses: ["Management", "MBA", "HR"],
+    seats: 360, fee: "₹28,50,000", category: "Private", estd: 1949,
+    about: "XLRI is India's oldest business school with a strong legacy in HR management and business leadership.",
+    accreditation: "NAAC A++", nirf: 9, website: "https://www.xlri.ac.in",
+    exams: ["XAT"],
+    placements: { avg: "₹30 LPA", highest: "₹73 LPA", companies: 140 },
+  },
+  {
+    id: 19, name: "MDI Gurgaon", featured: false, rank: 21,
+    type: "Autonomous", state: "Haryana", city: "Gurugram",
+    courses: ["Management", "MBA", "Business"],
+    seats: 240, fee: "₹21,00,000", category: "Private", estd: 1973,
+    about: "MDI Gurgaon is a premier B-school located in India's corporate hub, with deep industry linkages.",
+    accreditation: "AACSB", nirf: 11, website: "https://www.mdi.ac.in",
+    exams: ["CAT"],
+    placements: { avg: "₹25 LPA", highest: "₹55 LPA", companies: 120 },
+  },
+  {
+    id: 20, name: "SP Jain Mumbai", featured: false, rank: 25,
+    type: "Autonomous", state: "Maharashtra", city: "Mumbai",
+    courses: ["Management", "MBA", "Finance"],
+    seats: 420, fee: "₹19,50,000", category: "Private", estd: 1981,
+    about: "SP Jain Institute of Management and Research is known for its industry-integrated curriculum and Mumbai location.",
+    accreditation: "NAAC A+", nirf: 14, website: "https://www.spjimr.org",
+    exams: ["CAT", "XAT"],
+    placements: { avg: "₹22 LPA", highest: "₹48 LPA", companies: 110 },
+  },
+
+  // ── Law ──────────────────────────────────────────────────────────────────────
+  {
+    id: 21, name: "NALSAR Hyderabad", featured: false, rank: 13,
+    type: "NLU", state: "Telangana", city: "Hyderabad",
+    courses: ["Law", "LLB", "LLM"],
+    seats: 90, fee: "₹2,10,000", category: "Government", estd: 1998,
+    about: "NALSAR is India's #2 law school with a strong focus on research, moot courts, and social justice.",
+    accreditation: "BCI", nirf: 2, website: "https://nalsar.ac.in",
+    exams: ["CLAT UG"],
+    placements: { avg: "₹15 LPA", highest: "₹48 LPA", companies: 100 },
+  },
+  {
+    id: 22, name: "NLSIU Bangalore", featured: false, rank: 14,
+    type: "NLU", state: "Karnataka", city: "Bengaluru",
+    courses: ["Law", "LLB", "LLM"],
+    seats: 80, fee: "₹2,95,000", category: "Government", estd: 1987,
+    about: "NLSIU is India's first National Law School and remains one of the most sought-after law institutions.",
+    accreditation: "BCI", nirf: 3, website: "https://nls.ac.in",
+    exams: ["CLAT UG"],
+    placements: { avg: "₹16 LPA", highest: "₹52 LPA", companies: 105 },
+  },
+  {
+    id: 23, name: "NUJS Kolkata", featured: false, rank: 16,
+    type: "NLU", state: "West Bengal", city: "Kolkata",
+    courses: ["Law", "LLB", "LLM"],
+    seats: 80, fee: "₹1,85,000", category: "Government", estd: 1999,
+    about: "NUJS Kolkata is acclaimed for corporate law and is highly preferred by top law firms in India.",
+    accreditation: "BCI", nirf: 4, website: "https://www.nujs.edu",
+    exams: ["CLAT UG"],
+    placements: { avg: "₹14 LPA", highest: "₹45 LPA", companies: 90 },
+  },
+
+  // ── Medicine ─────────────────────────────────────────────────────────────────
+  {
+    id: 24, name: "JIPMER Puducherry", featured: false, rank: 17,
+    type: "INI", state: "Puducherry", city: "Puducherry",
+    courses: ["Medicine", "MBBS", "Nursing"],
+    seats: 119, fee: "₹5,380", category: "Government", estd: 1823,
+    about: "JIPMER is one of India's oldest and finest medical colleges with excellent clinical training and research facilities.",
+    accreditation: "MCI", nirf: 2, website: "https://jipmer.edu.in",
+    exams: ["NEET UG"],
+    placements: { avg: "₹10 LPA", highest: "₹35 LPA", companies: 60 },
+  },
+  {
+    id: 25, name: "CMC Vellore", featured: false, rank: 19,
+    type: "Private", state: "Tamil Nadu", city: "Vellore",
+    courses: ["Medicine", "MBBS", "Nursing"],
+    seats: 180, fee: "₹4,50,000", category: "Private", estd: 1900,
+    about: "Christian Medical College Vellore is one of Asia's best medical colleges, known for compassionate care and research.",
+    accreditation: "NAAC A++", nirf: 3, website: "https://www.cmch-vellore.edu",
+    exams: ["NEET UG"],
+    placements: { avg: "₹11 LPA", highest: "₹38 LPA", companies: 65 },
+  },
+  {
+    id: 26, name: "KGMU Lucknow", featured: false, rank: 23,
+    type: "State", state: "Uttar Pradesh", city: "Lucknow",
+    courses: ["Medicine", "MBBS", "Pharmacy"],
+    seats: 200, fee: "₹1,64,000", category: "Government", estd: 1905,
+    about: "King George's Medical University is one of India's premier medical universities in North India.",
+    accreditation: "MCI", nirf: 8, website: "https://www.kgmu.org",
+    exams: ["NEET UG"],
+    placements: { avg: "₹9 LPA", highest: "₹30 LPA", companies: 55 },
+  },
+
+  // ── Arts & Humanities ────────────────────────────────────────────────────────
+  {
+    id: 27, name: "JNU New Delhi", featured: false, rank: 24,
+    type: "Central", state: "Delhi", city: "New Delhi",
+    courses: ["Arts", "Humanities", "Sciences", "Law"],
+    seats: 2200, fee: "₹12,000", category: "Government", estd: 1969,
+    about: "JNU is India's leading research university, known for academic freedom, social sciences, and language studies.",
+    accreditation: "NAAC A++", nirf: 2, website: "https://www.jnu.ac.in",
+    exams: ["CUET", "JNUEE"],
+    placements: { avg: "₹8 LPA", highest: "₹25 LPA", companies: 80 },
+  },
+  {
+    id: 28, name: "Hyderabad University", featured: false, rank: 27,
+    type: "Central", state: "Telangana", city: "Hyderabad",
+    courses: ["Arts", "Sciences", "Humanities"],
+    seats: 1800, fee: "₹20,000", category: "Government", estd: 1974,
+    about: "University of Hyderabad is a premier central university known for its research culture and diverse community.",
+    accreditation: "NAAC A+", nirf: 10, website: "https://uohyd.ac.in",
+    exams: ["CUET"],
+    placements: { avg: "₹7 LPA", highest: "₹22 LPA", companies: 70 },
+  },
+  {
+    id: 29, name: "Miranda House (DU)", featured: false, rank: 28,
+    type: "Central", state: "Delhi", city: "New Delhi",
+    courses: ["Arts", "Sciences", "Commerce"],
+    seats: 1900, fee: "₹15,000", category: "Government", estd: 1948,
+    about: "Miranda House is India's top-ranked college, affiliated to Delhi University, known for academics and culture.",
+    accreditation: "NAAC A++", nirf: 1, website: "https://mirandahouse.ac.in",
+    exams: ["CUET"],
+    placements: { avg: "₹7 LPA", highest: "₹20 LPA", companies: 60 },
+  },
+
+  // ── Design & Architecture ────────────────────────────────────────────────────
+  {
+    id: 30, name: "NID Ahmedabad", featured: false, rank: 29,
+    type: "Autonomous", state: "Gujarat", city: "Ahmedabad",
+    courses: ["Design", "Product Design", "Visual Communication"],
+    seats: 120, fee: "₹4,20,000", category: "Government", estd: 1961,
+    about: "NID Ahmedabad is India's foremost design institution and one of the most respected globally.",
+    accreditation: "NAAC A", nirf: 1, website: "https://www.nid.edu",
+    exams: ["NID DAT"],
+    placements: { avg: "₹12 LPA", highest: "₹40 LPA", companies: 90 },
+  },
+  {
+    id: 31, name: "SPA Delhi", featured: false, rank: 31,
+    type: "Central", state: "Delhi", city: "New Delhi",
+    courses: ["Architecture", "Planning", "Design"],
+    seats: 140, fee: "₹1,90,000", category: "Government", estd: 1959,
+    about: "School of Planning and Architecture Delhi is India's top architecture institution with a century of legacy.",
+    accreditation: "NAAC A+", nirf: 1, website: "https://www.spa.ac.in",
+    exams: ["NATA", "JEE Paper 2"],
+    placements: { avg: "₹10 LPA", highest: "₹35 LPA", companies: 75 },
+  },
+];
+
+// ─── Lookup maps ──────────────────────────────────────────────────────────────
+export const COLLEGE_BY_ID   = Object.fromEntries(COLLEGES.map((c) => [c.id, c]));
+export const COLLEGE_BY_SLUG = Object.fromEntries(COLLEGES.map((c) => [toSlug(c.name), c]));
+
+// ─── Derived filter options ───────────────────────────────────────────────────
+export const ALL_COURSES = [
+  "All Courses",
+  "Engineering", "Technology", "Sciences", "Management", "MBA",
+  "Law", "LLB", "Medicine", "MBBS", "Arts", "Humanities",
+  "Commerce", "Design", "Architecture", "Pharmacy", "Nursing", "Research",
+];

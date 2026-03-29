@@ -63,18 +63,18 @@ export default function NewsBanner() {
 
       <div
         ref={bannerRef}
-        className="relative overflow-hidden py-2"
-        style={{ background: "linear-gradient(90deg, #4f46e5 0%, #2563eb 100%)" }}
+        className="relative overflow-hidden py-2 bg-[rgb(38,103,255)]"
+        
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         <div
           className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to right, rgba(79,70,229,1), transparent)" }}
+          style={{ background: "linear-gradient(to right, rgba(38,103,255,1), transparent)" }}
         />
         <div
           className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to left, rgba(37,99,235,1), transparent)" }}
+          style={{ background: "linear-gradient(to left, rgba(38,103,255,1), transparent)" }}
         />
 
         <div ref={trackRef} className="marquee-track cursor-pointer select-none">

@@ -141,7 +141,7 @@ export default function Hero() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap');
+      
         .pulse-ring { animation: pulse-ring 1.4s ease-out infinite; }
         @keyframes pulse-ring {
           0%   { transform: scale(1); opacity: 0.8; }
@@ -153,15 +153,15 @@ export default function Hero() {
 
       <section
         ref={heroRef}
-        className="relative min-h-screen w-full overflow-hidden flex items-center justify-center px-6 py-20 bg-gradient-to-br from-indigo-50 via-blue-50 to-blue-100"
-        style={{ fontFamily: "'Sora', sans-serif" }}
+        className="relative min-h-screen w-full overflow-hidden flex items-center justify-center px-6 py-20 "
+       
       >
         {/* Mesh blobs */}
-        <div className="absolute inset-0 pointer-events-none">
+        {/* <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-40 -left-32 w-[520px] h-[520px] rounded-full opacity-35 bg-[radial-gradient(circle,#a5b4fc,transparent_70%)]" />
           <div className="absolute -bottom-44 -right-24 w-[500px] h-[500px] rounded-full opacity-25 bg-[radial-gradient(circle,#93c5fd,transparent_70%)]" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[420px] rounded-full opacity-20 bg-[radial-gradient(ellipse,#c7d2fe,transparent_70%)]" />
-        </div>
+        </div> */}
 
         {/* LEFT 1 — Avatar dashed ring (top-left) */}
         <div
@@ -180,7 +180,7 @@ export default function Hero() {
           style={{ top: "28%", left: "2.5%", width: 200 }}
         >
           <div className="bg-white rounded-2xl p-3.5 shadow-xl border border-indigo-100 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-indigo-600 to-blue-600">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-[#2667ff] to-[#3f8efc]">
               <svg width="18" height="18" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
               </svg>
@@ -200,7 +200,7 @@ export default function Hero() {
         >
           <div className="absolute -top-5 left-1/2 -translate-x-1/2 flex gap-[5px] pointer-events-none">
             {["-rotate-[35deg]", "rotate-0", "rotate-[35deg]"].map((r, j) => (
-              <div key={j} className={`w-[3px] h-[18px] bg-indigo-500 rounded-full origin-bottom ${r}`} />
+              <div key={j} className={`w-[3px] h-[18px] bg-gradient-to-br from-[#2667ff] to-[#3f8efc] rounded-full origin-bottom ${r}`} />
             ))}
           </div>
           <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="student"
@@ -213,7 +213,7 @@ export default function Hero() {
           className="absolute hidden z-10 rounded-full will-change-transform"
           style={{ top: "11%", right: "4%", width: 84, height: 84 }}
         >
-          <div className="absolute rounded-full border-[3px] border-indigo-400 pointer-events-none" style={{ inset: -10 }} />
+          <div className="absolute rounded-full border-[3px] border-gradient-to-br from-[#2667ff] to-[#3f8efc] pointer-events-none" style={{ inset: -10 }} />
           <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="student"
             className="w-full h-full rounded-full object-cover ring-2 ring-white shadow-md" />
         </div>
@@ -283,7 +283,7 @@ export default function Hero() {
           <button
             onClick={() => { setSidebarOpen(p => !p); setNewsOpen(false); }}
             onMouseEnter={hoverIn} onMouseLeave={hoverOut}
-            className="relative flex items-center gap-2.5 text-white rounded-2xl px-4 py-3 shadow-[0_8px_28px_rgba(79,70,229,0.4)] cursor-pointer bg-gradient-to-br from-indigo-600 to-blue-600"
+            className="relative flex items-center gap-2.5 text-white rounded-2xl px-4 py-3 shadow-[0_8px_28px_rgba(79,70,229,0.4)] cursor-pointer bg-gradient-to-br from-[#2667ff] to-[#3f8efc]"
           >
             <span className="relative">
               <svg width="20" height="20" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24">
@@ -305,10 +305,10 @@ export default function Hero() {
           
           <h1
             ref={titleRef}
-            className="font-extrabold leading-[1.08] tracking-tight text-indigo-950 mb-[1.1rem] text-[clamp(2.5rem,6.2vw,4.6rem)]"
+            className="font-extrabold leading-[1.08] tracking-tight text-indigo-950 mb-[1.1rem] text-[clamp(2.5rem,6vw,4.6rem)]"
           >
             Find Your Perfect{" "}
-            <span className="bg-gradient-to-br from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#2667ff] to-[#3f8efc] bg-clip-text text-transparent">
               College
             </span>{" "}
             Journey
@@ -316,7 +316,7 @@ export default function Hero() {
 
           <p
             ref={subtitleRef}
-            className="text-gray-500 leading-[1.75] max-w-[520px] mx-auto mb-10 text-[clamp(0.95rem,1.9vw,1.1rem)]"
+            className="text-gray-500 leading-[1.9vw] max-w-[550px] mx-auto mb-10 text-[clamp(0.85rem,1.5vw,1rem)]"
           >
             Explore thousands of colleges, compare programs, check cutoffs, and
             get personalized recommendations — all in one place.
@@ -339,7 +339,7 @@ export default function Hero() {
             />
             <Link
               href="/explore"
-              className="bg-gradient-to-br from-indigo-600 to-blue-600 text-white font-semibold text-[0.95rem] rounded-full px-7 py-3 whitespace-nowrap shadow-[0_4px_16px_rgba(79,70,229,0.35)] hover:opacity-90 hover:scale-[1.04] transition-all duration-150"
+              className="bg-gradient-to-r from-[#2667ff] to-[#3f8efc] text-white font-semibold text-[0.95rem] rounded-full px-7 py-3 whitespace-nowrap shadow-[0_4px_16px_rgba(79,70,229,0.35)] hover:opacity-90 hover:scale-[1.04] transition-all duration-150"
             >
               Find Colleges
             </Link>
@@ -349,7 +349,7 @@ export default function Hero() {
           <div className="flex items-center justify-center gap-10 mt-9 flex-wrap">
             {STATS.map(([num, label]) => (
               <div key={label} className="text-center">
-                <div className="font-bold text-indigo-700 text-xl">{num}</div>
+                <div className="font-bold text-[#2667ff] text-xl">{num}</div>
                 <div className="text-gray-500 text-xs mt-0.5">{label}</div>
               </div>
             ))}
