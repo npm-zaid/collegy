@@ -15,8 +15,8 @@ const DATA = {
   colleges: {
     viewAll: "View All Colleges",
     sections: [
-      { title: "Top Colleges",          color: "text-indigo-600", items: ["Amity University","AIIMS","Bennett University","Avantika University","Parul University","Universal AI University","Doon Business School (DBS)","Pimpri Chinchwad University"] },
-      { title: "Popular Colleges",      color: "text-violet-600", items: ["NIAT Colleges","JKLU, Jaipur","RIIMS, Pune","Thakur Global Business School","BITS, Pilani","SVITS, Indore","ITM, Gwalior"] },
+      { title: "Top Colleges",          color: "text-indigo-600", items: ["IIT Bombay","AIIMS","Bennett University","Avantika University","Parul University","Universal AI University","Doon Business School (DBS)","Pimpri Chinchwad University"] },
+      { title: "Popular Colleges",      color: "text-violet-600", items: ["IIT Delhi","JKLU, Jaipur","RIIMS, Pune","Thakur Global Business School","BITS, Pilani","SVITS, Indore","ITM, Gwalior"] },
       { title: "Online Degree Colleges",color: "text-blue-600",   items: ["Amity University Online","Parul University Online","AISECT Online","NIMMS University Online","Jaipuriya University Online","Manglaytan University Online","Symbiosis University Online"] },
       { title: "Study Abroad",          color: "text-cyan-600",   items: ["UK","USA","UAE","Nepal","Canada","Australia","Germany"] },
     ],
@@ -46,8 +46,8 @@ const DATA = {
   more: {
     links: [
       { icon: "ℹ️", label: "About Us" },        { icon: "📬", label: "Contact Us" },
-      { icon: "🤝", label: "Be a Partner" },     { icon: "👥", label: "Join Our Team" },
-      { icon: "💼", label: "Explore Careers" },  { icon: "🎯", label: "College Predictor" },
+      { icon: "🤝", label: "Be a Partner" },    
+      { icon: "🎯", label: "College Predictor" },
       { icon: "🧑‍💻", label: "Internships" },    { icon: "💳", label: "Education Loan" },
       { icon: "📅", label: "Book Consultation" },{ icon: "📄", label: "Terms & Conditions" },
     ],
@@ -169,11 +169,11 @@ const MegaContent = ({ megaKey }) => {
         <div className="grid grid-cols-5 gap-1">
           {DATA.more.links.map(({ icon, label }) => (
             <a
-              key={label} href="#"
+              key={label} href={`/${toSlug(label)}`}
               className="flex items-center gap-2 px-3 py-[9px] rounded-xl text-[0.82rem] font-semibold text-slate-800 transition-all duration-150 hover:bg-indigo-50/80 hover:translate-x-[3px]"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+             
             >
-              <span className="text-base">{icon}</span>
+            
               <span>{label}</span>
             </a>
           ))}
@@ -208,9 +208,9 @@ const MobileContent = ({ megaKey }) => {
           <a
             key={label} href="#"
             className="flex items-center gap-2 px-3 py-[9px] rounded-xl text-[0.82rem] font-semibold text-slate-800 hover:bg-indigo-50 transition-colors"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            
           >
-            <span>{icon}</span><span>{label}</span>
+           <span>{label}</span>
           </a>
         ))}
       </div>

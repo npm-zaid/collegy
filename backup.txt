@@ -65,3 +65,831 @@
         )}
 
 
+//////about page code
+"use client";
+
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const JOURNEY_STEPS = [
+  { id: "01", title: "Smart Search", desc: "Filter by rank, fees, and location using AI.", color: "from-blue-400 to-indigo-500" },
+  { id: "02", title: "Compare Stats", desc: "Detailed placement and campus life insights.", color: "from-indigo-500 to-purple-500" },
+  { id: "03", title: "Expert Counseling", desc: "1-on-1 sessions with top career experts.", color: "from-purple-500 to-pink-500" },
+  { id: "04", title: "Get Admitted", desc: "Smooth documentation and seat locking.", color: "from-[#2667ff] to-[#3f8efc]" },
+];
+
+const TESTIMONIALS = [
+  { name: "Rahul Sharma", college: "IIT Delhi", text: "The rank predictor was spot on. Saved me from months of anxiety!", img: "https://randomuser.me/api/portraits/men/32.jpg" },
+  { name: "Ananya Iyer", college: "BITS Pilani", text: "Comparing fees and placements side-by-side helped me choose the right path.", img: "https://randomuser.me/api/portraits/women/44.jpg" },
+];
+
+export default function page() {
+  const containerRef = useRef(null);
+  const triggerRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Image Parallax Effect
+      gsap.to(".parallax-img", {
+        yPercent: -20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: triggerRef.current,
+          scrub: true,
+        },
+      });
+
+      // Staggered Step Reveal
+    //   gsap.from(".step-card", {
+    //     y: 60,
+    //     opacity: 0,
+    //     stagger: 0.2,
+    //     duration: 0.8,
+    //     ease: "power3.out",
+    //     scrollTrigger: {
+    //       trigger: ".steps-grid",
+    //       start: "top 80%",
+    //     },
+    //   });
+
+      // Heading Highlighting
+      gsap.from(".heading-text", {
+        x: -50,
+        opacity: 0,
+        duration: 1,
+        scrollTrigger: {
+          trigger: ".heading-text",
+          start: "top 85%",
+        },
+      });
+    }, containerRef);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div ref={containerRef} className="bg-white overflow-hidden">
+      
+      {/* SECTION 1: THE VISION (Upgraded with Parallax) */}
+      <section className="relative py-24 px-6 max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+        <div className="order-2 lg:order-1">
+          <div className="inline-block px-4 py-1.5 mb-6 rounded-full bg-indigo-50 border border-indigo-100">
+            <span className="text-[#2667ff] text-xs font-bold uppercase tracking-widest">Our Vision 2026</span>
+          </div>
+          <h2 className="heading-text text-5xl md:text-7xl font-black text-indigo-950 leading-[0.95] tracking-tighter mb-8">
+            Empowering <span className="text-[#2667ff]">India's</span> Next Gen Leaders.
+          </h2>
+          <p className="text-gray-500 text-lg max-w-lg leading-relaxed mb-10">
+            We aren't just a college directory. We are a tech-first ecosystem designed to bridge the gap between student potential and institutional excellence.
+          </p>
+          <div className="flex gap-4">
+            <button className="bg-indigo-950 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition-transform shadow-xl">Our History</button>
+            <button className="border-2 border-indigo-100 text-indigo-950 px-8 py-4 rounded-2xl font-bold hover:bg-indigo-50 transition-colors">Meet the Team</button>
+          </div>
+        </div>
+
+        <div ref={triggerRef} className="order-1 lg:order-2 relative h-[500px] md:h-[650px] rounded-[3rem] overflow-hidden shadow-2xl">
+          <img 
+            src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=1000" 
+            className="parallax-img absolute inset-0 w-full h-[120%] object-cover"
+            alt="Campus Life"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-indigo-950/40 to-transparent" />
+          <div className="absolute bottom-10 left-10 right-10 p-8 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20">
+            <p className="text-white font-medium italic">"The right college isn't just about the name; it's about the future you build there."</p>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 2: THE ROADMAP (Horizontal Journey) */}
+      <section className="bg-indigo-50/30 py-24 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h3 className="text-4xl font-bold text-indigo-950 mb-4">How It Works</h3>
+            <p className="text-gray-500">Your 4-step roadmap to a dream career</p>
+          </div>
+          <div className="steps-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {JOURNEY_STEPS.map((step) => (
+              <div key={step.id} className="step-card group bg-white p-8 rounded-[2.5rem] shadow-[0_10px_30px_rgba(79,70,229,0.05)] border border-white hover:border-indigo-100 transition-all">
+                <div className={`w-14 h-14 rounded-2xl mb-6 bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-black text-xl shadow-lg`}>
+                  {step.id}
+                </div>
+                <h4 className="text-xl font-bold text-indigo-950 mb-3 group-hover:text-[#2667ff] transition-colors">{step.title}</h4>
+                <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 3: SOCIAL PROOF (Testimonial Cards) */}
+      <section className="py-24 px-6 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+          <div className="max-w-xl">
+            <h3 className="text-4xl font-bold text-indigo-950 mb-4">Real Students, Real Success</h3>
+            <p className="text-gray-500">Don't just take our word for it—hear from the students who found their future with MedCounsel.</p>
+          </div>
+          <button className="text-[#2667ff] font-bold flex items-center gap-2 hover:gap-4 transition-all">
+            Read all stories <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-8">
+          {TESTIMONIALS.map((t, i) => (
+            <div key={i} className="bg-white p-10 rounded-[3rem] border border-indigo-50 shadow-xl flex flex-col md:flex-row gap-8 items-center md:items-start">
+              <img src={t.img} className="w-20 h-20 rounded-2xl object-cover ring-4 ring-indigo-50" alt={t.name} />
+              <div>
+                <p className="text-xl text-indigo-950 font-medium mb-4 leading-relaxed">"{t.text}"</p>
+                <h5 className="font-bold text-[#2667ff]">{t.name}</h5>
+                <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{t.college}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* SECTION 4: FINAL CTA (Luxe Dark Card) */}
+      <section className="py-24 px-6">
+        <div className="max-w-7xl mx-auto bg-gradient-to-br from-indigo-950 to-blue-900 rounded-[4rem] p-12 md:p-24 relative overflow-hidden text-center">
+          {/* Animated Background Gradients */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#2667ff] rounded-full blur-[120px] opacity-20 -mr-48 -mt-48" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500 rounded-full blur-[120px] opacity-10 -ml-48 -mb-48" />
+          
+          <div className="relative z-10">
+            <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tighter">
+              Ready to find your <br /> <span className="text-blue-400">Perfect College?</span>
+            </h2>
+            <p className="text-indigo-100/70 text-lg mb-12 max-w-2xl mx-auto">
+              Join 2 million+ students already using our platform to make the most important decision of their academic life.
+            </p>
+            <div className="flex flex-wrap justify-center gap-6">
+              <button className="bg-white text-indigo-950 px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl hover:scale-105 transition-transform">Get Started for Free</button>
+              <button className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all">Talk to a Counselor</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+
+
+"use client";
+import { useParams, useRouter } from "next/navigation";
+import {
+  ArrowLeft, MapPin, GraduationCap, BookOpen, Building2,
+  Star, ExternalLink, Users, TrendingUp, Award, FileText,
+  ChevronRight, Globe, Banknote,
+} from "lucide-react";
+import { COLLEGE_BY_SLUG, COLLEGES, toSlug } from "../../../data/collegeData";
+
+// ─── Atoms ─────────────────────────────────────────────────────────────────
+
+function Tag({ children, variant = "zinc" }) {
+  const styles = {
+    orange: "bg-[#E39F4A]/10 text-[#b8761f] border-[#E39F4A]/30",
+    moss:   "bg-[#B1C357]/15 text-[#6a7f1a] border-[#B1C357]/40",
+    purple: "bg-[#6A5C98]/10 text-[#6A5C98] border-[#6A5C98]/30",
+    zinc:   "bg-white/10 text-zinc-400 border-white/15",
+    zinclt: "bg-zinc-100 text-zinc-700 border-zinc-200",
+  };
+  return (
+    <span className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border ${styles[variant]}`}>
+      {children}
+    </span>
+  );
+}
+
+function SectionHeading({ icon: Icon, color = "text-zinc-400", children }) {
+  return (
+    <h2 className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.25em] text-zinc-400 mb-5">
+      <Icon size={13} className={color} />
+      {children}
+      <span className="flex-1 h-px bg-zinc-100" />
+    </h2>
+  );
+}
+
+// ─── Page ──────────────────────────────────────────────────────────────────
+
+export default function CollegeDetailPage() {
+  const { slug } = useParams();
+  const router   = useRouter();
+  const college  = COLLEGE_BY_SLUG[slug];
+
+  if (!college) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-5 bg-[#FDFDFD]">
+        <p className="text-7xl font-black italic text-zinc-100 tracking-tighter">404</p>
+        <p className="text-sm font-bold text-zinc-400">
+          No college found for <code className="bg-zinc-100 px-2 py-0.5 rounded-lg text-xs">{slug}</code>
+        </p>
+        <button
+          onClick={() => router.push("/explore")}
+          className="flex items-center gap-2 bg-zinc-900 text-[#E39F4A] px-6 py-3 rounded-2xl font-black text-[9px] uppercase tracking-widest"
+        >
+          <ArrowLeft size={13} /> Back to Explore
+        </button>
+      </div>
+    );
+  }
+
+  const similar = COLLEGES
+    .filter((c) => c.id !== college.id && c.courses.some((co) => college.courses.includes(co)))
+    .sort((a, b) => a.rank - b.rank)
+    .slice(0, 4);
+
+  const stats = [
+    { label: "Total Seats",     value: college.seats,                    bg: "bg-zinc-900",  text: "text-white",   sub: "text-zinc-500", icon: GraduationCap },
+    { label: "Avg Package",     value: college.placements.avg,           bg: "bg-[#B1C357]", text: "text-zinc-900",sub: "text-zinc-700", icon: TrendingUp },
+    { label: "Highest Package", value: college.placements.highest,       bg: "bg-[#E39F4A]", text: "text-zinc-900",sub: "text-zinc-700", icon: Award },
+    { label: "Top Recruiters",  value: `${college.placements.companies}+`,bg:"bg-[#6A5C98]", text: "text-white",   sub: "text-purple-300",icon: Users },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#FDFDFD] text-zinc-900 selection:bg-[#E39F4A]/20">
+      <div className="max-w-[1280px] mx-auto px-6 lg:px-12 py-10 lg:pt-20">
+
+        {/* Breadcrumb */}
+        <button
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 hover:text-[#E39F4A] transition-colors mb-8"
+        >
+          <ArrowLeft size={14} /> Back to results
+        </button>
+
+        {/* ── HERO ── */}
+        <div className="relative bg-zinc-900 rounded-[3rem] p-8 md:p-12 mb-5 overflow-hidden">
+          {/* Decorative blob */}
+          <div className="absolute -top-16 -right-16 w-56 h-56 bg-[#E39F4A] opacity-[0.07] rounded-full pointer-events-none" />
+
+          <div className="flex flex-col lg:flex-row gap-10 justify-between">
+
+            {/* Left */}
+            <div className="flex-1 space-y-5">
+              {/* Badges row */}
+              <div className="flex flex-wrap gap-2 items-center">
+                {college.featured && (
+                  <Tag variant="orange">
+                    <Star size={8} className="fill-[#E39F4A]" /> Featured
+                  </Tag>
+                )}
+                <Tag variant={college.category === "Government" ? "moss" : "purple"}>
+                  {college.category}
+                </Tag>
+                <Tag variant="zinc">{college.type}</Tag>
+                <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-[0.15em] text-zinc-500">
+                  <MapPin size={10} /> {college.city}, {college.state}
+                </span>
+              </div>
+
+              {/* Rank + name */}
+              <div className="flex items-start gap-4">
+                <div className="w-14 h-14 rounded-[18px] bg-[#E39F4A] flex items-center justify-center text-zinc-900 text-sm font-black shrink-0">
+                  #{college.rank}
+                </div>
+                <div>
+                  <h1 className="text-4xl md:text-6xl font-black italic text-white tracking-tighter leading-[0.85] uppercase">
+                    {college.name}
+                  </h1>
+                  <p className="text-zinc-500 text-xs font-bold mt-2">Established {college.estd}</p>
+                </div>
+              </div>
+
+              <p className="text-zinc-400 text-sm font-medium leading-relaxed max-w-xl">
+                {college.about}
+              </p>
+
+              {/* Courses */}
+              <div className="flex flex-wrap gap-2">
+                {college.courses.map((c) => (
+                  <Tag key={c} variant="moss">{c}</Tag>
+                ))}
+              </div>
+
+              {/* Exams */}
+              <div className="flex flex-wrap gap-2 items-center">
+                <span className="text-[9px] font-black uppercase tracking-widest text-zinc-600">Via:</span>
+                {college.exams.map((e) => (
+                  <Tag key={e} variant="purple">{e}</Tag>
+                ))}
+              </div>
+            </div>
+
+            {/* Right panel */}
+            <div className="lg:min-w-[210px] flex flex-col gap-4">
+              <div className="bg-zinc-800 rounded-[1.8rem] p-6 space-y-4">
+                <div>
+                  <p className="text-[8px] font-black uppercase tracking-[0.25em] text-zinc-500 mb-1">Annual Fee</p>
+                  <p className="text-2xl font-black text-white italic tracking-tight">{college.fee}</p>
+                </div>
+                <div className="h-px bg-zinc-700" />
+                <div>
+                  <p className="text-[8px] font-black uppercase tracking-[0.25em] text-zinc-500 mb-1">Accreditation</p>
+                  <p className="text-sm font-black text-white">{college.accreditation}</p>
+                </div>
+                <div className="h-px bg-zinc-700" />
+                <div>
+                  <p className="text-[8px] font-black uppercase tracking-[0.25em] text-zinc-500 mb-1">NIRF Rank</p>
+                  <p className="text-sm font-black text-white">#{college.nirf}</p>
+                </div>
+              </div>
+              <a
+                href={college.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center justify-center gap-2 bg-zinc-900 border border-zinc-700 overflow-hidden p-4 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] text-white hover:text-zinc-900 transition-colors"
+              >
+                <div className="absolute inset-0 w-0 bg-[#E39F4A] transition-all duration-500 group-hover:w-full" />
+                <span className="relative z-10 flex items-center gap-2">
+                  <Globe size={13} /> Official Website <ExternalLink size={11} />
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* ── BENTO STATS ── */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+          {stats.map(({ label, value, bg, text, sub, icon: Icon }) => (
+            <div key={label} className={`${bg} rounded-[2.2rem] p-6 flex flex-col gap-3`}>
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${text === "text-white" ? "bg-white/10" : "bg-black/10"}`}>
+                <Icon size={17} className={text} />
+              </div>
+              <p className={`text-[8px] font-black uppercase tracking-[0.2em] ${sub}`}>{label}</p>
+              <p className={`text-2xl font-black italic tracking-tight leading-none ${text}`}>{value}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── MAIN GRID ── */}
+        <div className="grid lg:grid-cols-3 gap-6">
+
+          {/* Left — details */}
+          <div className="lg:col-span-2 space-y-10">
+
+            {/* Placements */}
+            <section>
+              <SectionHeading icon={TrendingUp} color="text-[#B1C357]">Placements</SectionHeading>
+              <div className="bg-zinc-900 rounded-[2.2rem] p-8 grid grid-cols-3 gap-6 text-center">
+                {[
+                  { label: "Average CTC",  value: college.placements.avg },
+                  { label: "Highest CTC",  value: college.placements.highest },
+                  { label: "Companies",    value: `${college.placements.companies}+` },
+                ].map(({ label, value }, i) => (
+                  <div key={label} className={i < 2 ? "border-r border-zinc-800 pr-4" : ""}>
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-2">{label}</p>
+                    <p className="text-3xl font-black italic text-[#E39F4A] tracking-tight leading-none">{value}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Key Facts */}
+            <section>
+              <SectionHeading icon={FileText} color="text-[#E39F4A]">Key Facts</SectionHeading>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  { icon: Building2,     dot: "bg-[#2667ff]",  label: "Institute Type", value: college.type },
+                  { icon: MapPin,        dot: "bg-[#E39F4A]",  label: "Location",       value: `${college.city}, ${college.state}` },
+                  { icon: BookOpen,      dot: "bg-[#B1C357]",  label: "Established",    value: college.estd },
+                  { icon: GraduationCap, dot: "bg-[#6A5C98]",  label: "Total Seats",    value: college.seats },
+                  { icon: Award,         dot: "bg-[#E39F4A]",  label: "Accreditation",  value: college.accreditation },
+                  { icon: Banknote,      dot: "bg-zinc-900",   label: "Annual Fee",     value: college.fee },
+                ].map(({ dot, label, value }) => (
+                  <div key={label} className="flex items-center gap-4 bg-zinc-50 border border-zinc-100 rounded-2xl px-5 py-4">
+                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${dot}`} />
+                    <div>
+                      <p className="text-[8px] font-black uppercase tracking-[0.2em] text-zinc-400">{label}</p>
+                      <p className="text-sm font-black text-zinc-900">{value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Exams */}
+            <section>
+              <SectionHeading icon={FileText} color="text-[#6A5C98]">Entrance Exams Accepted</SectionHeading>
+              <div className="flex flex-wrap gap-3">
+                {college.exams.map((exam) => (
+                  <div key={exam} className="bg-zinc-100 border border-zinc-200 rounded-2xl px-5 py-3 flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-[#6A5C98]" />
+                    <span className="text-sm font-black text-zinc-800">{exam}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-5">
+
+            {/* Courses */}
+            <div className="bg-zinc-50 border border-zinc-100 rounded-[2.2rem] p-6">
+              <p className="text-[9px] font-black uppercase tracking-[0.25em] text-zinc-400 mb-4">Courses Offered</p>
+              <div className="space-y-2">
+                {college.courses.map((c) => (
+                  <div key={c} className="flex items-center justify-between bg-white border border-zinc-100 rounded-xl px-4 py-3">
+                    <span className="text-sm font-black text-zinc-800">{c}</span>
+                    <ChevronRight size={13} className="text-zinc-300" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="relative bg-zinc-900 rounded-[2.2rem] p-7 overflow-hidden">
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#E39F4A] opacity-10 rounded-full pointer-events-none" />
+              <p className="text-[8px] font-black uppercase tracking-[0.25em] text-[#E39F4A] mb-3">Admissions Open</p>
+              <p className="text-xl font-black italic uppercase text-white tracking-tight leading-[0.9] mb-3">
+                Interested<br />in {college.name}?
+              </p>
+              <p className="text-xs font-medium text-zinc-500 leading-relaxed mb-6">
+                Get expert guidance on admissions, fees, and scholarships.
+              </p>
+              <button className="group relative w-full overflow-hidden bg-[#E39F4A] p-4 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] text-zinc-900 hover:bg-white transition-colors active:scale-95">
+                Book Free Consultation
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        {/* ── Similar Colleges ── */}
+        {similar.length > 0 && (
+          <section className="mt-14">
+            <SectionHeading icon={Building2}>Similar Colleges</SectionHeading>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {similar.map((clg) => (
+                <button
+                  key={clg.id}
+                  onClick={() => router.push(`/explore/${toSlug(clg.name)}`)}
+                  className="group bg-white border border-zinc-100 rounded-[1.8rem] p-5 text-left hover:border-[#E39F4A]/40 hover:shadow-[0_4px_24px_rgba(227,159,74,0.12)] transition-all duration-300 active:scale-95"
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-[9px] font-black text-zinc-300 bg-zinc-50 border border-zinc-100 rounded-lg px-2 py-1">
+                      #{clg.rank}
+                    </span>
+                    {clg.featured && <Star size={10} className="text-[#E39F4A] fill-[#E39F4A]" />}
+                  </div>
+                  <p className="text-[11px] font-black text-zinc-900 leading-snug mb-1.5 group-hover:text-[#E39F4A] transition-colors">
+                    {clg.name}
+                  </p>
+                  <p className="text-[9px] font-black uppercase tracking-[0.15em] text-zinc-400 flex items-center gap-1">
+                    <MapPin size={8} /> {clg.city}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+
+      </div>
+    </div>
+  );
+}
+
+--------------------------------------------------------------------------
+"use client";
+import React, { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Search, MapPin, GraduationCap, BookOpen,
+  Building2, Info, Filter, ChevronRight, Star, X,
+} from "lucide-react";
+import { COLLEGES, ALL_COURSES, toSlug } from "../../data/collegeData";
+
+export default function ExplorePage() {
+  const router = useRouter();
+
+  const [search,           setSearch]           = useState("");
+  const [selectedState,    setSelectedState]    = useState("All States");
+  const [selectedCity,     setSelectedCity]     = useState("All Cities");
+  const [selectedCourse,   setSelectedCourse]   = useState("All Courses");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
+
+  const states = ["All States", ...Array.from(new Set(COLLEGES.map((c) => c.state))).sort()];
+
+  const cities = useMemo(() => {
+    const base = COLLEGES
+      .filter((c) => selectedState === "All States" || c.state === selectedState)
+      .map((c) => c.city);
+    return ["All Cities", ...Array.from(new Set(base)).sort()];
+  }, [selectedState]);
+
+  const filteredColleges = useMemo(() => {
+    return COLLEGES.filter((clg) => {
+      const q = search.toLowerCase();
+      return (
+        (clg.name.toLowerCase().includes(q) || clg.city.toLowerCase().includes(q)) &&
+        (selectedState    === "All States"  || clg.state    === selectedState) &&
+        (selectedCity     === "All Cities"  || clg.city     === selectedCity) &&
+        (selectedCourse   === "All Courses" || clg.courses.includes(selectedCourse)) &&
+        (selectedCategory === "All"         || clg.category === selectedCategory) &&
+        (!showFeaturedOnly || clg.featured)
+      );
+    }).sort((a, b) => a.rank - b.rank);
+  }, [search, selectedState, selectedCity, selectedCourse, selectedCategory, showFeaturedOnly]);
+
+  const featuredColleges = COLLEGES.filter((c) => c.featured).sort((a, b) => a.rank - b.rank);
+
+  const hasFilters =
+    search || selectedState !== "All States" || selectedCity !== "All Cities" ||
+    selectedCourse !== "All Courses" || selectedCategory !== "All" || showFeaturedOnly;
+
+  const resetAll = () => {
+    setSearch(""); setSelectedState("All States"); setSelectedCity("All Cities");
+    setSelectedCourse("All Courses"); setSelectedCategory("All"); setShowFeaturedOnly(false);
+  };
+
+  const goToCollege = (clg) => router.push(`/explore/${toSlug(clg.name)}`);
+
+  return (
+    <div className="min-h-screen bg-[#FDFDFD] text-zinc-900 selection:bg-[#2667ff]/20">
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-12 lg:pt-20">
+
+        {/* ── Header ── */}
+        <div className="mb-10">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="bg-[#2667ff]/10 text-[#b8761f] border border-[#2667ff]/30 text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full">
+              ★ 2025–26 Session
+            </span>
+            <span className="text-zinc-300 text-xs">•</span>
+            <span className="text-zinc-400 text-[10px] font-black uppercase tracking-[0.2em]">
+              {COLLEGES.length} Institutes Listed
+            </span>
+          </div>
+          <h1 className="text-6xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.85] text-zinc-900 mb-3">
+            Top Colleges<br />in India
+          </h1>
+          <p className="text-zinc-400 text-sm font-medium">
+            Engineering · Management · Law · Medicine · Arts & Design
+          </p>
+        </div>
+
+        {/* ── Featured strip ── */}
+        <section className="mb-12">
+          <h2 className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.25em] text-zinc-400 mb-5">
+            <Star size={13} className="text-[#2667ff] fill-[#2667ff]" />
+            Featured & Top Ranked
+            <span className="flex-1 h-px bg-zinc-100" />
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            {featuredColleges.map((clg) => (
+              <button
+                key={clg.id}
+                onClick={() => goToCollege(clg)}
+                className="group bg-zinc-900 border border-zinc-800 hover:border-[#2667ff]/40 rounded-[1.8rem] p-5 text-left transition-all duration-300 active:scale-95"
+              >
+                <div className="w-8 h-8 bg-[#2667ff] rounded-[10px] flex items-center justify-center text-zinc-900 text-[9px] font-black mb-3">
+                  #{clg.rank}
+                </div>
+                <p className="text-[11px] font-black text-white leading-snug mb-1.5">{clg.name}</p>
+                <p className="text-[8px] font-black uppercase tracking-[0.15em] text-zinc-600">{clg.city}</p>
+                <p className="text-[8px] font-black uppercase tracking-[0.15em] text-[#2667ff] mt-1">{clg.courses[0]}</p>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <div className="grid lg:grid-cols-12 gap-8">
+
+          {/* ── Sidebar ── */}
+          <aside className="lg:col-span-3 bg-zinc-900 rounded-[2.5rem] p-7 h-fit lg:sticky top-28 space-y-6">
+
+            <div className="flex items-center justify-between">
+              <h3 className="text-[9px] font-black uppercase tracking-[0.25em] text-zinc-500 flex items-center gap-2">
+                <Filter size={12} /> Filters
+              </h3>
+              {hasFilters && (
+                <button
+                  onClick={resetAll}
+                  className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-[#2667ff] hover:text-white transition-colors"
+                >
+                  <X size={10} /> Reset
+                </button>
+              )}
+            </div>
+
+            {/* Featured toggle */}
+            <button
+              onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
+              className={`w-full flex items-center gap-2 px-4 py-3 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] border transition-all ${
+                showFeaturedOnly
+                  ? "bg-[#2667ff] text-zinc-900 border-[#2667ff]"
+                  : "bg-transparent text-zinc-500 border-zinc-800 hover:border-[#2667ff]/40 hover:text-[#2667ff]"
+              }`}
+            >
+              <Star size={11} className={showFeaturedOnly ? "fill-zinc-900" : ""} />
+              Top / Featured Only
+            </button>
+
+            {/* Category */}
+            <div className="space-y-3">
+              <label className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.2em]">Category</label>
+              <div className="flex gap-2">
+                {["All", "Government", "Private"].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`flex-1 py-2 rounded-xl text-[8px] font-black tracking-widest uppercase border transition-all ${
+                      selectedCategory === cat
+                        ? "bg-[#2667ff] text-zinc-900 border-[#2667ff]"
+                        : "bg-transparent text-zinc-500 border-zinc-800 hover:border-zinc-600"
+                    }`}
+                  >
+                    {cat === "Government" ? "Govt" : cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* State */}
+            <div className="space-y-3">
+              <label className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.2em]">State</label>
+              <select
+                value={selectedState}
+                onChange={(e) => { setSelectedState(e.target.value); setSelectedCity("All Cities"); }}
+                className="w-full bg-zinc-800 border border-zinc-700 text-zinc-300 p-3 rounded-2xl text-xs font-bold outline-none cursor-pointer appearance-none focus:border-[#2667ff]/60 transition-colors"
+              >
+                {states.map((s) => <option key={s}>{s}</option>)}
+              </select>
+            </div>
+
+            {/* City */}
+            <div className="space-y-3">
+              <label className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.2em]">City</label>
+              <select
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+                className="w-full bg-zinc-800 border border-zinc-700 text-zinc-300 p-3 rounded-2xl text-xs font-bold outline-none cursor-pointer appearance-none focus:border-[#2667ff]/60 transition-colors"
+              >
+                {cities.map((c) => <option key={c}>{c}</option>)}
+              </select>
+            </div>
+
+            {/* Courses */}
+            <div className="space-y-3">
+              <label className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.2em]">Course / Field</label>
+              <div className="flex flex-wrap gap-2">
+                {ALL_COURSES.map((course) => (
+                  <button
+                    key={course}
+                    onClick={() => setSelectedCourse(course)}
+                    className={`px-3 py-1.5 rounded-full text-[8px] font-black tracking-widest uppercase border transition-all ${
+                      selectedCourse === course
+                        ? "bg-[#B1C357] text-zinc-900 border-[#B1C357]"
+                        : "bg-transparent text-zinc-600 border-zinc-800 hover:border-[#B1C357]/50 hover:text-[#B1C357]"
+                    }`}
+                  >
+                    {course === "All Courses" ? "All" : course}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </aside>
+
+          {/* ── Main ── */}
+          <main className="lg:col-span-9 space-y-4">
+
+            {/* Search */}
+            <div className="relative group">
+              <Search
+                className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#2667ff] transition-colors"
+                size={18}
+              />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by college name or city…"
+                className="w-full bg-zinc-100 border-2 border-transparent pl-14 pr-6 py-5 rounded-[2rem] text-base font-bold text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#2667ff]/50 focus:bg-white transition-all"
+              />
+            </div>
+
+            {/* Count */}
+            <div className="flex items-center justify-between px-1">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">
+                Showing <span className="text-zinc-900">{filteredColleges.length}</span> institutes
+              </p>
+              {hasFilters && (
+                <button
+                  onClick={resetAll}
+                  className="text-[9px] text-[#2667ff] font-black uppercase tracking-widest flex items-center gap-1 hover:text-zinc-900 transition-colors"
+                >
+                  <X size={10} /> Clear All
+                </button>
+              )}
+            </div>
+
+            {/* Cards */}
+            <div className="space-y-3">
+              {filteredColleges.length > 0 ? (
+                filteredColleges.map((clg) => (
+                  <div
+                    key={clg.id}
+                    className={`group rounded-[2.2rem] p-7 transition-all duration-300 border ${
+                      clg.featured
+                        ? "bg-white border-[#2667ff]/30 border-l-4 border-l-[#2667ff]"
+                        : "bg-zinc-50 border-zinc-100 hover:border-zinc-200 hover:shadow-lg hover:shadow-zinc-100"
+                    }`}
+                  >
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
+
+                      <div className="space-y-2.5 flex-1">
+                        {/* Badges */}
+                        <div className="flex items-center flex-wrap gap-2">
+                          {clg.featured && (
+                            <span className="inline-flex items-center gap-1 bg-[#2667ff]/10 text-[#b8761f] border border-[#2667ff]/30 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.15em]">
+                              <Star size={7} className="fill-[#2667ff]" /> Featured
+                            </span>
+                          )}
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.15em] border ${
+                            clg.category === "Government"
+                              ? "bg-[#B1C357]/10 text-[#6a7f1a] border-[#B1C357]/30"
+                              : "bg-[#6A5C98]/10 text-[#6A5C98] border-[#6A5C98]/30"
+                          }`}>
+                            {clg.category}
+                          </span>
+                          <span className="text-[9px] font-black uppercase tracking-[0.15em] text-zinc-400 flex items-center gap-1">
+                            <MapPin size={9} /> {clg.city}, {clg.state}
+                          </span>
+                        </div>
+
+                        {/* Rank + Name */}
+                        <div className="flex items-center gap-3">
+                          <span className="text-[9px] font-black text-zinc-400 bg-white border border-zinc-200 rounded-lg px-2 py-1">
+                            #{clg.rank}
+                          </span>
+                          <h2 className="text-2xl font-black italic uppercase tracking-tight text-zinc-900 leading-none group-hover:text-[#2667ff] transition-colors">
+                            {clg.name}
+                          </h2>
+                        </div>
+
+                        {/* Courses */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {clg.courses.map((c) => (
+                            <span key={c} className="bg-white border border-zinc-200 text-zinc-500 text-[8px] font-black uppercase tracking-[0.12em] px-2.5 py-1 rounded-lg">
+                              {c}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* Meta */}
+                        <div className="flex flex-wrap gap-5 pt-1">
+                          <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400">
+                            <GraduationCap size={12} className="text-[#2667ff]" /> {clg.seats} Seats
+                          </span>
+                          <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400">
+                            <Building2 size={12} className="text-[#B1C357]" /> {clg.type}
+                          </span>
+                          <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400">
+                            <BookOpen size={12} className="text-[#6A5C98]" /> Est. {clg.estd}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Right */}
+                      <div className="flex flex-col items-start md:items-end gap-3 w-full md:w-auto pt-4 md:pt-0 border-t md:border-t-0 border-zinc-100">
+                        <div className="md:text-right">
+                          <p className="text-[8px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-1">Annual Fee</p>
+                          <p className="text-2xl font-black italic tracking-tight text-zinc-900">{clg.fee}</p>
+                        </div>
+                        <button
+                          onClick={() => goToCollege(clg)}
+                          className="group/btn relative flex items-center gap-2 bg-zinc-900 overflow-hidden px-5 py-3 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] text-[#2667ff] hover:text-zinc-900 transition-colors active:scale-95"
+                        >
+                          <div className="absolute inset-0 w-0 bg-[#2667ff] transition-all duration-500 group-hover/btn:w-full" />
+                          <span className="relative z-10 flex items-center gap-1.5">
+                            View Details <ChevronRight size={12} />
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-20 bg-zinc-50 rounded-[2.5rem] border border-dashed border-zinc-200">
+                  <Info className="mx-auto mb-4 text-zinc-200" size={40} />
+                  <p className="text-zinc-500 font-bold text-sm mb-3">No colleges match your filters.</p>
+                  <button
+                    onClick={resetAll}
+                    className="text-[#2667ff] font-black uppercase text-[9px] tracking-widest hover:underline"
+                  >
+                    Clear all filters
+                  </button>
+                </div>
+              )}
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+}

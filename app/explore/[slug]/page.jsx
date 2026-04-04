@@ -5,7 +5,7 @@ import {
   Star, ExternalLink, Users, TrendingUp, Award, FileText,
   ChevronRight, Globe, Banknote,
 } from "lucide-react";
-import { COLLEGE_BY_SLUG, COLLEGES, toSlug } from "@/data/collegeData";
+import { COLLEGE_BY_SLUG, COLLEGES, toSlug } from "../../../data/collegeData";
 
 // ─── Stat card atom ───────────────────────────────────────────────────────────
 function StatCard({ icon: Icon, iconColor, label, value }) {
