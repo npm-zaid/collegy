@@ -6,6 +6,8 @@ import FAQ from "../components/FAQ";
 import News from "../components/News";
 import WhyChooseUs from "../components/WhyChooseUs";
 import Ribbons from '../common/Ribbons'
+import CollegyDashboard from '../components/CollegyDashboard'
+import Mission from "../components/Mission";
 
 export default function Home() {
   return (
@@ -20,10 +22,8 @@ export default function Home() {
     enableShaderEffect={false}
   />
         <Hero />
-        <Webinar />
-        <News/>
-        <FAQ/>
-        <WhyChooseUs/>
+      <Mission/>
+        <CollegyDashboard/>
        
       </div>
     </>

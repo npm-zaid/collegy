@@ -60,7 +60,7 @@ export default function ExplorePage() {
         {/* ── Header ── */}
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-4">
-            <span className="bg-gradient-to-r from-[#2667ff]/10 to-[#3f8efc]/10 text-[#2667ff] border border-[#2667ff]/20 text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full">
+            <span className="bg-gradient-to-r from-[#2667ff]/10 to-[#2667ff]/10 text-[#2667ff] border border-[#2667ff]/20 text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full">
               ★ 2025–26 Session
             </span>
             <span className="text-zinc-300 text-xs">•</span>
@@ -114,7 +114,7 @@ export default function ExplorePage() {
               {hasFilters && (
                 <button
                   onClick={resetAll}
-                  className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-[#3f8efc] hover:text-white transition-colors"
+                  className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-[#2667ff] hover:text-white transition-colors"
                 >
                   <X size={10} /> Reset
                 </button>
@@ -144,8 +144,8 @@ export default function ExplorePage() {
                     onClick={() => setSelectedCategory(cat)}
                     className={`flex-1 py-2 rounded-xl text-[8px] font-black tracking-widest uppercase border transition-all ${
                       selectedCategory === cat
-                        ? "bg-gradient-to-r from-[#2667ff] to-[#3f8efc] text-white border-transparent shadow-md shadow-[#2667ff]/20"
-                        : "bg-transparent text-zinc-500 border-zinc-800 hover:border-[#3f8efc]/40 hover:text-[#3f8efc]"
+                        ? "bg-gradient-to-r from-[#2667ff] to-[#2667ff] text-white border-transparent shadow-md shadow-[#2667ff]/20"
+                        : "bg-transparent text-zinc-500 border-zinc-800 hover:border-[#2667ff]/40 hover:text-[#2667ff]"
                     }`}
                   >
                     {cat === "Government" ? "Govt" : cat}
@@ -160,7 +160,7 @@ export default function ExplorePage() {
               <select
                 value={selectedState}
                 onChange={(e) => { setSelectedState(e.target.value); setSelectedCity("All Cities"); }}
-                className="w-full bg-zinc-800 border border-zinc-700 text-zinc-300 p-3 rounded-2xl text-xs font-bold outline-none cursor-pointer appearance-none focus:border-[#3f8efc]/50 transition-colors"
+                className="w-full bg-zinc-800 border border-zinc-700 text-zinc-300 p-3 rounded-2xl text-xs font-bold outline-none cursor-pointer appearance-none focus:border-[#2667ff]/50 transition-colors"
               >
                 {states.map((s) => <option key={s}>{s}</option>)}
               </select>
@@ -172,7 +172,7 @@ export default function ExplorePage() {
               <select
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 text-zinc-300 p-3 rounded-2xl text-xs font-bold outline-none cursor-pointer appearance-none focus:border-[#3f8efc]/50 transition-colors"
+                className="w-full bg-zinc-800 border border-zinc-700 text-zinc-300 p-3 rounded-2xl text-xs font-bold outline-none cursor-pointer appearance-none focus:border-[#2667ff]/50 transition-colors"
               >
                 {cities.map((c) => <option key={c}>{c}</option>)}
               </select>
@@ -188,8 +188,8 @@ export default function ExplorePage() {
                     onClick={() => setSelectedCourse(course)}
                     className={`px-3 py-1.5 rounded-full text-[8px] font-black tracking-widest uppercase border transition-all ${
                       selectedCourse === course
-                        ? "bg-gradient-to-r from-[#2667ff] to-[#3f8efc] text-white border-transparent"
-                        : "bg-transparent text-zinc-600 border-zinc-800 hover:border-[#3f8efc]/40 hover:text-[#3f8efc]"
+                        ? "bg-gradient-to-r from-[#2667ff] to-[#2667ff] text-white border-transparent"
+                        : "bg-transparent text-zinc-600 border-zinc-800 hover:border-[#2667ff]/40 hover:text-[#2667ff]"
                     }`}
                   >
                     {course === "All Courses" ? "All" : course}
@@ -233,15 +233,15 @@ export default function ExplorePage() {
             </div>
 
             {/* Cards */}
-            <div className="space-y-3">
+            <div className="space-y-6">
               {filteredColleges.length > 0 ? (
                 filteredColleges.map((clg) => (
                   <div
                     key={clg.id}
                     className={`group rounded-[2.2rem] p-7 transition-all duration-300 border ${
                       clg.featured
-                        ? "bg-amber-50 border-amber-200 border-l-4 border-l-amber-400 hover:shadow-[0_4px_28px_rgba(245,158,11,0.12)]"
-                        : "bg-zinc-50 border-zinc-100 hover:border-[#3f8efc]/30 hover:shadow-[0_4px_28px_rgba(38,103,255,0.07)]"
+                        ? "bg-amber-50 border-amber-200 border-l-4 border-l-amber-400 shadow-xl"
+                        : "bg-[#2667ff]/10 border-zinc-100 hover:border-[#2667ff]/70 shadow-xl"
                     }`}
                   >
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
@@ -256,19 +256,19 @@ export default function ExplorePage() {
                           )}
                           <span className={`inline-flex items-center px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.15em] border ${
                             clg.category === "Government"
-                              ? "bg-gradient-to-r from-[#2667ff]/8 to-[#3f8efc]/8 text-[#2667ff] border-[#2667ff]/20"
+                              ? "bg-gradient-to-r from-[#2667ff]/8 to-[#2667ff]/8 text-[#2667ff] border-[#2667ff]/20"
                               : "bg-indigo-50 text-indigo-600 border-indigo-200"
                           }`}>
                             {clg.category}
                           </span>
-                          <span className="text-[9px] font-black uppercase tracking-[0.15em] text-zinc-400 flex items-center gap-1">
+                          <span className="text-[9px] font-black uppercase tracking-[0.15em] text-zinc-700 flex items-center gap-1">
                             <MapPin size={9} /> {clg.city}, {clg.state}
                           </span>
                         </div>
 
                         {/* Rank + Name */}
                         <div className="flex items-center gap-3">
-                          <span className="text-[9px] font-black text-zinc-400 bg-white border border-zinc-200 rounded-lg px-2 py-1">
+                          <span className="text-[9px] font-black text-zinc-700 bg-white border border-zinc-200 rounded-lg px-2 py-1">
                             #{clg.rank}
                           </span>
                           <h2 className="text-2xl font-black italic uppercase tracking-tight text-zinc-900 leading-none group-hover:text-[#2667ff] transition-colors">
@@ -287,13 +287,13 @@ export default function ExplorePage() {
 
                         {/* Meta */}
                         <div className="flex flex-wrap gap-5 pt-1">
-                          <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400">
+                          <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-700">
                             <GraduationCap size={12} className="text-[#2667ff]" /> {clg.seats} Seats
                           </span>
-                          <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400">
-                            <Building2 size={12} className="text-[#3f8efc]" /> {clg.type}
+                          <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-700">
+                            <Building2 size={12} className="text-[#2667ff]" /> {clg.type}
                           </span>
-                          <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-400">
+                          <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-700">
                             <BookOpen size={12} className="text-indigo-400" /> Est. {clg.estd}
                           </span>
                         </div>
@@ -307,9 +307,9 @@ export default function ExplorePage() {
                         </div>
                         <button
                           onClick={() => goToCollege(clg)}
-                          className="group/btn relative flex items-center gap-2 bg-zinc-900 overflow-hidden px-5 py-3 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] text-[#3f8efc] transition-colors active:scale-95"
+                          className="group/btn relative flex items-center gap-2 bg-zinc-900 overflow-hidden px-5 py-3 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] text-white transition-colors active:scale-95"
                         >
-                          <div className="absolute inset-0 w-0 bg-gradient-to-r from-[#2667ff] to-[#3f8efc] transition-all duration-500 group-hover/btn:w-full" />
+                          <div className="absolute inset-0 w-0 bg-gradient-to-r from-[#2667ff] to-[#2667ff] transition-all duration-500 group-hover/btn:w-full" />
                           <span className="relative z-10 flex items-center gap-1.5 group-hover/btn:text-white transition-colors duration-150 delay-100">
                             View Details <ChevronRight size={12} />
                           </span>

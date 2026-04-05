@@ -171,7 +171,9 @@ export default function AdminLayout({ children }) {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 py-4 overflow-y-auto overflow-x-hidden">
+        <nav className="flex-1 py-4 overflow-y-auto overflow-x-hidden 
+        
+        ">
           {NAV.map((group, gi) => (
             <div key={group.label} className="mb-2">
               {/* Group label */}

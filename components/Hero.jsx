@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
+import { SendHorizontal } from "lucide-react";
 
 const NOTIFICATIONS = {
   All: [
@@ -156,12 +157,7 @@ export default function Hero() {
         className="relative min-h-screen w-full overflow-hidden flex items-center justify-center px-6 py-20 "
        
       >
-        {/* Mesh blobs */}
-        {/* <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-40 -left-32 w-[520px] h-[520px] rounded-full opacity-35 bg-[radial-gradient(circle,#a5b4fc,transparent_70%)]" />
-          <div className="absolute -bottom-44 -right-24 w-[500px] h-[500px] rounded-full opacity-25 bg-[radial-gradient(circle,#93c5fd,transparent_70%)]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[420px] rounded-full opacity-20 bg-[radial-gradient(ellipse,#c7d2fe,transparent_70%)]" />
-        </div> */}
+      
 
         {/* LEFT 1 — Avatar dashed ring (top-left) */}
         <div
@@ -176,8 +172,8 @@ export default function Hero() {
         {/* LEFT 2 — College card (mid-left) */}
         <div
           ref={el => { leftRefs.current[1] = el; }}
-          className="absolute z-10 will-change-transform"
-          style={{ top: "28%", left: "2.5%", width: 200 }}
+          className="absolute hidden lg:block z-10 will-change-transform lg:top-[18%] top-[10%] left-[2.5%] w-[200px]"
+         
         >
           <div className="bg-white rounded-2xl p-3.5 shadow-xl border border-indigo-100 flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-gradient-to-br from-[#2667ff] to-[#3f8efc]">
@@ -195,8 +191,8 @@ export default function Hero() {
         {/* LEFT 3 — Spark avatar (bottom-left) */}
         <div
           ref={el => { leftRefs.current[2] = el; }}
-          className="absolute z-10 rounded-full will-change-transform"
-          style={{ bottom: "18%", left: "8%", width: 76, height: 76 }}
+          className="absolute hidden lg:block z-10 rounded-full will-change-transform"
+          style={{ bottom: "25%", left: "8%", width: 76, height: 76 }}
         >
           <div className="absolute -top-5 left-1/2 -translate-x-1/2 flex gap-[5px] pointer-events-none">
             {["-rotate-[35deg]", "rotate-0", "rotate-[35deg]"].map((r, j) => (
@@ -221,8 +217,8 @@ export default function Hero() {
         {/* RIGHT 2 — News popup trigger (mid-right) */}
         <div
           ref={el => { rightRefs.current[1] = el; }}
-          className="absolute z-20 will-change-transform -rotate-6"
-          style={{ top: "28%", right: "3%" }}
+          className="absolute hidden lg:block z-20 will-change-transform -rotate-6"
+          style={{ top: "18%", right: "3%" }}
         >
           <button
             onClick={() => { setNewsOpen(p => !p); setSidebarOpen(false); }}
@@ -277,8 +273,8 @@ export default function Hero() {
         {/* RIGHT 3 — Live Updates trigger (bottom-right) */}
         <div
           ref={el => { rightRefs.current[2] = el; }}
-          className="absolute z-10 will-change-transform rotate-6"
-          style={{ bottom: "18%", right: "5%" }}
+          className="absolute  z-10 will-change-transform rotate-6 lg:bottom-[25%] lg:right-[5%] bottom-[5%] right-[2%]"
+          
         >
           <button
             onClick={() => { setSidebarOpen(p => !p); setNewsOpen(false); }}
@@ -316,7 +312,7 @@ export default function Hero() {
 
           <p
             ref={subtitleRef}
-            className="text-gray-500 leading-[1.9vw] max-w-[550px] mx-auto mb-10 text-[clamp(0.85rem,1.5vw,1rem)]"
+            className="text-gray-500  max-w-[580px] mx-auto mb-10 lg:text-lg text-base"
           >
             Explore thousands of colleges, compare programs, check cutoffs, and
             get personalized recommendations — all in one place.
@@ -341,12 +337,13 @@ export default function Hero() {
               href="/explore"
               className="bg-gradient-to-r from-[#2667ff] to-[#3f8efc] text-white font-semibold text-[0.95rem] rounded-full px-7 py-3 whitespace-nowrap shadow-[0_4px_16px_rgba(79,70,229,0.35)] hover:opacity-90 hover:scale-[1.04] transition-all duration-150"
             >
-              Find Colleges
+             <span className="hidden lg:block text-white">Find Colleges</span>
+              <SendHorizontal className="lg:hidden text-white"/>
             </Link>
           </div>
 
           {/* Stats */}
-          <div className="flex items-center justify-center gap-10 mt-9 flex-wrap">
+          <div className="flex items-center lg:justify-center justify-between gap-10 mt-9 ">
             {STATS.map(([num, label]) => (
               <div key={label} className="text-center">
                 <div className="font-bold text-[#2667ff] text-xl">{num}</div>
