@@ -34,7 +34,7 @@ import { Plus, Minus, HelpCircle } from "lucide-react";
 
 
 
-export default function FAQSection() {
+export default function FAQ() {
   const [openId, setOpenId] = useState(null);
   const contentRefs = useRef([]);
   const toggleFAQ = (id) => {

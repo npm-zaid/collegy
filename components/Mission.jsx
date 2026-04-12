@@ -64,7 +64,7 @@ const Mission = () => {
           {/* Main Card — happy student */}
           <div ref={leftCardRef} className="relative flex-1 h-full">
             <img
-              src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=800"
+              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600"
               className="w-full h-full object-cover rounded-[3rem] shadow-2xl shadow-black/50"
               alt="Student at college"
             />
@@ -91,7 +91,7 @@ const Mission = () => {
             {/* Bottom profile strip */}
             <div className="absolute bottom-8 sm:left-8 left-4 flex items-center gap-3">
               <img
-                src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=50&h=50&fit=crop"
+                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600"
                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
                 alt="Student"
               />
@@ -155,7 +155,7 @@ const Mission = () => {
               </svg>
             </span>
             {/* Label */}
-            <span className="relative z-10 text-black transition-colors duration-300 group-hover:text-white">
+            <span className="relative z-10  transition-colors duration-300 group-hover:text-white">
               Find my college
             </span>
           </button>

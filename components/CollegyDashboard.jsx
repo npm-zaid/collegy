@@ -75,7 +75,7 @@ const WebinarCard = ({ webinar }) => {
   const isRecorded = webinar.status === "RECORDED";
 
   return (
-    <div className="w-64 shrink-0 bg-white rounded-[2rem] p-5 border-2 border-transparent hover:border-[#3D6BE8]/30 transition-all shadow-sm hover:shadow-md">
+    <div className="w-64 shrink-0 bg-white rounded-[2rem] p-5 border-2  border-[#3D6BE8]/50 transition-all shadow-lg">
       {/* Top: icon + status badge */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-start gap-2 flex-1 min-w-0 mr-2">
@@ -162,7 +162,7 @@ const CollegyDashboard = () => {
         const h = topCollegeTrackRef.current.offsetHeight / 2;
         gsap.to(topCollegeTrackRef.current, {
           y: -h,
-          duration: 9,
+          duration: 11,
           ease: "none",
           repeat: -1,
         });
@@ -218,7 +218,7 @@ const CollegyDashboard = () => {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-[#FDFDFD] p-6 lg:p-12 text-zinc-900 selection:bg-[#3D6BE8]/30 overflow-x-hidden"
+      className="min-h-screen  p-6 lg:p-12 text-zinc-900 selection:bg-[#3D6BE8]/30 overflow-x-hidden"
     >
       {/* ── HEADER ── */}
       <div className="relative mb-10 mt-16 flex flex-col items-center">
@@ -231,7 +231,7 @@ const CollegyDashboard = () => {
         <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-center leading-[0.8] mb-4">
           <span className="text-zinc-900">Our </span>
           <span className="bg-gradient-to-r from-[#3D6BE8] via-[#818CF8] to-[#3D6BE8] bg-clip-text text-transparent italic pr-3">
-            Products
+            Dashboard
           </span>
         </h1>
         <div className="w-36 h-1.5 bg-gradient-to-r from-zinc-900 to-[#3D6BE8] rounded-full mt-2" />
@@ -390,62 +390,61 @@ const CollegyDashboard = () => {
         {/* ══════════════════════════════════════════════════════════════════
             CARD 3 · FEATURED COLLEGES SCROLL  (col-span-4)
         ══════════════════════════════════════════════════════════════════ */}
-        <div className="lg:col-span-4 bg-[#818CF8]/15 rounded-[3rem] p-8 border-2 border-white/50 relative overflow-hidden shadow-2xl shadow-black/20 backdrop-blur-sm h-[480px]">
+              <div className="lg:col-span-4 bg-[#1A1A1A] rounded-[3rem] p-8 border-2 border-[#3D6BE8] text-white relative overflow-hidden shadow-2xl h-[480px]">
 
           {/* Header */}
-          <div className="flex items-center justify-between mb-8 relative z-20">
+          <div className="relative z-10 flex justify-between items-center mb-8">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-zinc-900 rounded-2xl flex items-center justify-center shadow-lg">
-                <Award size={20} className="text-[#818CF8]" />
+              <div className="p-3 bg-[#3D6BE8] rounded-2xl">
+                <Trophy size={20} />
               </div>
               <div>
-                <h3 className="text-2xl font-black tracking-tighter text-zinc-900">
-                  Featured{" "}
-                  <span className="italic text-[#818CF8]">Colleges</span>
-                </h3>
-                <p className="text-[10px] font-bold text-[#818CF8] animate-pulse">
-                  ● Editor's Picks
+                <h3 className="text-xl font-black tracking-tighter">Featured Colleges</h3>
+                <p className="text-[10px] text-[#3D6BE8] font-bold uppercase tracking-widest">
+                  2025 Rankings
                 </p>
               </div>
             </div>
+            <Radio size={16} className="text-[#3D6BE8] animate-pulse" />
           </div>
 
-          {/* Scrolling featured list */}
-          <div className="relative h-[300px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]">
-            <div ref={featuredTrackRef} className="space-y-4">
-              {[...featuredColleges, ...featuredColleges].map((college, i) => (
+          {/* Scrolling list */}
+          <div className="relative h-[330px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]">
+            <div ref={featuredTrackRef} className="space-y-3">
+              {[...topColleges, ...topColleges].map((college, i) => (
                 <div
                   key={i}
-                  className="group/item bg-white/90 backdrop-blur-md p-5 rounded-[2rem] shadow-sm border border-white flex items-center justify-between hover:scale-[1.02] transition-all"
+                  className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center gap-3 hover:bg-white/15 transition-colors"
                 >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`w-12 h-12 ${college.color} rounded-2xl flex items-center justify-center text-white font-black text-xs shadow-inner`}
-                    >
-                      {college.name.slice(0, 2).toUpperCase()}
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-zinc-900 leading-none mb-1">
-                        {college.name}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[9px] py-0.5 px-2 bg-zinc-100 rounded-full text-zinc-500 uppercase">
-                          {college.tag}
-                        </span>
-                        <span className="text-[9px] text-[#818CF8] font-bold">{college.fee}</span>
-                      </div>
-                    </div>
+                  <div
+                    className={`w-10 h-10 ${college.color} rounded-xl flex items-center justify-center font-black text-white text-xs shrink-0`}
+                  >
+                    {college.rank}
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-[#818CF8]/10 flex items-center justify-center group-hover/item:bg-[#818CF8] transition-colors">
-                    <ArrowUpRight
-                      size={16}
-                      className="text-[#818CF8] group-hover/item:text-white transition-colors"
-                    />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-white truncate">{college.name}</p>
+                    <p className="text-[10px] text-white/40 flex items-center gap-1">
+                      <MapPin size={8} />
+                      {college.location}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Star size={10} className="text-[#3D6BE8] fill-[#3D6BE8]" />
+                    <span className="text-xs font-black text-[#3D6BE8]">{college.rating}</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Dot-grid texture */}
+          <div
+            className="absolute inset-0 opacity-10 pointer-events-none"
+            style={{
+              backgroundImage: "radial-gradient(#3D6BE8 0.5px, transparent 0.5px)",
+              backgroundSize: "20px 20px",
+            }}
+          />
         </div>
 
         {/* ══════════════════════════════════════════════════════════════════
@@ -453,7 +452,7 @@ const CollegyDashboard = () => {
             Row 1 → scrolls LEFT  |  Row 2 ← scrolls RIGHT
             Faded edges via mask-image gradient
         ══════════════════════════════════════════════════════════════════ */}
-        <div className="lg:col-span-8 bg-[#3D6BE8]/08 rounded-[3rem] p-8 border-2 border-white/50 relative overflow-hidden shadow-2xl shadow-black/20 backdrop-blur-sm">
+        <div className="lg:col-span-8  bg-[#3D6BE8]/10 rounded-[3rem] p-8 border-2 border-zinc-100 shadow-2xl shadow-black/20 overflow-hidden">
 
           {/* Header */}
           <div className="relative z-10 mb-8 flex items-center justify-between">
@@ -477,7 +476,7 @@ const CollegyDashboard = () => {
 
           {/* ── Marquee wrapper — clips overflow + fades left/right edges ── */}
           <div
-            className="relative overflow-hidden space-y-4"
+            className="relative overflow-hidden "
             style={{
               maskImage:
                 "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)",
@@ -486,7 +485,7 @@ const CollegyDashboard = () => {
             }}
           >
             {/* ── ROW 1 — scrolls LEFT ── */}
-            <div className="overflow-hidden">
+            <div className="overflow-hidden  py-4">
               <div
                 ref={webinarRow1Ref}
                 className="flex gap-4 w-max"
@@ -498,7 +497,7 @@ const CollegyDashboard = () => {
             </div>
 
             {/* ── ROW 2 — scrolls RIGHT ── */}
-            <div className="overflow-hidden">
+            <div className="overflow-hidden  py-4">
               <div
                 ref={webinarRow2Ref}
                 className="flex gap-4 w-max"
