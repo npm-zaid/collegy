@@ -64,7 +64,7 @@ const Mission = () => {
           {/* Main Card — happy student */}
           <div ref={leftCardRef} className="relative flex-1 h-full">
             <img
-              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600"
+              src="https://m.media-amazon.com/images/I/51AQb8ZL5HL._UXNaN_FMjpg_QL85_.jpg"
               className="w-full h-full object-cover rounded-[3rem] shadow-2xl shadow-black/50"
               alt="Student at college"
             />
@@ -91,12 +91,12 @@ const Mission = () => {
             {/* Bottom profile strip */}
             <div className="absolute bottom-8 sm:left-8 left-4 flex items-center gap-3">
               <img
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600"
+                src="https://m.media-amazon.com/images/I/51AQb8ZL5HL._UXNaN_FMjpg_QL85_.jpg"
                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
                 alt="Student"
               />
               <span className="text-white font-semibold flex items-center gap-1">
-                Priya S. &nbsp;
+                Mia K. &nbsp;
                 <CheckCircle2 size={16} className="fill-[#2667ff] text-white" />
               </span>
             </div>
@@ -141,23 +141,9 @@ const Mission = () => {
             Collegy is where students find their perfect college — with AI-powered matching, real data, and a community that guides every step of the journey.
           </h2>
 
-          {/* CTA button — same expanding-pill animation */}
-          <button
-            onClick={() => { window.location.href = '/find/ai-search'; }}
-            type="button"
-            className="relative h-12 px-6 pr-14 rounded-full bg-[#2667ff]/20 overflow-hidden text-white font-semibold text-sm cursor-pointer group"
-          >
-            {/* Expanding pill */}
-            <span className="absolute top-1 right-1 h-10 w-10 rounded-full bg-[#2667ff] flex items-center justify-center z-20 transition-all duration-500 ease-out group-hover:w-[calc(100%-8px)]">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" className="w-5 h-5">
-                <path d="M800 512H160a32 32 0 0 1 0-64h640a32 32 0 1 1 0 64z" fill="#ffffff" />
-                <path d="m786.752 512-265.408-265.344a32 32 0 0 1 45.312-45.312l288 288a32 32 0 0 1 0 45.312l-288 288a32 32 0 1 1-45.312-45.312L786.752 512z" fill="#ffffff" />
-              </svg>
-            </span>
-            {/* Label */}
-            <span className="relative z-10  transition-colors duration-300 group-hover:text-white">
-              Find my college
-            </span>
+           <button className="flex btn items-center bg-gradient-to-br from-[#2667ff] to-[#3f8efc] gap-2 px-5 py-2.5 rounded-3xl text-sm font-bold text-white cursor-pointer border-0 shadow-[0_4px_18px_rgba(79,70,229,0.38)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.55)]">
+            Find my college
+           
           </button>
         </div>
 

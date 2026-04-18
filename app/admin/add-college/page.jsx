@@ -7,6 +7,9 @@ import {
   PageHeader, FormCard, FormGroup, Input, Select, Textarea, TagsInput,
   Btn, ToastProvider, useToast,
 } from "../../../admin-compo/AdminUi";
+import { getToken } from "../../../lib/auth"; // adjust path as needed
+
+const API = "http://localhost:5000";
 
 const TYPE_OPTIONS = ["IIT", "NIT", "IIM", "AIIMS", "University", "College", "Institute", "Deemed"];
 const CAT_OPTIONS = ["Government", "Private"];
@@ -18,9 +21,10 @@ const STATES = [
 ];
 
 const EMPTY = {
-  name: "", rank: "", type: "", category: "", state: "", city: "",
+  collegeId: "", name: "", rank: "", type: "", category: "", state: "", city: "",
   estd: "", seats: "", fee: "", nirf: "", accreditation: "", website: "",
-  about: "", avgPackage: "", highestPackage: "", companies: "", featured: false,
+  about: "", avgPackage: "", highestPackage: "", companies: "",
+  featured: false, videoLink: "",
 };
 
 export default function AddCollegePage() {
@@ -32,85 +36,204 @@ export default function AddCollegePage() {
   const [courses, setCourses] = useState([]);
   const [exams, setExams] = useState([]);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Image state
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  // Image state — supports multiple files
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
 
   const set = (key) => (e) =>
     setForm((prev) => ({ ...prev, [key]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
 
   // ── Image handlers ──
-  const handleImageChange = (file) => {
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      toast("⚠️ Please upload a valid image file!");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      toast("⚠️ Image must be under 5MB!");
-      return;
-    }
-    setImageFile(file);
-    const reader = new FileReader();
-    reader.onloadend = () => setImagePreview(reader.result);
-    reader.readAsDataURL(file);
+  const handleImageChange = (files) => {
+    const validFiles = [];
+    const validPreviews = [];
+
+    Array.from(files).forEach((file) => {
+      if (!file.type.startsWith("image/")) {
+        toast("⚠️ Only image files are allowed!");
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast(`⚠️ ${file.name} exceeds 5MB limit!`);
+        return;
+      }
+      validFiles.push(file);
+      const reader = new FileReader();
+      reader.onloadend = () =>
+        setImagePreviews((prev) => [...prev, reader.result]);
+      reader.readAsDataURL(file);
+    });
+
+    setImageFiles((prev) => [...prev, ...validFiles]);
   };
 
-  const handleFileInput = (e) => handleImageChange(e.target.files[0]);
-
+  const handleFileInput = (e) => handleImageChange(e.target.files);
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
-    handleImageChange(e.dataTransfer.files[0]);
+    handleImageChange(e.dataTransfer.files);
   };
-
   const handleDragOver = (e) => { e.preventDefault(); setIsDragging(true); };
   const handleDragLeave = () => setIsDragging(false);
 
-  const removeImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
+  const removeImage = (index) => {
+    setImageFiles((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const clearAllImages = () => {
+    setImageFiles([]);
+    setImagePreviews([]);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  // ── Build FormData for multipart/form-data API ──
+  const buildFormData = () => {
+    const fd = new FormData();
+
+    // Simple text fields
+    fd.append("collegeId", form.collegeId.trim());
+    fd.append("collegeName", form.name.trim());
+    fd.append("establishedYear", form.estd || "");
+    fd.append("description", form.about || "");
+    fd.append("videoLink", form.videoLink || "");
+    fd.append("accreditation", form.accreditation || "");
+    fd.append("website", form.website || "");
+    fd.append("annualFee", form.fee || "");
+    fd.append("totalSeats", form.seats || "");
+    fd.append("type", form.type || "");
+    fd.append("category", form.category || "");
+    fd.append("featured", form.featured ? "true" : "false");
+
+    // location — JSON string
+    fd.append(
+      "location",
+      JSON.stringify({
+        country: "India",
+        state: form.state || "",
+        city: form.city || "",
+        address: "",
+        pincode: "",
+        coordinates: { latitude: 0, longitude: 0 },
+      })
+    );
+
+    // nirfRanking — JSON string
+    fd.append(
+      "nirfRanking",
+      JSON.stringify({
+        overallRank: form.nirf ? parseInt(form.nirf) : 0,
+        year: new Date().getFullYear(),
+      })
+    );
+
+    // placement — JSON string
+ fd.append(
+  "placement",
+  JSON.stringify({
+    placementPercentage: 0,
+    year: new Date().getFullYear(),
+    highestPackage: {
+      amount: form.highestPackage || "0",
+      currency: "INR",
+    },
+    averagePackage: {
+      amount: form.avgPackage || "0",
+      currency: "INR",
+    },
+    companiesVisited: form.companies
+      ? [{ name: "Various", count: parseInt(form.companies) }]
+      : [],
+  })
+);
+    // courses — JSON string array
+    // TagsInput gives plain strings; wrap into objects expected by backend
+    fd.append(
+      "courses",
+      JSON.stringify(
+        courses.map((c) => ({ courseName: c, duration: "", fees: "", seats: 0 }))
+      )
+    );
+
+    // collegeRatings — default empty
+    fd.append(
+      "collegeRatings",
+      JSON.stringify({ averageRating: 0, totalReviews: 0 })
+    );
+
+    // reviews — default empty
+    fd.append("reviews", JSON.stringify([]));
+
+    // Entrance exams as comma-separated (adjust if backend expects different)
+    fd.append("entranceExams", exams.join(","));
+
+    // Images — field name MUST be "images" per API spec
+    imageFiles.forEach((file) => fd.append("images", file));
+
+    return fd;
+  };
+
   // ── Save ──
-  const handleSave = () => {
-    if (!form.name.trim() || !form.rank) {
-      toast("⚠️ College name and rank are required!");
+  const handleSave = async () => {
+    if (!form.collegeId.trim()) {
+      toast("⚠️ College ID is required (e.g. IITB-001)!");
       return;
     }
-    const college = {
-      id: Date.now(),
-      name: form.name, rank: +form.rank, featured: form.featured,
-      type: form.type || "College", state: form.state || "India",
-      city: form.city || "—", courses,
-      seats: +form.seats || 0, fee: form.fee || "—",
-      category: form.category || "Private", estd: +form.estd || 2020,
-      about: form.about,
-      accreditation: form.accreditation || "—",
-      nirf: +form.nirf || 0,
-      website: form.website || "#",
-      exams,
-      image: imageFile ? imageFile.name : null, // Replace with uploaded URL from API
-      placements: {
-        avg: form.avgPackage || "—",
-        highest: form.highestPackage || "—",
-        companies: +form.companies || 0,
-      },
-    };
-    console.log("New College:", college);
-    setSaved(true);
-    toast(`✅ ${form.name} added successfully!`);
-    setTimeout(() => { setSaved(false); handleReset(); }, 2000);
+    if (!form.name.trim()) {
+      toast("⚠️ College name is required!");
+      return;
+    }
+    if (!form.rank) {
+      toast("⚠️ Rank is required!");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const token = getToken();
+      const fd = buildFormData();
+
+      const res = await fetch(`${API}/api/admin/colleges`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // ⚠️ Do NOT set Content-Type — browser sets it automatically with boundary for multipart
+        },
+        body: fd,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        // Show validation errors if any
+        const errMsg = data.errors?.join(", ") || data.message || "Failed to add college";
+        toast(`❌ ${errMsg}`);
+        return;
+      }
+
+      setSaved(true);
+      toast(`✅ ${form.name} added successfully!`);
+      setTimeout(() => {
+        setSaved(false);
+        handleReset();
+      }, 2000);
+    } catch (err) {
+      console.error("Add college error:", err);
+      toast("❌ Network error — please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleReset = () => {
     setForm(EMPTY);
     setCourses([]);
     setExams([]);
-    removeImage();
+    clearAllImages();
   };
 
   return (
@@ -122,104 +245,76 @@ export default function AddCollegePage() {
       />
 
       {/* ── College Image Upload ── */}
-      <FormCard title="College Image" index={0}>
-        <div className="flex flex-col sm:flex-row gap-6 items-start">
-
-          {/* Drop zone / upload area */}
+      <FormCard title="College Images" index={0}>
+        <div className="flex flex-col gap-4">
+          {/* Drop zone */}
           <div
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
-            onClick={() => !imagePreview && fileInputRef.current?.click()}
-            className={`relative flex-1 min-h-[180px] rounded-2xl border-2 border-dashed transition-all duration-200 flex flex-col items-center justify-center gap-3 cursor-pointer select-none
-              ${imagePreview
-                ? "border-transparent cursor-default p-0 overflow-hidden"
-                : isDragging
-                  ? "border-[#2667ff] bg-[#EEF3FF] scale-[1.01]"
-                  : "border-slate-200 bg-slate-50 hover:border-[#2667ff] hover:bg-[#EEF3FF]/50"
+            onClick={() => fileInputRef.current?.click()}
+            className={`relative min-h-[160px] rounded-2xl border-2 border-dashed transition-all duration-200 flex flex-col items-center justify-center gap-3 cursor-pointer select-none
+              ${isDragging
+                ? "border-[#2667ff] bg-[#EEF3FF] scale-[1.01]"
+                : "border-slate-200 bg-slate-50 hover:border-[#2667ff] hover:bg-[#EEF3FF]/50"
               }`}
           >
-            {imagePreview ? (
-              <>
-                {/* Preview image */}
-                <img
-                  src={imagePreview}
-                  alt="College preview"
-                  className="w-full h-[220px] object-cover rounded-2xl"
-                />
-                {/* Overlay on hover */}
-                <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-all duration-200 rounded-2xl flex items-center justify-center opacity-0 hover:opacity-100">
-                  <button
-                    onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                    className="bg-white text-slate-700 text-[12px] font-bold px-4 py-2 rounded-xl mr-2 hover:bg-slate-100 transition-all"
-                  >
-                    Change
-                  </button>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); removeImage(); }}
-                    className="bg-rose-500 text-white text-[12px] font-bold px-4 py-2 rounded-xl hover:bg-rose-600 transition-all"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 ${isDragging ? "bg-[#2667ff] text-white" : "bg-slate-200 text-slate-400"}`}>
-                  <ImagePlus size={22} />
-                </div>
-                <div className="text-center">
-                  <p className="text-[13px] font-bold text-slate-600">
-                    {isDragging ? "Drop image here" : "Click or drag & drop"}
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">PNG, JPG, WEBP • Max 5MB</p>
-                </div>
-                <button
-                  onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#2667ff] text-white text-[12px] font-bold rounded-xl hover:bg-[#1a54e8] transition-all"
-                >
-                  <Upload size={13} />
-                  Browse File
-                </button>
-              </>
-            )}
-
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 ${isDragging ? "bg-[#2667ff] text-white" : "bg-slate-200 text-slate-400"}`}>
+              <ImagePlus size={22} />
+            </div>
+            <div className="text-center">
+              <p className="text-[13px] font-bold text-slate-600">
+                {isDragging ? "Drop images here" : "Click or drag & drop to add images"}
+              </p>
+              <p className="text-[11px] text-slate-400 mt-0.5">PNG, JPG, WEBP • Max 5MB each • Multiple allowed</p>
+            </div>
+            <button
+              onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+              className="flex items-center gap-2 px-4 py-2 bg-[#2667ff] text-white text-[12px] font-bold rounded-xl hover:bg-[#1a54e8] transition-all"
+            >
+              <Upload size={13} /> Browse Files
+            </button>
             <input
               ref={fileInputRef}
               type="file"
               accept="image/*"
+              multiple
               className="hidden"
               onChange={handleFileInput}
             />
           </div>
 
-          {/* Thumbnail + file info panel — only shown after upload */}
-          {imagePreview && (
-            <div className="flex flex-col gap-3 sm:w-[200px]">
-              {/* Thumbnail card */}
-              <div className="rounded-2xl overflow-hidden border border-slate-100 shadow-sm">
-                <img
-                  src={imagePreview}
-                  alt="Thumbnail"
-                  className="w-full h-[120px] object-cover"
-                />
-              </div>
-              {/* File info */}
-              <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
-                <p className="text-[11px] font-black text-slate-500 uppercase tracking-wider mb-1">File Info</p>
-                <p className="text-[12px] font-bold text-slate-700 truncate">{imageFile?.name}</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">
-                  {imageFile ? (imageFile.size / 1024).toFixed(1) + " KB" : ""}
-                </p>
-              </div>
-              {/* Remove button */}
-              <button
-                onClick={removeImage}
-                className="flex items-center justify-center gap-2 w-full py-2 rounded-xl border border-rose-200 text-rose-500 text-[12px] font-bold hover:bg-rose-50 transition-all"
-              >
-                <X size={13} /> Remove Image
-              </button>
+          {/* Image previews grid */}
+          {imagePreviews.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {imagePreviews.map((src, i) => (
+                <div key={i} className="relative group rounded-xl overflow-hidden border border-slate-100 shadow-sm">
+                  <img src={src} alt={`Preview ${i + 1}`} className="w-full h-[100px] object-cover" />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <button
+                      onClick={() => removeImage(i)}
+                      className="bg-rose-500 text-white rounded-full p-1.5 hover:bg-rose-600 transition-all"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                  {i === 0 && (
+                    <span className="absolute top-1.5 left-1.5 bg-[#2667ff] text-white text-[9px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-wider">
+                      Cover
+                    </span>
+                  )}
+                </div>
+              ))}
             </div>
+          )}
+
+          {imagePreviews.length > 1 && (
+            <button
+              onClick={clearAllImages}
+              className="self-start flex items-center gap-2 py-1.5 px-3 rounded-xl border border-rose-200 text-rose-500 text-[12px] font-bold hover:bg-rose-50 transition-all"
+            >
+              <X size={12} /> Clear All Images
+            </button>
           )}
         </div>
       </FormCard>
@@ -227,6 +322,10 @@ export default function AddCollegePage() {
       {/* Basic Info */}
       <FormCard title="Basic Information" index={1}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* NEW: College ID */}
+          <FormGroup label="College ID *">
+            <Input placeholder="e.g. IITB-001" value={form.collegeId} onChange={set("collegeId")} />
+          </FormGroup>
           <FormGroup label="College Name *">
             <Input placeholder="e.g. IIT Bombay" value={form.name} onChange={set("name")} />
           </FormGroup>
@@ -263,6 +362,9 @@ export default function AddCollegePage() {
           <FormGroup label="Official Website">
             <Input placeholder="https://www.iitb.ac.in" value={form.website} onChange={set("website")} />
           </FormGroup>
+          <FormGroup label="Video Link">
+            <Input placeholder="https://youtube.com/..." value={form.videoLink} onChange={set("videoLink")} />
+          </FormGroup>
         </div>
       </FormCard>
 
@@ -270,7 +372,7 @@ export default function AddCollegePage() {
       <FormCard title="Courses & Entrance Exams" index={2}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <FormGroup label="Courses Offered (press Enter to add)" full>
-            <TagsInput tags={courses} setTags={setCourses} placeholder="e.g. Engineering" />
+            <TagsInput tags={courses} setTags={setCourses} placeholder="e.g. B.Tech Computer Science" />
           </FormGroup>
           <FormGroup label="Entrance Exams (press Enter to add)" full>
             <TagsInput tags={exams} setTags={setExams} placeholder="e.g. JEE Advanced" />
@@ -315,13 +417,18 @@ export default function AddCollegePage() {
 
       {/* Actions */}
       <div className="flex items-center gap-3">
-        <Btn onClick={handleSave} className={saved ? "!bg-emerald-500" : ""}>
-          {saved ? <><CheckCircle size={13} /> Saved!</> : <><Save size={13} /> Save College</>}
+        <Btn onClick={handleSave} disabled={loading} className={saved ? "!bg-emerald-500" : ""}>
+          {saved
+            ? <><CheckCircle size={13} /> Saved!</>
+            : loading
+              ? <>Saving…</>
+              : <><Save size={13} /> Save College</>
+          }
         </Btn>
-        <Btn variant="ghost" onClick={handleReset}>
+        <Btn variant="ghost" onClick={handleReset} disabled={loading}>
           <RotateCcw size={13} /> Reset Form
         </Btn>
-        <Btn variant="ghost" onClick={() => router.push("/admin/colleges")}>
+        <Btn variant="ghost" onClick={() => router.push("/admin/colleges")} disabled={loading}>
           ← Back to List
         </Btn>
       </div>

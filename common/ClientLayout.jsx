@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import NewsBanner from "./NewsBanner";
 import Footer from "./Footer";
 import SmoothScroll from "./SmoothScroll";
+import LeadCaptureModal from "../components/LeadCaptureModal";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -13,6 +14,7 @@ export default function ClientLayout({ children }) {
 
   return (
     <SmoothScroll>
+    
       <NewsBanner />
       <Navbar />
       {children}

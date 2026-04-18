@@ -28,6 +28,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${sora.variable} h-full antialiased min-h-full flex flex-col`}
       >
+        
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

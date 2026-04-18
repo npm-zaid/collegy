@@ -10,6 +10,11 @@ import ExpertsReview from "../components/ExpertsReview";
 import Awards from "../components/Awards";
 import WhyChooseUs from "../components/WhyChooseUs";
 import FAQ from "../components/FAQ";
+import CollegeShowcase from "../components/CollegeShowcase";
+import StudyAbroad from "../components/StudyAbroad";
+import AiCollegePredictor from "../components/Aicollegepredictor";
+import CollegePredictor from "../components/CollegePredictor";
+
 
 export default function Home() {
   return (
@@ -32,6 +37,8 @@ export default function Home() {
       <ExpertsReview/>
       <Awards/>
       <WhyChooseUs/>
+      <CollegeShowcase/>
+      <StudyAbroad/>
        <FAQ/>
  
        

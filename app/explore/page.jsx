@@ -58,7 +58,7 @@ export default function ExplorePage() {
       <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-12 lg:pt-20">
 
         {/* ── Header ── */}
-        <div className="mb-10">
+        {/* <div className="mb-10">
           <div className="flex items-center gap-3 mb-4">
             <span className="bg-gradient-to-r from-[#2667ff]/10 to-[#2667ff]/10 text-[#2667ff] border border-[#2667ff]/20 text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full">
               ★ 2025–26 Session
@@ -74,11 +74,11 @@ export default function ExplorePage() {
           <p className="text-zinc-400 text-sm font-medium">
             Engineering · Management · Law · Medicine · Arts & Design
           </p>
-        </div>
+        </div> */}
 
         {/* ── Featured strip ── */}
         {/* Amber/gold — warm contrast against the blue palette, clear visual hierarchy */}
-        <section className="mb-12">
+        {/* <section className="mb-12">
           <h2 className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.25em] text-zinc-400 mb-5">
             <Star size={13} className="text-amber-500 fill-amber-500" />
             Featured & Top Ranked
@@ -100,7 +100,7 @@ export default function ExplorePage() {
               </button>
             ))}
           </div>
-        </section>
+        </section> */}
 
         <div className="grid lg:grid-cols-12 gap-8">
 

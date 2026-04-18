@@ -44,18 +44,45 @@ const NAV = [
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
+  
+  // Refs for GSAP
   const sidebarRef = useRef(null);
   const contentRef = useRef(null);
   const labelsRef = useRef([]);
   const groupLabelsRef = useRef([]);
   const toggleBtnRef = useRef(null);
   const logoTextRef = useRef(null);
+
   const [pageTitle, setPageTitle] = useState("Dashboard");
   const [isOpen, setIsOpen] = useState(true);
   const isAnimating = useRef(false);
 
+  // Determine if we are on the login page
+  const isLoginPage = pathname === "/admin/login";
+
+ 
+ // --- Logout Logic ---
+  const handleLogout = () => {
+    // 1. Clear LocalStorage (just in case)
+    localStorage.removeItem("token");
+    
+    // 2. Clear the Cookie (Crucial for your Middleware)
+    // Cookie ko delete karne ka sahi tarika uski Max-Age ko 0 set karna hai
+    document.cookie = "admin_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; Max-Age=0";
+    
+    // 3. Redirect to login page
+    // window.location use karna zyada reliable hota hai logout ke time 
+    // taaki state puri tarah refresh ho jaye, par router.push bhi kaam karega
+    router.push("/admin/login");
+    
+    // Optional: Agar router.push se issue ho, toh ye use karein:
+    // window.location.href = "/admin/login";
+  };
+
   // Initial entrance animation
   useEffect(() => {
+    if (isLoginPage) return; 
+
     const ctx = gsap.context(() => {
       gsap.set(".nav-group-item", { opacity: 0, x: -18 });
       gsap.to(".nav-group-item", {
@@ -65,7 +92,7 @@ export default function AdminLayout({ children }) {
       gsap.from(".sidebar-logo", { opacity: 0, y: -16, duration: 0.5, ease: "power3.out" });
     }, sidebarRef);
     return () => ctx.revert();
-  }, []);
+  }, [isLoginPage]);
 
   // Sync page title
   useEffect(() => {
@@ -74,9 +101,8 @@ export default function AdminLayout({ children }) {
     if (active) setPageTitle(active.label);
   }, [pathname]);
 
-  // Toggle handler with GSAP
   const toggleSidebar = () => {
-    if (isAnimating.current) return;
+    if (isAnimating.current || isLoginPage) return;
     isAnimating.current = true;
 
     const sidebar = sidebarRef.current;
@@ -88,7 +114,6 @@ export default function AdminLayout({ children }) {
 
     const opening = !isOpen;
 
-    // Rotate toggle button
     gsap.to(toggleBtn, {
       rotation: opening ? 0 : 180,
       duration: 0.4,
@@ -96,13 +121,11 @@ export default function AdminLayout({ children }) {
     });
 
     if (opening) {
-      // OPEN: expand sidebar first, then fade in labels
       gsap.to(sidebar, {
         width: "25vw",
         duration: 0.5,
         ease: "elastic.out(1, 0.7)",
         onComplete: () => {
-          // Fade in labels after expand
           gsap.to([...labels, ...groupLabels, logoText], {
             opacity: 1,
             x: 0,
@@ -113,13 +136,8 @@ export default function AdminLayout({ children }) {
           });
         },
       });
-      gsap.to(content, {
-        width: "75vw",
-        duration: 0.5,
-        ease: "elastic.out(1, 0.7)",
-      });
+      gsap.to(content, { width: "75vw", duration: 0.5, ease: "elastic.out(1, 0.7)" });
     } else {
-      // CLOSE: fade out labels first, then collapse sidebar
       gsap.to([...labels, ...groupLabels, logoText], {
         opacity: 0,
         x: -8,
@@ -128,7 +146,7 @@ export default function AdminLayout({ children }) {
         ease: "power2.in",
         onComplete: () => {
           gsap.to(sidebar, {
-            width: "5rem", // 80px collapsed
+            width: "5rem",
             duration: 0.45,
             ease: "elastic.out(1, 0.75)",
             onComplete: () => { isAnimating.current = false; },
@@ -141,42 +159,35 @@ export default function AdminLayout({ children }) {
         },
       });
     }
-
     setIsOpen(opening);
   };
 
   const isActive = (href) => pathname === href;
 
+  if (isLoginPage) {
+    return <div className="min-h-screen bg-[#F7F8FC]">{children}</div>;
+  }
+
   return (
     <div className="flex h-screen bg-[#F7F8FC] overflow-hidden">
-
       {/* ── Sidebar ── */}
       <aside
         ref={sidebarRef}
         className="bg-white border-r border-slate-100 flex flex-col h-screen z-50 overflow-hidden flex-shrink-0"
         style={{ width: "25vw" }}
       >
-        {/* Logo */}
         <div className="sidebar-logo flex items-center gap-3 px-4 py-6 border-b border-slate-100 min-h-[73px]">
           <div className="w-8 h-8 bg-[#2667ff] rounded-xl flex items-center justify-center text-white text-[13px] font-black flex-shrink-0">
             C
           </div>
-          <span
-            ref={logoTextRef}
-            className="font-black text-[18px] tracking-tight text-[#2667ff] whitespace-nowrap overflow-hidden"
-           
-          >
+          <span ref={logoTextRef} className="font-black text-[18px] tracking-tight text-[#2667ff] whitespace-nowrap overflow-hidden">
             Collegy Admin
           </span>
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 py-4 overflow-y-auto overflow-x-hidden 
-        
-        ">
+        <nav className="flex-1 py-4 overflow-y-auto overflow-x-hidden">
           {NAV.map((group, gi) => (
             <div key={group.label} className="mb-2">
-              {/* Group label */}
               <div
                 ref={(el) => (groupLabelsRef.current[gi] = el)}
                 className="px-5 py-2 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 whitespace-nowrap overflow-hidden"
@@ -194,30 +205,16 @@ export default function AdminLayout({ children }) {
                     key={item.id}
                     onClick={() => router.push(item.href)}
                     className={`nav-group-item w-full flex items-center gap-3 px-4 py-[10px] mx-2 rounded-xl text-[13px] font-semibold transition-colors duration-200 relative text-left
-                      ${active
-                        ? "bg-[#EEF3FF] text-[#2667ff] font-bold"
-                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
-                      }`}
+                      ${active ? "bg-[#EEF3FF] text-[#2667ff] font-bold" : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"}`}
                     style={{ width: "calc(100% - 16px)" }}
                   >
-                    {active && (
-                      <span className="absolute left-[-8px] top-1/2 -translate-y-1/2 w-[3px] h-[60%] bg-[#2667ff] rounded-full" />
-                    )}
+                    {active && <span className="absolute left-[-8px] top-1/2 -translate-y-1/2 w-[3px] h-[60%] bg-[#2667ff] rounded-full" />}
                     <Icon size={15} className="flex-shrink-0" />
-                    <span
-                      ref={(el) => (labelsRef.current[labelIndex] = el)}
-                      className="flex-1 text-left whitespace-nowrap overflow-hidden"
-                    >
+                    <span ref={(el) => (labelsRef.current[labelIndex] = el)} className="flex-1 text-left whitespace-nowrap overflow-hidden">
                       {item.label}
                     </span>
                     {item.badge && (
-                      <span
-                        ref={(el) => {
-                          // badges use same refs pool offset by 100
-                          labelsRef.current[labelIndex + 100] = el;
-                        }}
-                        className={`${item.badgeColor} text-white text-[9px] font-black px-2 py-[2px] rounded-full flex-shrink-0`}
-                      >
+                      <span className={`${item.badgeColor} text-white text-[9px] font-black px-2 py-[2px] rounded-full flex-shrink-0`}>
                         {item.badge}
                       </span>
                     )}
@@ -228,14 +225,13 @@ export default function AdminLayout({ children }) {
           ))}
         </nav>
 
-        {/* Logout */}
         <div className="p-3 border-t border-slate-100">
-          <button className="nav-group-item w-full flex items-center gap-3 px-4 py-[10px] rounded-xl text-[13px] font-semibold text-rose-400 hover:bg-rose-50 hover:text-rose-600 transition-all">
+          <button 
+            onClick={handleLogout}
+            className="nav-group-item w-full flex items-center gap-3 px-4 py-[10px] rounded-xl text-[13px] font-semibold text-rose-400 hover:bg-rose-50 hover:text-rose-600 transition-all"
+          >
             <LogOut size={15} className="flex-shrink-0" />
-            <span
-              ref={(el) => (labelsRef.current[99] = el)}
-              className="whitespace-nowrap overflow-hidden"
-            >
+            <span ref={(el) => (labelsRef.current[99] = el)} className="whitespace-nowrap overflow-hidden">
               Logout
             </span>
           </button>
@@ -243,29 +239,13 @@ export default function AdminLayout({ children }) {
       </aside>
 
       {/* ── Content ── */}
-      <div
-        ref={contentRef}
-        className="flex flex-col h-screen overflow-hidden"
-        style={{ width: "75vw" }}
-      >
-        {/* Topbar */}
+      <div ref={contentRef} className="flex flex-col h-screen overflow-hidden" style={{ width: "75vw" }}>
         <header className="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-6 sticky top-0 z-40 flex-shrink-0">
           <div className="flex items-center gap-4">
-            {/* Toggle button */}
-            <button
-              ref={toggleBtnRef}
-              onClick={toggleSidebar}
-              className="w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-[#EEF3FF] hover:text-[#2667ff] hover:border-[#2667ff]/30 transition-all duration-200 flex-shrink-0"
-            >
+            <button ref={toggleBtnRef} onClick={toggleSidebar} className="w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-[#EEF3FF] hover:text-[#2667ff] hover:border-[#2667ff]/30 transition-all duration-200 flex-shrink-0">
               {isOpen ? <ChevronLeft size={16} /> : <Menu size={16} />}
             </button>
-
-            <h1
-              className="text-[17px] font-black tracking-tight text-slate-900 whitespace-nowrap"
-            
-            >
-              {pageTitle}
-            </h1>
+            <h1 className="text-[17px] font-black tracking-tight text-slate-900 whitespace-nowrap">{pageTitle}</h1>
           </div>
 
           <div className="flex items-center gap-3">
@@ -274,15 +254,12 @@ export default function AdminLayout({ children }) {
               <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full" />
             </button>
             <div className="flex items-center gap-2 pl-2">
-              <div className="w-8 h-8 bg-[#2667ff] rounded-full flex items-center justify-center text-white text-[12px] font-black">
-                AD
-              </div>
+              <div className="w-8 h-8 bg-[#2667ff] rounded-full flex items-center justify-center text-white text-[12px] font-black">AD</div>
               <span className="text-[12px] font-bold text-slate-600 hidden sm:block">Admin</span>
             </div>
           </div>
         </header>
 
-        {/* Page content */}
         <main className="flex-1 p-8 overflow-y-auto overflow-x-hidden">
           {children}
         </main>
