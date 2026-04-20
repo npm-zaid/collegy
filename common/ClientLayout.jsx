@@ -14,7 +14,7 @@ export default function ClientLayout({ children }) {
 
   return (
     <SmoothScroll>
-    
+      <LeadCaptureModal />
       <NewsBanner />
       <Navbar />
       {children}

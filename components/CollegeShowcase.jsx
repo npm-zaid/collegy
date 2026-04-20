@@ -7,9 +7,9 @@ const COLLEGES = [
   { name: "Amity University", url: "https://d1aeya7jd2fyco.cloudfront.net/logo/amity-online-university-logo_2.webp" },
   { name: "LPU", url: "https://d1aeya7jd2fyco.cloudfront.net/logo/lpu-logo.webp" },
   { name: "MIT", url: "https://www.logo.wine/a/logo/Massachusetts_Institute_of_Technology/Massachusetts_Institute_of_Technology-Logo.wine.svg" },
-  { name: "IIT Delhi", url: "https://upload.wikimedia.org/wikipedia/en/f/fd/IIT_Delhi_logo.svg" },
-  { name: "IIM Ahmedabad", url: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5a/IIM_Ahmedabad_Logo.svg/1200px-IIM_Ahmedabad_Logo.svg.png" },
-  { name: "Oxford", url: "https://www.logo.wine/a/logo/University_of_Oxford/University_of_Oxford-Logo.wine.svg" },
+  { name: "Sharda", url: "https://indoglobal.com.np/media/original_images/logo-sharda.png" },
+  { name: "IIM Ahmedabad", url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuYTtc-uzrqiU9_zUI7B7WNTqGk25h0bpn_g&s" },
+  { name: "Oxford", url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHMBDXuzI9UKt8rVJkusjHCnVKDvoAlHQMHw&s" },
 ];
 
 const Row = ({ items, speed, direction = 'left' }) => {
@@ -61,10 +61,7 @@ const CollegeShowcase = () => {
   return (
     /* Background changed to white */
     <section className="w-full py-24 relative overflow-hidden">
-      {/* Softened background glows for light theme */}
-      <div className="absolute top-[-10%] left-[-5%] w-1/3 h-1/3 bg-[#3D6BE8]/5 blur-[120px] rounded-full" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-1/3 h-1/3 bg-[#E39F4A]/5 blur-[120px] rounded-full" />
-
+ 
       <div className="max-w-7xl mx-auto px-6 mb-16 relative z-20">
         <SecIntro
           badgeText="Global Reach"
@@ -76,8 +73,8 @@ const CollegeShowcase = () => {
 
       <div className="relative z-10">
         {/* Gradients updated to fade into white */}
-        <div className="absolute inset-y-0 left-0 w-48 bg-gradient-to-r from-white via-white/80 to-transparent z-20 pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-48 bg-gradient-to-l from-white via-white/80 to-transparent z-20 pointer-events-none" />
+        <div className="absolute inset-y-0 left-0 w-48 bg-gradient-to-r from-indigo-50 via-indigo-50/80 to-transparent z-20 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-48 bg-gradient-to-l from-blue-100 via-blue-100/80 to-transparent z-20 pointer-events-none" />
 
         <Row items={COLLEGES} speed={40} direction="left" />
         <Row items={[...COLLEGES].reverse()} speed={50} direction="right" />

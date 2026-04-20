@@ -1,157 +1,224 @@
 "use client";
 
-import { useState } from "react";
-import { UserX, Mail, Phone, Shield } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Mail, Phone, Trash2, AlertTriangle } from "lucide-react";
 import {
-  PageHeader, TableWrap, AnimRow, Chip, Btn,
-  Modal, ModalRow, ToastProvider, useToast, StatCard,
+  PageHeader, TableWrap, AnimRow, Btn,
+  Modal, ModalRow, ToastProvider, useToast,
 } from "../../../admin-compo/AdminUi";
-import { USERS_DATA } from "../../../data/adminData";
-import { Users } from "lucide-react";
- 
-function statusChip(status) {
-  return <Chip label={status} color={status === "Active" ? "green" : "gray"} />;
+import { getToken } from "../../../lib/auth";
+
+const API = "http://localhost:5000";
+
+/* ── Tiny inline confirm dialog ─────────────────────────────────────────────── */
+function ConfirmModal({ open, onConfirm, onCancel, loading }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-[999] flex items-center justify-center">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-slate-900/30 backdrop-blur-[2px]"
+        onClick={onCancel}
+      />
+      {/* Card */}
+      <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-[320px] flex flex-col items-center gap-4">
+        <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
+          <AlertTriangle size={22} className="text-red-500" />
+        </div>
+        <div className="text-center">
+          <p className="font-bold text-[14px] text-slate-800">Delete Enquiry?</p>
+          <p className="text-[12px] text-slate-400 mt-1">This action cannot be undone.</p>
+        </div>
+        <div className="flex gap-3 w-full mt-1">
+          <button
+            onClick={onCancel}
+            disabled={loading}
+            className="flex-1 py-2 rounded-xl border border-slate-200 text-[12px] font-bold text-slate-500 hover:bg-slate-50 transition-all disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={loading}
+            className="flex-1 py-2 rounded-xl bg-red-500 text-white text-[12px] font-bold hover:bg-red-600 transition-all disabled:opacity-60 flex items-center justify-center gap-1.5"
+          >
+            <Trash2 size={11} />
+            {loading ? "Deleting…" : "Yes, Delete"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-function roleChip(role) {
-  return <Chip label={role} color={role === "Student" ? "blue" : "purple"} />;
-}
-
-export default function UsersPage() {
+/* ── Main Page ───────────────────────────────────────────────────────────────── */
+export default function EnquiriesPage() {
   const toast = useToast();
-  const [users, setUsers] = useState(USERS_DATA);
-  const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState("All");
-  const [selected, setSelected] = useState(null);
 
-  const filtered = users.filter((u) => {
+  const [enquiries, setEnquiries] = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [deleting, setDeleting]   = useState(false);
+  const [confirmId, setConfirmId] = useState(null);   // which id is pending delete
+  const [selected, setSelected]   = useState(null);
+  const [search, setSearch]       = useState("");
+
+  /* ── Fetch all enquiries ── */
+  const fetchEnquiries = useCallback(async () => {
+    setLoading(true);
+    try {
+      const token = getToken();
+      const res  = await fetch(`${API}/api/admin/enquiries`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (json.success) {
+        setEnquiries(json.data);
+      } else {
+        toast("❌ Failed to load enquiries");
+      }
+    } catch {
+      toast("❌ Network error — could not reach server");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchEnquiries(); }, [fetchEnquiries]);
+
+  /* ── Confirm then delete ── */
+  const handleDelete = async () => {
+    if (!confirmId) return;
+    setDeleting(true);
+    try {
+      const token = getToken();
+      const res  = await fetch(`${API}/api/admin/enquiries/${confirmId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (json.success) {
+        setEnquiries((prev) => prev.filter((e) => e._id !== confirmId));
+        if (selected?._id === confirmId) setSelected(null);
+        toast("🗑️ Enquiry deleted");
+      } else {
+        toast("❌ Delete failed");
+      }
+    } catch {
+      toast("❌ Network error");
+    } finally {
+      setDeleting(false);
+      setConfirmId(null);
+    }
+  };
+
+  /* ── Client-side search ── */
+  const filtered = enquiries.filter((e) => {
     const q = search.toLowerCase();
-    const matchSearch = [u.name, u.email, u.phone].some((f) => f.toLowerCase().includes(q));
-    const matchRole = roleFilter === "All" || u.role === roleFilter;
-    return matchSearch && matchRole;
+    return [e.name, e.phone, e.email].some((f) => f?.toLowerCase().includes(q));
   });
-
-  const toggleStatus = (id) => {
-    setUsers((prev) =>
-      prev.map((u) => u.id === id ? { ...u, status: u.status === "Active" ? "Inactive" : "Active" } : u)
-    );
-    toast("🔄 User status updated");
-  };
-
-  const ROLES = ["All", "Student", "Parent"];
-  const counts = {
-    All: users.length,
-    Student: users.filter((u) => u.role === "Student").length,
-    Parent: users.filter((u) => u.role === "Parent").length,
-    Active: users.filter((u) => u.status === "Active").length,
-  };
 
   return (
     <>
       <ToastProvider />
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-7">
-        <StatCard icon={<Users size={18} />} value={users.length} label="Total Users" colorClass="blue" delay={0} />
-        <StatCard icon={<Users size={18} />} value={counts.Active} label="Active" colorClass="green" delay={0.08} />
-        <StatCard icon={<Users size={18} />} value={counts.Student} label="Students" colorClass="purple" delay={0.16} />
-        <StatCard icon={<Users size={18} />} value={counts.Parent} label="Parents" colorClass="amber" delay={0.24} />
-      </div>
-
+      {/* Custom confirm dialog */}
+      <ConfirmModal
+        open={!!confirmId}
+        loading={deleting}
+        onConfirm={handleDelete}
+        onCancel={() => !deleting && setConfirmId(null)}
+      />
 
       <PageHeader
-        title="Registered Users"
-        subtitle="All students and parents signed up on Collegy"
+        title="Enquiries"
+        subtitle="All incoming enquiries submitted via the public form"
         action={
           <button
-            onClick={() => toast("📥 Export feature coming soon!")}
+            onClick={fetchEnquiries}
             className="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-xl text-[11px] font-bold hover:bg-slate-50 transition-all"
           >
-            Export CSV
+            ↻ Refresh
           </button>
         }
       />
 
-      {/* Role filters */}
-      <div className="flex items-center gap-2 mb-5">
-        {ROLES.map((r) => (
-          <button
-            key={r}
-            onClick={() => setRoleFilter(r)}
-            className={`px-4 py-2 rounded-xl text-[11px] font-bold transition-all ${
-              roleFilter === r
-                ? "bg-[#2667ff] text-white shadow-md shadow-blue-100"
-                : "bg-white border border-slate-200 text-slate-500 hover:border-slate-300"
-            }`}
-          >
-            {r}
-            <span className={`ml-2 px-1.5 py-0.5 rounded-md text-[9px] ${roleFilter === r ? "bg-white/20" : "bg-slate-100"}`}>
-              {counts[r]}
-            </span>
-          </button>
-        ))}
-      </div>
-
       <TableWrap
         searchPlaceholder="Search by name, email, phone…"
         onSearch={setSearch}
-        headers={["#", "Name", "Email", "Phone", "Role", "Joined", "Status", "Actions"]}
+        headers={["#", "Name", "Email", "Phone", "Submitted", "Actions"]}
       >
-        {filtered.map((u, i) => (
-          <AnimRow key={u.id} index={i}>
-            <td className="px-5 py-4 text-[12px] text-slate-400 font-bold">{i + 1}</td>
-            <td className="px-5 py-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#EEF3FF] flex items-center justify-center text-[#2667ff] text-[11px] font-black flex-shrink-0">
-                  {u.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+        {loading ? (
+          <tr>
+            <td colSpan={6} className="px-5 py-10 text-center text-[12px] text-slate-400">
+              Loading enquiries…
+            </td>
+          </tr>
+        ) : filtered.length === 0 ? (
+          <tr>
+            <td colSpan={6} className="px-5 py-10 text-center text-[12px] text-slate-400">
+              No enquiries found.
+            </td>
+          </tr>
+        ) : (
+          filtered.map((e, i) => (
+            <AnimRow key={e._id} index={i}>
+              <td className="px-5 py-4 text-[12px] text-slate-400 font-bold">{i + 1}</td>
+
+              <td className="px-5 py-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#EEF3FF] flex items-center justify-center text-[#2667ff] text-[11px] font-black flex-shrink-0">
+                    {e.name?.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+                  </div>
+                  <span className="font-bold text-[13px] text-slate-800 whitespace-nowrap">{e.name}</span>
                 </div>
-                <span className="font-bold text-[13px] text-slate-800 whitespace-nowrap">{u.name}</span>
-              </div>
-            </td>
-            <td className="px-5 py-4 text-[12px] text-slate-500">{u.email}</td>
-            <td className="px-5 py-4 text-[12px] text-slate-600">{u.phone}</td>
-            <td className="px-5 py-4">{roleChip(u.role)}</td>
-            <td className="px-5 py-4 text-[12px] text-slate-400 whitespace-nowrap">{u.joined}</td>
-            <td className="px-5 py-4">{statusChip(u.status)}</td>
-            <td className="px-5 py-4">
-              <div className="flex items-center gap-2">
-                <Btn size="sm" variant="ghost" onClick={() => setSelected(u)}>View</Btn>
-                <Btn
-                  size="sm"
-                  variant={u.status === "Active" ? "danger" : "success"}
-                  onClick={() => toggleStatus(u.id)}
-                >
-                  {u.status === "Active" ? (
-                    <><UserX size={10} /> Block</>
-                  ) : (
-                    <><Shield size={10} /> Activate</>
-                  )}
-                </Btn>
-              </div>
-            </td>
-          </AnimRow>
-        ))}
+              </td>
+
+              <td className="px-5 py-4 text-[12px] text-slate-500">{e.email}</td>
+              <td className="px-5 py-4 text-[12px] text-slate-600">{e.phone}</td>
+
+              <td className="px-5 py-4 text-[12px] text-slate-400 whitespace-nowrap">
+                {e.createdAt ? new Date(e.createdAt).toLocaleDateString("en-IN", {
+                  day: "2-digit", month: "short", year: "numeric",
+                }) : "—"}
+              </td>
+
+              <td className="px-5 py-4">
+                <div className="flex items-center gap-2">
+                  <Btn size="sm" variant="ghost" onClick={() => setSelected(e)}>View</Btn>
+                  <Btn
+                    size="sm"
+                    variant="danger"
+                    onClick={() => setConfirmId(e._id)}
+                  >
+                    <Trash2 size={10} /> Delete
+                  </Btn>
+                </div>
+              </td>
+            </AnimRow>
+          ))
+        )}
       </TableWrap>
 
       {/* Detail Modal */}
-      <Modal open={!!selected} onClose={() => setSelected(null)} title={selected?.name || ""}>
+      <Modal open={!!selected} onClose={() => setSelected(null)} title={selected?.name ?? ""}>
         {selected && (
           <div>
-            {/* Avatar */}
             <div className="flex justify-center mb-6">
               <div className="w-16 h-16 rounded-full bg-[#EEF3FF] flex items-center justify-center text-[#2667ff] text-[22px] font-black">
-                {selected.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                {selected.name?.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
               </div>
             </div>
-            <div className="flex justify-center gap-2 mb-6">
-              {roleChip(selected.role)}
-              {statusChip(selected.status)}
-            </div>
-            <ModalRow label="Email" value={selected.email} />
-            <ModalRow label="Phone" value={selected.phone} />
-            <ModalRow label="Role" value={selected.role} />
-            <ModalRow label="Joined" value={selected.joined} />
-            <ModalRow label="Status" value={selected.status} />
+
+            <ModalRow label="Name"      value={selected.name}  />
+            <ModalRow label="Email"     value={selected.email} />
+            <ModalRow label="Phone"     value={selected.phone} />
+            <ModalRow
+              label="Submitted"
+              value={selected.createdAt
+                ? new Date(selected.createdAt).toLocaleString("en-IN")
+                : "—"}
+            />
+
             <div className="flex flex-wrap gap-3 mt-6">
               <a
                 href={`mailto:${selected.email}`}
@@ -167,10 +234,10 @@ export default function UsersPage() {
               </a>
               <Btn
                 size="sm"
-                variant={selected.status === "Active" ? "danger" : "success"}
-                onClick={() => { toggleStatus(selected.id); setSelected(null); }}
+                variant="danger"
+                onClick={() => setConfirmId(selected._id)}
               >
-                {selected.status === "Active" ? "Block User" : "Activate User"}
+                <Trash2 size={10} /> Delete Enquiry
               </Btn>
             </div>
           </div>
@@ -179,4 +246,3 @@ export default function UsersPage() {
     </>
   );
 }
-

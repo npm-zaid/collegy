@@ -89,7 +89,7 @@ export default function WhyChooseUs() {
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tighter leading-none">
             The Intelligence <br />
-            <span className="bg-gradient-to-r from-[#3D6BE8] to-[#E39F4A] bg-clip-text text-transparent italic">Behind Your Success.</span>
+            <span className="bg-gradient-to-r from-[#2667ff] to-[#3f8efc] bg-clip-text text-transparent italic">Behind Your Success.</span>
           </h2>
           <p className="text-zinc-500 font-bold text-xs md:text-sm max-w-md mx-auto leading-relaxed px-4">
             We bridge the gap between raw information and your dream college through a specialized ecosystem of data and human expertise.

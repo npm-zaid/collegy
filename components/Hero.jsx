@@ -231,8 +231,7 @@ export default function Hero() {
         {/* LEFT 1 — Spark avatar */}
         <div
           ref={el => { leftRefs.current[1] = el; }}
-          className="absolute hidden lg:block z-10 rounded-full will-change-transform"
-          style={{ bottom: "25%", left: "8%", width: 76, height: 76 }}
+          className="absolute block z-10 rounded-full will-change-transform sm:bottom-[25%] bottom-[80%] left-[8%] sm:w-[100px] sm:h-[100px] w-[76px] h-[76px]"
         >
           <div className="absolute -top-5 left-1/2 -translate-x-1/2 flex gap-[5px] pointer-events-none">
             {["-rotate-[35deg]", "rotate-0", "rotate-[35deg]"].map((r, j) => (
@@ -240,14 +239,14 @@ export default function Hero() {
             ))}
           </div>
           <img src="https://m.media-amazon.com/images/I/51AQb8ZL5HL._UXNaN_FMjpg_QL85_.jpg" alt="student"
-            className="w-full h-full rounded-full object-cover ring-2 ring-white shadow-md" />
+            className="w-full h-full rounded-full object-cover ring-2 ring-white shadow-xl" />
         </div>
 
         {/* RIGHT 0 — Latest News trigger */}
         <div
           ref={el => { rightRefs.current[0] = el; }}
-          className="absolute hidden lg:block z-20 will-change-transform -rotate-6"
-          style={{ top: "18%", right: "3%" }}
+          className="absolute block z-20 will-change-transform -rotate-6 sm:top-[18%] top-[10%] right-[3%] "
+         
         >
           <button
             onClick={() => { setNewsOpen(p => !p); setSidebarOpen(false); }}
