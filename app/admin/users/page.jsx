@@ -212,6 +212,7 @@ export default function EnquiriesPage() {
             <ModalRow label="Name"      value={selected.name}  />
             <ModalRow label="Email"     value={selected.email} />
             <ModalRow label="Phone"     value={selected.phone} />
+            {selected.course && <ModalRow label="Course" value={selected.course} />}
             <ModalRow
               label="Submitted"
               value={selected.createdAt

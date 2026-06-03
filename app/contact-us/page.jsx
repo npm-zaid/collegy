@@ -15,7 +15,8 @@ import {
 export default function ContactPage() {
   const containerRef = useRef(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);  const [form, setForm] = useState({ name: '', phone: '', email: '', course: '' });
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -30,13 +31,49 @@ export default function ContactPage() {
     return () => ctx.revert();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const name  = form.name.trim();
+    const phone = form.phone.trim();
+    const email = form.email.trim();
+    const course = form.course.trim();
+
+    if (!name) { setError('Your name is required.'); return; }
+    if (name.length < 2) { setError('Name must be at least 2 characters.'); return; }
+
+    if (!phone) { setError('Mobile number is required.'); return; }
+    if (!/^\d{10}$/.test(phone)) { setError('Enter a valid 10-digit mobile number.'); return; }
+
+    if (!email) { setError('Email address is required.'); return; }
+    if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      setError('Enter a valid email address.'); return;
+    }
+
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setError('');
+
+    try {
+      const res = await fetch('https://finale-beacon-backend.vercel.app/api/enquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, email, course }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setError(data.errors?.join(', ') || data.message || 'Something went wrong.');
+        return;
+      }
+
       setIsSubmitted(true);
-    }, 1200);
+      setForm({ name: '', phone: '', email: '', course: '' });
+    } catch {
+      setError('Network error — please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -87,45 +124,59 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Student Name</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Student Name *</label>
                     <input
                       placeholder="Jane Doe"
+                      value={form.name}
+                      onChange={(e) => { setForm(p => ({ ...p, name: e.target.value })); setError(''); }}
                       className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none transition-all font-bold placeholder:text-zinc-300 shadow-sm"
                       required
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Target Course</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Mobile Number *</label>
                     <input
-                      placeholder="e.g. B.Tech CSE"
+                      type="tel"
+                      maxLength={10}
+                      placeholder="9876543210"
+                      value={form.phone}
+                      onChange={(e) => { setForm(p => ({ ...p, phone: e.target.value })); setError(''); }}
                       className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none transition-all font-bold placeholder:text-zinc-300 shadow-sm"
+                      required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Direct Email</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Direct Email *</label>
                   <input
                     type="email"
                     placeholder="student@collegy.in"
+                    value={form.email}
+                    onChange={(e) => { setForm(p => ({ ...p, email: e.target.value })); setError(''); }}
                     className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none transition-all font-bold placeholder:text-zinc-300 shadow-sm"
                     required
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Message / Query</label>
-                  <textarea
-                    rows={4}
-                    placeholder="I need help choosing between Tier-1 colleges..."
-                    className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none transition-all font-bold resize-none placeholder:text-zinc-300 shadow-sm"
+                  <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Target Course (Optional)</label>
+                  <input
+                    placeholder="e.g. B.Tech CSE"
+                    value={form.course}
+                    onChange={(e) => { setForm(p => ({ ...p, course: e.target.value })); setError(''); }}
+                    className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none transition-all font-bold placeholder:text-zinc-300 shadow-sm"
                   />
                 </div>
+                
+                {error && (
+                  <p className="text-rose-500 text-[12px] font-bold text-center">⚠️ {error}</p>
+                )}
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="group relative w-full bg-zinc-900 overflow-hidden p-6 rounded-2xl transition-all hover:shadow-[0_20px_40px_rgba(38,103,255,0.2)]"
+                  className="group relative w-full bg-zinc-900 overflow-hidden p-6 rounded-2xl transition-all hover:shadow-[0_20px_40px_rgba(38,103,255,0.2)] disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   <div className="absolute inset-0 w-0 bg-gradient-to-r from-[#2667ff] to-[#3f8efc] transition-all duration-500 group-hover:w-full" />
                   <span className="relative z-10 flex items-center justify-center gap-2 text-white font-black uppercase tracking-[0.3em] text-xs group-hover:text-white">

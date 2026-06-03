@@ -232,25 +232,27 @@ export default function Hero() {
         {/* LEFT 1 — Spark avatar */}
         <div
           ref={el => { leftRefs.current[1] = el; }}
-          className="absolute block z-10 rounded-full will-change-transform sm:bottom-[25%] bottom-[80%] left-[8%] sm:w-[100px] sm:h-[100px] w-[76px] h-[76px]"
+          className="absolute block z-10 rounded-full will-change-transform sm:bottom-[33%] bottom-[80%] left-[8%] sm:w-[100px] sm:h-[100px] w-[76px] h-[76px]"
         >
-          <div className="absolute -top-5 left-1/2 -translate-x-1/2 flex gap-[5px] pointer-events-none">
+           <img className="w-[7vw] drop-shadow-xl drop-shadow-black/30" src="https://framerusercontent.com/images/1MtrArv5ytvv15au3DiRsr3Yg.png" alt="" />
+          {/* <div className="absolute -top-5 left-1/2 -translate-x-1/2 flex gap-[5px] pointer-events-none">
             {["-rotate-[35deg]", "rotate-0", "rotate-[35deg]"].map((r, j) => (
               <div key={j} className={`w-[3px] h-[18px] bg-gradient-to-br from-[#2667ff] to-[#3f8efc] rounded-full origin-bottom ${r}`} />
             ))}
-          </div>
-          <img src="https://images.pexels.com/photos/8199559/pexels-photo-8199559.jpeg" alt="student"
-            className="w-full h-full rounded-full object-cover ring-2 ring-white shadow-xl" />
+          </div> */}
+          {/* <img src="https://images.pexels.com/photos/8199559/pexels-photo-8199559.jpeg" alt="student"
+            className="w-full h-full rounded-full object-cover ring-2 ring-white shadow-xl" /> */}
         </div>
 
         {/* RIGHT 0 — Latest News trigger */}
         <div
           ref={el => { rightRefs.current[0] = el; }}
-          className="absolute block z-20 will-change-transform -rotate-6 sm:top-[18%] top-[10%] right-[3%] "
+          className="absolute block z-20 will-change-transform -rotate-4 sm:top-[18%] top-[10%] right-[5%] "
          
         >
           <SoundWrapper>
-          <button
+            <img className="w-[8vw] drop-shadow-xl drop-shadow-black/30" src="https://framerusercontent.com/images/iDma5TKwdehxlWmrAQNAlFsuVAA.png" alt="" />
+          {/* <button
             onClick={() => { setNewsOpen(p => !p); setSidebarOpen(false); }}
             onMouseEnter={hoverIn} onMouseLeave={hoverOut}
             className="relative flex items-center gap-2.5 bg-white rounded-2xl px-4 py-3 shadow-xl border border-indigo-100 cursor-pointer"
@@ -267,7 +269,7 @@ export default function Hero() {
             <svg width="14" height="14" fill="none" stroke="#6366f1" strokeWidth="2.5" viewBox="0 0 24 24">
               <path d="m9 18 6-6-6-6"/>
             </svg>
-          </button>
+          </button> */}
           </SoundWrapper>
         </div>
 

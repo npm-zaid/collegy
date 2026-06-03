@@ -1,13 +1,13 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { X, Phone, ShieldCheck, Zap, Users, User, Mail, CheckCircle } from 'lucide-react';
+import { X, Phone, ShieldCheck, Zap, Users, User, Mail, CheckCircle, BookOpen } from 'lucide-react';
 
 const API = 'https://finale-beacon-backend.vercel.app';
 
 export default function LeadCaptureModal() {
   const [isOpen, setIsOpen]     = useState(false);
-  const [form, setForm]         = useState({ name: '', phone: '', email: '' });
+  const [form, setForm]         = useState({ name: '', phone: '', email: '', course: '' });
   const [loading, setLoading]   = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError]       = useState('');
@@ -36,7 +36,7 @@ export default function LeadCaptureModal() {
     gsap.to(overlayRef.current, { opacity: 0, duration: 0.25, ease: 'power2.in',
       onComplete: () => {
         setIsOpen(false);
-        setTimeout(() => { setForm({ name:'', phone:'', email:'' }); setSubmitted(false); setError(''); }, 200);
+        setTimeout(() => { setForm({ name:'', phone:'', email:'', course:'' }); setSubmitted(false); setError(''); }, 200);
       }
     });
   };
@@ -50,6 +50,7 @@ export default function LeadCaptureModal() {
     const name  = form.name.trim();
     const phone = form.phone.trim();
     const email = form.email.trim();
+    const course = form.course.trim();
 
     if (!name) { setError('Your name is required.'); return; }
     if (name.length < 2) { setError('Name must be at least 2 characters.'); return; }
@@ -70,7 +71,7 @@ export default function LeadCaptureModal() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         // All three fields are required by the schema — send all of them
-        body: JSON.stringify({ name, phone, email }),
+        body: JSON.stringify({ name, phone, email, course }),
       });
 
       const data = await res.json();
@@ -184,6 +185,20 @@ export default function LeadCaptureModal() {
                       placeholder="Email Address *"
                       value={form.email}
                       onChange={set('email')}
+                      className="w-full bg-zinc-900 border border-white/5 rounded-xl py-3.5 pl-12 pr-4 text-white text-sm font-semibold placeholder:text-zinc-600 focus:outline-none focus:border-[#3D6BE8]/50 transition-all"
+                    />
+                  </div>
+
+                  {/* Course — Optional */}
+                  <div className="relative group">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#3D6BE8] group-focus-within:text-[#E39F4A] transition-colors pointer-events-none">
+                      <BookOpen size={16} />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Target Course (Optional)"
+                      value={form.course}
+                      onChange={set('course')}
                       className="w-full bg-zinc-900 border border-white/5 rounded-xl py-3.5 pl-12 pr-4 text-white text-sm font-semibold placeholder:text-zinc-600 focus:outline-none focus:border-[#3D6BE8]/50 transition-all"
                     />
                   </div>
