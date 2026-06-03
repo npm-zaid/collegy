@@ -60,7 +60,7 @@ export default function page() {
     setIsSubmitting(true);
     try {
       const expert = EXPERTS.find((e) => e.id === selectedExpert);
-      const response = await fetch("http://localhost:5000/api/consultations", {
+      const response = await fetch("https://finale-beacon-backend.vercel.app/api/consultations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

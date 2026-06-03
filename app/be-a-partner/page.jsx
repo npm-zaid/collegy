@@ -47,7 +47,7 @@ export default function page() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch("http://localhost:5000/api/partners", {
+      const response = await fetch("https://finale-beacon-backend.vercel.app/api/partners", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

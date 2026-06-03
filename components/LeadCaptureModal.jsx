@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { X, Phone, ShieldCheck, Zap, Users, User, Mail, CheckCircle } from 'lucide-react';
 
-const API = 'http://localhost:5000';
+const API = 'https://finale-beacon-backend.vercel.app';
 
 export default function LeadCaptureModal() {
   const [isOpen, setIsOpen]     = useState(false);

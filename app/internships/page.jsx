@@ -66,7 +66,7 @@ export default function page() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch("http://localhost:5000/api/internships", {
+      const response = await fetch("https://finale-beacon-backend.vercel.app/api/internships", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
