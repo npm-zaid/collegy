@@ -145,17 +145,17 @@ export default function EnquiriesPage() {
       <TableWrap
         searchPlaceholder="Search by name, email, phone…"
         onSearch={setSearch}
-        headers={["#", "Name", "Email", "Phone", "Submitted", "Actions"]}
+        headers={["#", "Name", "Email", "Phone", "Course", "Submitted", "Actions"]}
       >
         {loading ? (
           <tr>
-            <td colSpan={6} className="px-5 py-10 text-center text-[12px] text-slate-400">
+            <td colSpan={7} className="px-5 py-10 text-center text-[12px] text-slate-400">
               Loading enquiries…
             </td>
           </tr>
         ) : filtered.length === 0 ? (
           <tr>
-            <td colSpan={6} className="px-5 py-10 text-center text-[12px] text-slate-400">
+            <td colSpan={7} className="px-5 py-10 text-center text-[12px] text-slate-400">
               No enquiries found.
             </td>
           </tr>
@@ -175,6 +175,7 @@ export default function EnquiriesPage() {
 
               <td className="px-5 py-4 text-[12px] text-slate-500">{e.email}</td>
               <td className="px-5 py-4 text-[12px] text-slate-600">{e.phone}</td>
+              <td className="px-5 py-4 text-[12px] text-slate-500">{e.course || "—"}</td>
 
               <td className="px-5 py-4 text-[12px] text-slate-400 whitespace-nowrap">
                 {e.createdAt ? new Date(e.createdAt).toLocaleDateString("en-IN", {

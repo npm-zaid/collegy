@@ -35,6 +35,7 @@ body{
   animation: gelatine 0.5s 1;
 }
 
+
 @keyframes gelatine {
   0%,
   100% {
