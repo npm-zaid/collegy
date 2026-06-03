@@ -22,6 +22,17 @@ export default function page() {
   const containerRef = useRef(null);
   const [selectedExpert, setSelectedExpert] = useState("e1");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    email: "",
+    mobile: "",
+    date: "",
+    timeSlot: "10:00 AM - 10:30 AM"
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -44,10 +55,33 @@ export default function page() {
     return () => ctx.revert();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => setIsSubmitting(false), 2000);
+    try {
+      const expert = EXPERTS.find((e) => e.id === selectedExpert);
+      const response = await fetch("http://localhost:5000/api/consultations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          expertId: expert.id,
+          expertName: expert.name,
+          ...formData
+        }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert("Consultation Booked Successfully!");
+        setFormData({ email: "", mobile: "", date: "", timeSlot: "10:00 AM - 10:30 AM" });
+      } else {
+        alert("Failed to book consultation");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -138,11 +172,11 @@ export default function page() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Student Email</label>
-                  <input required type="email" placeholder="name@email.com" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm" />
+                  <input name="email" value={formData.email} onChange={handleChange} required type="email" placeholder="name@email.com" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Mobile Number</label>
-                  <input required type="tel" placeholder="+91 00000 00000" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm" />
+                  <input name="mobile" value={formData.mobile} onChange={handleChange} required type="tel" placeholder="+91 00000 00000" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm" />
                 </div>
               </div>
 
@@ -152,17 +186,17 @@ export default function page() {
                   <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Select Date</label>
                   <div className="relative">
                     <Calendar className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-300 pointer-events-none" size={18} />
-                    <input type="date" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm appearance-none" />
+                    <input name="date" value={formData.date} onChange={handleChange} type="date" required className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm appearance-none" />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Pre-set Slot</label>
                   <div className="relative">
                     <Clock className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-300 pointer-events-none" size={18} />
-                    <select className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm appearance-none cursor-pointer">
-                      <option>10:00 AM - 10:30 AM</option>
-                      <option>02:00 PM - 02:30 PM</option>
-                      <option>05:30 PM - 06:00 PM</option>
+                    <select name="timeSlot" value={formData.timeSlot} onChange={handleChange} className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm appearance-none cursor-pointer">
+                      <option value="10:00 AM - 10:30 AM">10:00 AM - 10:30 AM</option>
+                      <option value="02:00 PM - 02:30 PM">02:00 PM - 02:30 PM</option>
+                      <option value="05:30 PM - 06:00 PM">05:30 PM - 06:00 PM</option>
                     </select>
                   </div>
                 </div>

@@ -12,14 +12,13 @@ import WhyChooseUs from "../components/WhyChooseUs";
 import FAQ from "../components/FAQ";
 import CollegeShowcase from "../components/CollegeShowcase";
 import StudyAbroad from "../components/StudyAbroad";
-import AiCollegePredictor from "../components/Aicollegepredictor";
-import CollegePredictor from "../components/CollegePredictor";
+import AdmissionModes from "../components/AdmissionModes";
 
 
 export default function Home() {
   return (
     <>
-      <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-indigo-50 via-blue-50 to-blue-100">
+      <div className="relative  overflow-hidden bg-gradient-to-br from-indigo-50 via-blue-50 to-blue-100">
          {/* <Ribbons
     baseThickness={30}
     colors={["#2667ff"]}
@@ -33,6 +32,7 @@ export default function Home() {
       <CollegyDashboard/>
       <VideoReviews/> 
       <StudentWallOfProof/>    
+      <AdmissionModes/>
       <NewsCuttings/>
       <ExpertsReview/>
       <Awards/>
@@ -40,6 +40,8 @@ export default function Home() {
       <CollegeShowcase/>
       <StudyAbroad/>
        <FAQ/>
+
+      
  
        
       </div>

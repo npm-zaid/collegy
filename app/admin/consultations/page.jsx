@@ -1,12 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CalendarCheck, CheckCheck, Phone, Mail } from "lucide-react";
-import {
-  PageHeader, TableWrap, AnimRow, Chip, Btn,
-  Modal, ModalRow, ToastProvider, useToast,
-} from  "../../../admin-compo/AdminUi";
-import { CONSULT_DATA } from "../../../data/adminData";
+import { PageHeader, TableWrap, AnimRow, Chip, Btn, Modal, ModalRow, ToastProvider, useToast } from "../../../admin-compo/AdminUi";
 
 
 function statusChip(status) {
@@ -18,20 +14,33 @@ function statusChip(status) {
 
 export default function ConsultationsPage() {
   const toast = useToast();
-  const [data, setData] = useState(CONSULT_DATA);
+  const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [selected, setSelected] = useState(null);
 
+
+  
+  useEffect(() => {
+    fetch("http://localhost:5000/api/consultations")
+      .then((res) => res.json())
+      .then((resData) => {
+        if (resData.success) {
+          setData(resData.data);
+        }
+      })
+      .catch((err) => console.error("Error fetching consultations", err));
+  }, []);
+
   const filtered = data.filter((c) => {
     const q = search.toLowerCase();
-    const matchSearch = [c.name, c.email, c.interest].some((f) => f.toLowerCase().includes(q));
+    const matchSearch = [c.email, c.expertName].some((f) => f && f.toLowerCase().includes(q));
     const matchFilter = filter === "All" || c.status === filter;
     return matchSearch && matchFilter;
   });
 
   const updateStatus = (id, status) => {
-    setData((prev) => prev.map((c) => (c.id === id ? { ...c, status } : c)));
+    setData((prev) => prev.map((c) => (c._id === id ? { ...c, status } : c)));
     toast(`✅ Status updated to ${status}`);
     setSelected(null);
   };
@@ -73,32 +82,30 @@ export default function ConsultationsPage() {
       </div>
 
       <TableWrap
-        searchPlaceholder="Search by name, email, or interest…"
+        searchPlaceholder="Search by email or expert…"
         onSearch={setSearch}
-        headers={["Name", "Email", "Phone", "Interested In", "Date", "Status", "Actions"]}
+        headers={["Student Email", "Phone", "Expert", "Date", "Slot", "Status", "Actions"]}
       >
         {filtered.map((c, i) => (
-          <AnimRow key={c.id} index={i}>
+          <AnimRow key={c._id} index={i}>
+            <td className="px-5 py-4 text-[12px] text-slate-500 font-bold">{c.email}</td>
+            <td className="px-5 py-4 text-[12px] text-slate-600">{c.mobile}</td>
             <td className="px-5 py-4">
-              <div className="font-bold text-[13px]">{c.name}</div>
+              <Chip label={c.expertName || "Expert"} color="blue" />
             </td>
-            <td className="px-5 py-4 text-[12px] text-slate-500">{c.email}</td>
-            <td className="px-5 py-4 text-[12px] text-slate-600">{c.phone}</td>
-            <td className="px-5 py-4">
-              <Chip label={c.interest} color="blue" />
-            </td>
-            <td className="px-5 py-4 text-[12px] text-slate-400 whitespace-nowrap">{c.date}</td>
+            <td className="px-5 py-4 text-[12px] text-slate-400 whitespace-nowrap">{new Date(c.date).toLocaleDateString()}</td>
+            <td className="px-5 py-4 text-[12px] text-slate-400 whitespace-nowrap">{c.timeSlot}</td>
             <td className="px-5 py-4">{statusChip(c.status)}</td>
             <td className="px-5 py-4">
               <div className="flex items-center gap-2">
                 <Btn size="sm" variant="ghost" onClick={() => setSelected(c)}>View</Btn>
                 {c.status === "Pending" && (
-                  <Btn size="sm" variant="success" onClick={() => updateStatus(c.id, "Scheduled")}>
+                  <Btn size="sm" variant="success" onClick={() => updateStatus(c._id, "Scheduled")}>
                     <CalendarCheck size={11} /> Schedule
                   </Btn>
                 )}
                 {c.status === "Scheduled" && (
-                  <Btn size="sm" variant="amber" onClick={() => updateStatus(c.id, "Done")}>
+                  <Btn size="sm" variant="amber" onClick={() => updateStatus(c._id, "Done")}>
                     <CheckCheck size={11} /> Done
                   </Btn>
                 )}
@@ -116,14 +123,15 @@ export default function ConsultationsPage() {
       )}
 
       {/* Detail Modal */}
-      <Modal open={!!selected} onClose={() => setSelected(null)} title={selected?.name || ""}>
+      <Modal open={!!selected} onClose={() => setSelected(null)} title={selected?.email || ""}>
         {selected && (
           <div>
             <div className="mb-4">{statusChip(selected.status)}</div>
             <ModalRow label="Email" value={selected.email} />
-            <ModalRow label="Phone" value={selected.phone} />
-            <ModalRow label="Interested In" value={selected.interest} />
-            <ModalRow label="Requested On" value={selected.date} />
+            <ModalRow label="Phone" value={selected.mobile} />
+            <ModalRow label="Expert" value={selected.expertName} />
+            <ModalRow label="Date" value={new Date(selected.date).toLocaleDateString()} />
+            <ModalRow label="Slot" value={selected.timeSlot} />
             <ModalRow label="Status" value={selected.status} />
             <div className="flex flex-wrap gap-3 mt-6">
               <a
@@ -133,18 +141,18 @@ export default function ConsultationsPage() {
                 <Mail size={13} /> Email
               </a>
               <a
-                href={`tel:${selected.phone}`}
+                href={`tel:${selected.mobile}`}
                 className="flex items-center gap-2 bg-emerald-50 text-emerald-600 px-4 py-2 rounded-xl text-[11px] font-bold hover:bg-emerald-500 hover:text-white transition-all"
               >
                 <Phone size={13} /> Call
               </a>
               {selected.status === "Pending" && (
-                <Btn size="sm" variant="success" onClick={() => updateStatus(selected.id, "Scheduled")}>
+                <Btn size="sm" variant="success" onClick={() => updateStatus(selected._id, "Scheduled")}>
                   Schedule Session
                 </Btn>
               )}
               {selected.status === "Scheduled" && (
-                <Btn size="sm" variant="amber" onClick={() => updateStatus(selected.id, "Done")}>
+                <Btn size="sm" variant="amber" onClick={() => updateStatus(selected._id, "Done")}>
                   Mark Done
                 </Btn>
               )}

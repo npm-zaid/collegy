@@ -103,7 +103,7 @@ export default function LeadCaptureModal() {
       {/* Modal — constrained to viewport height */}
       <div
         ref={modalRef}
-        className="relative w-full max-w-md max-h-[90vh] flex flex-col bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden shadow-[0_0_60px_rgba(61,107,232,0.25)]"
+        className="relative w-full max-w-md  overflow-hidden flex flex-col bg-[#0A0A0A] border border-white/10 rounded-3xl shadow-[0_0_60px_rgba(61,107,232,0.25)]"
       >
         {/* Top accent */}
         <div className="h-[3px] w-full bg-gradient-to-r from-[#3D6BE8] via-[#E39F4A] to-[#3D6BE8] shrink-0" />

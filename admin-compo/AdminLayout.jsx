@@ -30,6 +30,7 @@ const NAV = [
       { id: "consultations", label: "Consultations", icon: MessageSquare, href: "/admin/consultations", badge: "12", badgeColor: "bg-amber-500" },
       { id: "loans", label: "Education Loans", icon: CreditCard, href: "/admin/loans", badge: "8", badgeColor: "bg-amber-500" },
       { id: "internships", label: "Internships", icon: Briefcase, href: "/admin/internships", badge: "19", badgeColor: "bg-rose-500" },
+      { id: "partners", label: "Partners", icon: Users, href: "/admin/partners", badge: null },
     ],
   },
   {

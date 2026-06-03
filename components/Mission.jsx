@@ -2,6 +2,9 @@
 
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 import { CheckCircle2, GraduationCap, Sparkles, Star, MapPin } from 'lucide-react';
 
 const Mission = () => {
@@ -9,6 +12,7 @@ const Mission = () => {
   const leftCardRef  = useRef(null);
   const rightCardRef = useRef(null);
   const badgeRefs    = useRef([]);
+  const whatsappBtnRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -25,7 +29,56 @@ const Mission = () => {
       });
     }, containerRef);
 
-    return () => ctx.revert();
+    // WhatsApp button ScrollTrigger
+    const btn = whatsappBtnRef.current;
+    gsap.set(btn, { autoAlpha: 0, x: 80, scale: 0.6 });
+
+    const st = ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: 'top 80%',
+      end: 'bottom 10%',
+      onEnter: () => {
+        gsap.to(btn, {
+          autoAlpha: 1,
+          x: 0,
+          scale: 1,
+          duration: 0.6,
+          ease: 'back.out(1.7)',
+        });
+      },
+      onLeave: () => {
+        gsap.to(btn, {
+          autoAlpha: 0,
+          x: 80,
+          scale: 0.6,
+          duration: 0.4,
+          ease: 'power2.in',
+        });
+      },
+      onEnterBack: () => {
+        gsap.to(btn, {
+          autoAlpha: 1,
+          x: 0,
+          scale: 1,
+          duration: 0.6,
+          ease: 'back.out(1.7)',
+        });
+      },
+      onLeaveBack: () => {
+        gsap.to(btn, {
+          autoAlpha: 0,
+          x: 80,
+          scale: 0.6,
+          duration: 0.4,
+          ease: 'power2.in',
+        });
+      },
+    });
+
+    return () => {
+      ctx.revert();
+      st.kill();
+    };
   }, []);
 
   const addToRefs = (el) => {
@@ -37,8 +90,11 @@ const Mission = () => {
   return (
     <section
       ref={containerRef}
-      className=" min-h-screen py-10 px-6 md:px-20 flex flex-col items-center"
+      className=" min-h-screen relative py-10 px-6 md:px-20 flex flex-col items-center"
     >
+
+   
+
       {/* ── Header ── */}
       <div className="relative mb-5 flex flex-col items-center">
         <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2667ff]/10 border border-[#2667ff]/20 mb-4">
@@ -64,7 +120,7 @@ const Mission = () => {
           {/* Main Card — happy student */}
           <div ref={leftCardRef} className="relative flex-1 h-full">
             <img
-              src="https://m.media-amazon.com/images/I/51AQb8ZL5HL._UXNaN_FMjpg_QL85_.jpg"
+              src="https://images.pexels.com/photos/8199556/pexels-photo-8199556.jpeg"
               className="w-full h-full object-cover rounded-[3rem] shadow-2xl shadow-black/50"
               alt="Student at college"
             />
@@ -91,7 +147,7 @@ const Mission = () => {
             {/* Bottom profile strip */}
             <div className="absolute bottom-8 sm:left-8 left-4 flex items-center gap-3">
               <img
-                src="https://m.media-amazon.com/images/I/51AQb8ZL5HL._UXNaN_FMjpg_QL85_.jpg"
+                src="https://images.pexels.com/photos/8199248/pexels-photo-8199248.jpeg"
                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
                 alt="Student"
               />
@@ -148,6 +204,36 @@ const Mission = () => {
         </div>
 
       </div>
+
+      {/* WhatsApp floating button — fixed, appears on Mission scroll */}
+      <a
+        ref={whatsappBtnRef}
+        href="https://wa.me/919999999999?text=Hi%2C%20I%20want%20to%20know%20more%20about%20Collegy!"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat on WhatsApp"
+        style={{
+          position: 'fixed',
+          right: '-5px',
+          bottom: '20px',
+          zIndex: 9999,
+          visibility: 'hidden',
+        }}
+        className="group flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold text-sm px-4 py-3 rounded-l-full shadow-[0_6px_30px_rgba(37,211,102,0.45)] hover:shadow-[0_8px_40px_rgba(37,211,102,0.65)] transition-all duration-300"
+      >
+        {/* WhatsApp SVG icon */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 32 32"
+          fill="white"
+          className="w-5 h-5 shrink-0"
+        >
+          <path d="M16 .5C7.44.5.5 7.44.5 16c0 2.83.74 5.49 2.04 7.8L.5 31.5l7.9-2.07A15.43 15.43 0 0016 31.5C24.56 31.5 31.5 24.56 31.5 16S24.56.5 16 .5zm0 28.3a13.2 13.2 0 01-6.73-1.84l-.48-.29-4.69 1.23 1.25-4.56-.32-.5A13.26 13.26 0 012.7 16C2.7 9.16 8.16 3.7 16 3.7S29.3 9.16 29.3 16 23.84 28.8 16 28.8zm7.28-9.9c-.4-.2-2.35-1.16-2.72-1.29-.36-.13-.62-.2-.88.2s-1.01 1.29-1.24 1.55c-.23.27-.45.3-.84.1-.4-.2-1.67-.62-3.18-1.97-1.18-1.05-1.97-2.34-2.2-2.74-.23-.4-.02-.61.17-.81.18-.18.4-.46.6-.7.2-.23.27-.4.4-.66.13-.27.07-.5-.03-.7-.1-.2-.88-2.12-1.2-2.9-.32-.76-.64-.66-.88-.67h-.75c-.26 0-.68.1-1.04.5s-1.36 1.33-1.36 3.24 1.39 3.76 1.59 4.02c.19.26 2.74 4.18 6.63 5.86.93.4 1.65.64 2.22.82.93.3 1.78.25 2.45.15.75-.11 2.35-.96 2.68-1.89.33-.93.33-1.73.23-1.89-.09-.17-.35-.27-.74-.46z" />
+        </svg>
+        <span className="hidden sm:inline">Chat with us</span>
+      </a>
+
+
     </section>
   );
 };

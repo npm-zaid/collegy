@@ -17,6 +17,18 @@ export default function page() {
   const containerRef = useRef(null);
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    companyName: "",
+    experience: "1-3 Years",
+    studentVolume: ""
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -31,13 +43,28 @@ export default function page() {
     return () => ctx.revert();
   }, []);
 
-  const handleApply = (e) => {
+  const handleApply = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      const response = await fetch("http://localhost:5000/api/partners", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      if (data.success) {
+        setStep(3); // Success state
+        setFormData({ fullName: "", email: "", companyName: "", experience: "1-3 Years", studentVolume: "" });
+      } else {
+        alert("Failed to submit application");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred");
+    } finally {
       setIsSubmitting(false);
-      setStep(3); // Success state
-    }, 1500);
+    }
   };
 
   return (
@@ -144,19 +171,19 @@ export default function page() {
                           <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">Full Name</label>
                             <div className="relative">
-                              <input required placeholder="Alex Rivera" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm" />
+                              <input name="fullName" value={formData.fullName} onChange={handleChange} required placeholder="Alex Rivera" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm" />
                             </div>
                           </div>
                           <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">Work Email</label>
-                            <input type="email" required placeholder="alex@company.com" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm" />
+                            <input name="email" value={formData.email} onChange={handleChange} type="email" required placeholder="alex@company.com" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm" />
                           </div>
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">Company Name / Freelance Profile</label>
                           <div className="relative">
                             <Building2 className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-300" size={20} />
-                            <input required placeholder="Elite Consultants LLP" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm" />
+                            <input name="companyName" value={formData.companyName} onChange={handleChange} required placeholder="Elite Consultants LLP" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm" />
                           </div>
                         </div>
                         <button 
@@ -173,17 +200,17 @@ export default function page() {
                       <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
                         <div className="space-y-2">
                           <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">Years of Experience</label>
-                          <select className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm appearance-none cursor-pointer">
-                            <option>1-3 Years</option>
-                            <option>3-5 Years</option>
-                            <option>5+ Years</option>
+                          <select name="experience" value={formData.experience} onChange={handleChange} className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm appearance-none cursor-pointer">
+                            <option value="1-3 Years">1-3 Years</option>
+                            <option value="3-5 Years">3-5 Years</option>
+                            <option value="5+ Years">5+ Years</option>
                           </select>
                         </div>
                         <div className="space-y-2">
                           <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2">Current Student Volume (Monthly)</label>
                           <div className="relative">
                             <Briefcase className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-300" size={20} />
-                            <input required placeholder="e.g. 50+ students" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm" />
+                            <input name="studentVolume" value={formData.studentVolume} onChange={handleChange} required placeholder="e.g. 50+ students" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] p-5 rounded-2xl outline-none font-bold transition-all shadow-sm" />
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">

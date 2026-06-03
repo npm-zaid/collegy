@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
 import { SendHorizontal } from "lucide-react";
+import SoundWrapper from './SoundWrapper'
 
 const NOTIFICATIONS = {
   All: [
@@ -238,7 +239,7 @@ export default function Hero() {
               <div key={j} className={`w-[3px] h-[18px] bg-gradient-to-br from-[#2667ff] to-[#3f8efc] rounded-full origin-bottom ${r}`} />
             ))}
           </div>
-          <img src="https://m.media-amazon.com/images/I/51AQb8ZL5HL._UXNaN_FMjpg_QL85_.jpg" alt="student"
+          <img src="https://images.pexels.com/photos/8199559/pexels-photo-8199559.jpeg" alt="student"
             className="w-full h-full rounded-full object-cover ring-2 ring-white shadow-xl" />
         </div>
 
@@ -248,6 +249,7 @@ export default function Hero() {
           className="absolute block z-20 will-change-transform -rotate-6 sm:top-[18%] top-[10%] right-[3%] "
          
         >
+          <SoundWrapper>
           <button
             onClick={() => { setNewsOpen(p => !p); setSidebarOpen(false); }}
             onMouseEnter={hoverIn} onMouseLeave={hoverOut}
@@ -266,6 +268,7 @@ export default function Hero() {
               <path d="m9 18 6-6-6-6"/>
             </svg>
           </button>
+          </SoundWrapper>
         </div>
 
         {/* RIGHT 1 — Live Updates trigger */}

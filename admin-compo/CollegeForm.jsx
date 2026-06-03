@@ -462,7 +462,7 @@ export default function CollegeForm({
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {existingImages.map((img, i) => (
                   <img key={i}
-                    src={`${API}/uploads/${img.filename}`}
+                    src={`${API}/uploads/colleges/${img.filename}`}
                     alt={img.originalName}
                     className={`h-20 w-28 object-cover rounded-xl shrink-0 border transition-all ${imageFiles.length > 0 ? "opacity-40 border-rose-200 grayscale" : "border-slate-200"}`}
                   />

@@ -12,7 +12,7 @@ const COUNTRY_DATA = [
     flag: '🇺🇸',
     title: 'Study in USA',
     color: '#3D6BE8', // Collegy Blue
-    image: 'https://images.unsplash.com/photo-1550664890-c5e31fa6458b?q=80&w=800',
+    image: 'https://images.pexels.com/photos/64271/queen-of-liberty-statue-of-liberty-new-york-liberty-statue-64271.jpeg',
     benefits: [
       'Study in top USA universities at affordable cost',
       '100% of the USA universities offers scholarships',
@@ -40,7 +40,7 @@ const COUNTRY_DATA = [
     flag: '🇮🇪',
     title: 'Masters in Ireland',
     color: '#009A49',
-    image: 'https://images.unsplash.com/photo-1590089415225-401ed66a1800?q=80&w=800',
+    image: 'https://images.pexels.com/photos/13352084/pexels-photo-13352084.jpeg',
     benefits: [
       'All Irish universities are ranked in the top 3% globally',
       'Pursue master’s with an affordable fees of 9 Lakhs',

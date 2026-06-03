@@ -29,6 +29,17 @@ export default function page() {
   const containerRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeDomain, setActiveDomain] = useState("Technology");
+  
+  const [formData, setFormData] = useState({
+    fullName: "",
+    skill: "",
+    portfolio: "",
+    projectDescription: ""
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -51,14 +62,31 @@ export default function page() {
     return () => ctx.revert();
   }, []);
 
-  const handleApply = (e) => {
+  const handleApply = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulating API Sync
-    setTimeout(() => {
+    try {
+      const response = await fetch("http://localhost:5000/api/internships", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          stream: activeDomain,
+          ...formData
+        }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        alert("Application Submitted Successfully!");
+        setFormData({ fullName: "", skill: "", portfolio: "", projectDescription: "" });
+      } else {
+        alert("Failed to submit application");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred");
+    } finally {
       setIsSubmitting(false);
-      alert("Application Synced Successfully!");
-    }, 2000);
+    }
   };
 
   return (
@@ -187,11 +215,11 @@ export default function page() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Full Name</label>
-                    <input required placeholder="Jane Doe" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none font-bold shadow-sm transition-all" />
+                    <input name="fullName" value={formData.fullName} onChange={handleChange} required placeholder="Jane Doe" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none font-bold shadow-sm transition-all" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Primary Expert Skill</label>
-                    <input required placeholder="React / Figma / Java" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none font-bold shadow-sm transition-all" />
+                    <input name="skill" value={formData.skill} onChange={handleChange} required placeholder="React / Figma / Java" className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none font-bold shadow-sm transition-all" />
                   </div>
                 </div>
 
@@ -199,13 +227,13 @@ export default function page() {
                   <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Portfolio / LinkedIn / GitHub</label>
                   <div className="relative">
                     <Briefcase className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-300" size={18} />
-                    <input required type="url" placeholder="https://linkedin.com/in/..." className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none font-bold shadow-sm transition-all" />
+                    <input name="portfolio" value={formData.portfolio} onChange={handleChange} required type="url" placeholder="https://linkedin.com/in/..." className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none font-bold shadow-sm transition-all" />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Describe your best project</label>
-                  <textarea rows={4} placeholder="Briefly explain the problem you solved..." className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none font-bold shadow-sm transition-all resize-none" />
+                  <textarea name="projectDescription" value={formData.projectDescription} onChange={handleChange} rows={4} placeholder="Briefly explain the problem you solved..." className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none font-bold shadow-sm transition-all resize-none" />
                 </div>
 
                 <button 

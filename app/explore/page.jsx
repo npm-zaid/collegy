@@ -3,19 +3,36 @@ import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   Search, MapPin, GraduationCap, BookOpen,
-  Building2, Info, Filter, ChevronRight, Star, X,
+  Building2, Info, Filter, ChevronRight, Star, X, Wifi, Monitor, Clock, Users,
 } from "lucide-react";
-import { COLLEGES, ALL_COURSES, toSlug } from "../../data/collegeData";
+import { COLLEGES, ALL_COURSES, ALL_STUDY_MODES, MAX_FEE, toSlug } from "../../data/collegeData";
 
+// ─── helpers ──────────────────────────────────────────────────────────────────
+const formatFee = (val) => {
+  if (val >= 100000) return `₹${(val / 100000).toFixed(val % 100000 === 0 ? 0 : 1)}L`;
+  if (val >= 1000)   return `₹${(val / 1000).toFixed(0)}K`;
+  return `₹${val}`;
+};
+
+const STUDY_MODE_META = {
+  Online:     { icon: Wifi,    color: "text-cyan-400",   active: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40" },
+  Hybrid:     { icon: Monitor, color: "text-violet-400", active: "bg-violet-500/20 text-violet-300 border-violet-500/40" },
+  "Part-Time":{ icon: Clock,   color: "text-amber-400",  active: "bg-amber-500/20 text-amber-300 border-amber-500/40" },
+  Regular:    { icon: Users,   color: "text-emerald-400",active: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" },
+};
+
+// ─── Component ────────────────────────────────────────────────────────────────
 export default function ExplorePage() {
   const router = useRouter();
 
-  const [search,           setSearch]           = useState("");
-  const [selectedState,    setSelectedState]    = useState("All States");
-  const [selectedCity,     setSelectedCity]     = useState("All Cities");
-  const [selectedCourse,   setSelectedCourse]   = useState("All Courses");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
+  const [search,            setSearch]            = useState("");
+  const [selectedState,     setSelectedState]     = useState("All States");
+  const [selectedCity,      setSelectedCity]      = useState("All Cities");
+  const [selectedCourse,    setSelectedCourse]    = useState("All Courses");
+  const [selectedCategory,  setSelectedCategory]  = useState("All");
+  const [showFeaturedOnly,  setShowFeaturedOnly]  = useState(false);
+  const [selectedModes,     setSelectedModes]     = useState([]);   // multi-select
+  const [maxFee,            setMaxFee]            = useState(MAX_FEE);
 
   const states = ["All States", ...Array.from(new Set(COLLEGES.map((c) => c.state))).sort()];
 
@@ -26,29 +43,39 @@ export default function ExplorePage() {
     return ["All Cities", ...Array.from(new Set(base)).sort()];
   }, [selectedState]);
 
+  const toggleMode = (mode) =>
+    setSelectedModes((prev) =>
+      prev.includes(mode) ? prev.filter((m) => m !== mode) : [...prev, mode]
+    );
+
   const filteredColleges = useMemo(() => {
     return COLLEGES.filter((clg) => {
       const q = search.toLowerCase();
+      const modeMatch =
+        selectedModes.length === 0 ||
+        selectedModes.some((m) => clg.studyMode?.includes(m));
       return (
         (clg.name.toLowerCase().includes(q) || clg.city.toLowerCase().includes(q)) &&
         (selectedState    === "All States"  || clg.state    === selectedState) &&
         (selectedCity     === "All Cities"  || clg.city     === selectedCity) &&
         (selectedCourse   === "All Courses" || clg.courses.includes(selectedCourse)) &&
         (selectedCategory === "All"         || clg.category === selectedCategory) &&
-        (!showFeaturedOnly || clg.featured)
+        (!showFeaturedOnly || clg.featured) &&
+        modeMatch &&
+        (clg.feeNumeric === undefined || clg.feeNumeric <= maxFee)
       );
     }).sort((a, b) => a.rank - b.rank);
-  }, [search, selectedState, selectedCity, selectedCourse, selectedCategory, showFeaturedOnly]);
-
-  const featuredColleges = COLLEGES.filter((c) => c.featured).sort((a, b) => a.rank - b.rank);
+  }, [search, selectedState, selectedCity, selectedCourse, selectedCategory, showFeaturedOnly, selectedModes, maxFee]);
 
   const hasFilters =
     search || selectedState !== "All States" || selectedCity !== "All Cities" ||
-    selectedCourse !== "All Courses" || selectedCategory !== "All" || showFeaturedOnly;
+    selectedCourse !== "All Courses" || selectedCategory !== "All" ||
+    showFeaturedOnly || selectedModes.length > 0 || maxFee < MAX_FEE;
 
   const resetAll = () => {
     setSearch(""); setSelectedState("All States"); setSelectedCity("All Cities");
     setSelectedCourse("All Courses"); setSelectedCategory("All"); setShowFeaturedOnly(false);
+    setSelectedModes([]); setMaxFee(MAX_FEE);
   };
 
   const goToCollege = (clg) => router.push(`/explore/${toSlug(clg.name)}`);
@@ -57,56 +84,12 @@ export default function ExplorePage() {
     <div className="min-h-screen bg-[#FDFDFD] text-zinc-900 selection:bg-blue-100">
       <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-12 lg:pt-20">
 
-        {/* ── Header ── */}
-        {/* <div className="mb-10">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="bg-gradient-to-r from-[#2667ff]/10 to-[#2667ff]/10 text-[#2667ff] border border-[#2667ff]/20 text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full">
-              ★ 2025–26 Session
-            </span>
-            <span className="text-zinc-300 text-xs">•</span>
-            <span className="text-zinc-400 text-[10px] font-black uppercase tracking-[0.2em]">
-              {COLLEGES.length} Institutes Listed
-            </span>
-          </div>
-          <h1 className="text-6xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.85] text-zinc-900 mb-3">
-            Top Colleges<br />in India
-          </h1>
-          <p className="text-zinc-400 text-sm font-medium">
-            Engineering · Management · Law · Medicine · Arts & Design
-          </p>
-        </div> */}
-
-        {/* ── Featured strip ── */}
-        {/* Amber/gold — warm contrast against the blue palette, clear visual hierarchy */}
-        {/* <section className="mb-12">
-          <h2 className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.25em] text-zinc-400 mb-5">
-            <Star size={13} className="text-amber-500 fill-amber-500" />
-            Featured & Top Ranked
-            <span className="flex-1 h-px bg-zinc-100" />
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            {featuredColleges.map((clg) => (
-              <button
-                key={clg.id}
-                onClick={() => goToCollege(clg)}
-                className="group bg-amber-50 border border-amber-200 hover:border-amber-400 hover:shadow-[0_4px_20px_rgba(245,158,11,0.15)] rounded-[1.8rem] p-5 text-left transition-all duration-300 active:scale-95"
-              >
-                <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-[10px] flex items-center justify-center text-white text-[9px] font-black mb-3 shadow-sm shadow-amber-200">
-                  #{clg.rank}
-                </div>
-                <p className="text-[11px] font-black text-zinc-900 leading-snug mb-1.5">{clg.name}</p>
-                <p className="text-[8px] font-black uppercase tracking-[0.15em] text-amber-700/60">{clg.city}</p>
-                <p className="text-[8px] font-black uppercase tracking-[0.15em] text-[#2667ff] mt-1">{clg.courses[0]}</p>
-              </button>
-            ))}
-          </div>
-        </section> */}
-
         <div className="grid lg:grid-cols-12 gap-8">
 
           {/* ── Sidebar ── */}
-          <aside className="lg:col-span-3 bg-zinc-900 rounded-[2.5rem] p-7 h-fit lg:sticky top-28 space-y-6">
+          <aside className="lg:col-span-3 bg-zinc-900 rounded-[2rem] p-6 h-fit lg:sticky top-28 space-y-3">
 
+            {/* Header */}
             <div className="flex items-center justify-between">
               <h3 className="text-[9px] font-black uppercase tracking-[0.25em] text-zinc-500 flex items-center gap-2">
                 <Filter size={12} /> Filters
@@ -121,28 +104,28 @@ export default function ExplorePage() {
               )}
             </div>
 
-            {/* Featured toggle — amber on dark sidebar pops beautifully */}
+            {/* Featured toggle */}
             <button
               onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
-              className={`w-full flex items-center gap-2 px-4 py-3 rounded-2xl text-[9px] font-black uppercase tracking-[0.2em] border transition-all ${
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-[0.2em] border transition-all ${
                 showFeaturedOnly
                   ? "bg-gradient-to-r from-amber-400 to-amber-500 text-zinc-900 border-transparent shadow-lg shadow-amber-500/20"
                   : "bg-transparent text-zinc-500 border-zinc-800 hover:border-amber-500/40 hover:text-amber-400"
               }`}
             >
-              <Star size={11} className={showFeaturedOnly ? "fill-zinc-900" : ""} />
+              <Star size={10} className={showFeaturedOnly ? "fill-zinc-900" : ""} />
               Top / Featured Only
             </button>
 
             {/* Category */}
-            <div className="space-y-3">
-              <label className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.2em]">Category</label>
-              <div className="flex gap-2">
+            <div className="space-y-1.5">
+              <label className="text-[7px] font-black text-zinc-600 uppercase tracking-[0.2em]">Category</label>
+              <div className="flex gap-1.5">
                 {["All", "Government", "Private"].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`flex-1 py-2 rounded-xl text-[8px] font-black tracking-widest uppercase border transition-all ${
+                    className={`flex-1 py-1.5 rounded-lg text-[8px] font-black tracking-widest uppercase border transition-all ${
                       selectedCategory === cat
                         ? "bg-gradient-to-r from-[#2667ff] to-[#2667ff] text-white border-transparent shadow-md shadow-[#2667ff]/20"
                         : "bg-transparent text-zinc-500 border-zinc-800 hover:border-[#2667ff]/40 hover:text-[#2667ff]"
@@ -155,48 +138,91 @@ export default function ExplorePage() {
             </div>
 
             {/* State */}
-            <div className="space-y-3">
-              <label className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.2em]">State</label>
+            <div>
               <select
                 value={selectedState}
                 onChange={(e) => { setSelectedState(e.target.value); setSelectedCity("All Cities"); }}
-                className="w-full bg-zinc-800 border border-zinc-700 text-zinc-300 p-3 rounded-2xl text-xs font-bold outline-none cursor-pointer appearance-none focus:border-[#2667ff]/50 transition-colors"
+                className="w-full bg-zinc-800 border border-zinc-700 text-zinc-300 px-3 py-2 rounded-xl text-[11px] font-bold outline-none cursor-pointer appearance-none focus:border-[#2667ff]/50 transition-colors"
               >
                 {states.map((s) => <option key={s}>{s}</option>)}
               </select>
             </div>
 
             {/* City */}
-            <div className="space-y-3">
-              <label className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.2em]">City</label>
+            <div>
               <select
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 text-zinc-300 p-3 rounded-2xl text-xs font-bold outline-none cursor-pointer appearance-none focus:border-[#2667ff]/50 transition-colors"
+                className="w-full bg-zinc-800 border border-zinc-700 text-zinc-300 px-3 py-2 rounded-xl text-[11px] font-bold outline-none cursor-pointer appearance-none focus:border-[#2667ff]/50 transition-colors"
               >
                 {cities.map((c) => <option key={c}>{c}</option>)}
               </select>
             </div>
 
-            {/* Courses */}
-            <div className="space-y-3">
-              <label className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.2em]">Course / Field</label>
-              <div className="flex flex-wrap gap-2">
-                {ALL_COURSES.map((course) => (
-                  <button
-                    key={course}
-                    onClick={() => setSelectedCourse(course)}
-                    className={`px-3 py-1.5 rounded-full text-[8px] font-black tracking-widest uppercase border transition-all ${
-                      selectedCourse === course
-                        ? "bg-gradient-to-r from-[#2667ff] to-[#2667ff] text-white border-transparent"
-                        : "bg-transparent text-zinc-600 border-zinc-800 hover:border-[#2667ff]/40 hover:text-[#2667ff]"
-                    }`}
-                  >
-                    {course === "All Courses" ? "All" : course}
-                  </button>
-                ))}
+            {/* ── Course / Field – DROPDOWN ── */}
+            <div>
+              <select
+                value={selectedCourse}
+                onChange={(e) => setSelectedCourse(e.target.value)}
+                className="w-full bg-zinc-800 border border-zinc-700 text-zinc-300 px-3 py-2 rounded-xl text-[11px] font-bold outline-none cursor-pointer appearance-none focus:border-[#2667ff]/50 transition-colors"
+              >
+                {ALL_COURSES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+
+            {/* ── Study Mode – multi-select pills ── */}
+            <div className="space-y-1.5">
+              <label className="text-[7px] font-black text-zinc-600 uppercase tracking-[0.2em]">Study Mode</label>
+              <div className="grid grid-cols-2 gap-1.5">
+                {ALL_STUDY_MODES.map((mode) => {
+                  const meta  = STUDY_MODE_META[mode];
+                  const Icon  = meta.icon;
+                  const active = selectedModes.includes(mode);
+                  return (
+                    <button
+                      key={mode}
+                      onClick={() => toggleMode(mode)}
+                      className={`flex items-center gap-1 px-2 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-[0.1em] border transition-all ${
+                        active
+                          ? meta.active
+                          : "bg-transparent text-zinc-600 border-zinc-800 hover:border-zinc-600 hover:text-zinc-400"
+                      }`}
+                    >
+                      <Icon size={9} className={active ? "" : meta.color} />
+                      {mode}
+                    </button>
+                  );
+                })}
               </div>
             </div>
+
+            {/* ── Annual Fee Slider ── */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-[7px] font-black text-zinc-600 uppercase tracking-[0.2em]">Max Annual Fee</label>
+                <span className="text-[10px] font-black text-[#2667ff]">
+                  {maxFee >= MAX_FEE ? "Any" : formatFee(maxFee)}
+                </span>
+              </div>
+              <input
+                id="fee-slider"
+                type="range"
+                min={0}
+                max={MAX_FEE}
+                step={10000}
+                value={maxFee}
+                onChange={(e) => setMaxFee(Number(e.target.value))}
+                className="w-full h-1 rounded-full appearance-none cursor-pointer"
+                style={{
+                  background: `linear-gradient(to right, #2667ff ${(maxFee / MAX_FEE) * 100}%, #3f3f46 ${(maxFee / MAX_FEE) * 100}%)`,
+                }}
+              />
+              <div className="flex justify-between text-[7px] font-black text-zinc-700 uppercase tracking-widest">
+                <span>Free</span>
+                <span>₹30L+</span>
+              </div>
+            </div>
+
           </aside>
 
           {/* ── Main ── */}
@@ -217,19 +243,32 @@ export default function ExplorePage() {
               />
             </div>
 
-            {/* Count */}
-            <div className="flex items-center justify-between px-1">
+            {/* Count + active filter chips */}
+            <div className="flex items-center justify-between flex-wrap gap-3 px-1">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">
                 Showing <span className="text-zinc-900">{filteredColleges.length}</span> institutes
               </p>
-              {hasFilters && (
-                <button
-                  onClick={resetAll}
-                  className="text-[9px] text-[#2667ff] font-black uppercase tracking-widest flex items-center gap-1 hover:text-zinc-900 transition-colors"
-                >
-                  <X size={10} /> Clear All
-                </button>
-              )}
+              <div className="flex items-center gap-2 flex-wrap">
+                {selectedModes.map((m) => (
+                  <span
+                    key={m}
+                    className="inline-flex items-center gap-1 text-[8px] font-black uppercase tracking-widest bg-zinc-100 text-zinc-600 px-2.5 py-1 rounded-full border border-zinc-200"
+                  >
+                    {m}
+                    <button onClick={() => toggleMode(m)} className="ml-0.5 hover:text-red-500 transition-colors">
+                      <X size={8} />
+                    </button>
+                  </span>
+                ))}
+                {hasFilters && (
+                  <button
+                    onClick={resetAll}
+                    className="text-[9px] text-[#2667ff] font-black uppercase tracking-widest flex items-center gap-1 hover:text-zinc-900 transition-colors"
+                  >
+                    <X size={10} /> Clear All
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Cards */}
@@ -264,6 +303,17 @@ export default function ExplorePage() {
                           <span className="text-[9px] font-black uppercase tracking-[0.15em] text-zinc-700 flex items-center gap-1">
                             <MapPin size={9} /> {clg.city}, {clg.state}
                           </span>
+                          {/* Study mode badges on card */}
+                          {clg.studyMode?.map((m) => {
+                            const meta = STUDY_MODE_META[m];
+                            if (!meta) return null;
+                            const Icon = meta.icon;
+                            return (
+                              <span key={m} className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[7px] font-black uppercase tracking-[0.12em] border bg-zinc-900/5 border-zinc-200 text-zinc-500`}>
+                                <Icon size={7} className={meta.color} /> {m}
+                              </span>
+                            );
+                          })}
                         </div>
 
                         {/* Rank + Name */}

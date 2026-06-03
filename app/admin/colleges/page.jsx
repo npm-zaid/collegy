@@ -16,7 +16,7 @@ import CollegeForm from "../../../admin-compo/CollegeForm";
 const API = "http://localhost:5000";
 
 const fmtPkg = (pkg) => pkg?.amount > 0 ? `${pkg.amount} ${pkg.unit || "LPA"}` : null;
-const imgUrl = (filename) => `${API}/uploads/${filename}`;
+const imgUrl = (filename) => `${API}/uploads/colleges/${filename}`;
 
 // ── Delete Dialog ──────────────────────────────────────────────────────────────
 function DeleteDialog({ college, onConfirm, onClose, loading }) {
@@ -368,7 +368,7 @@ export default function CollegesPage() {
     try {
       const token = getToken();
       const res = await fetch(`${API}/api/admin/colleges`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}`},
       });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.message || "Fetch failed");
