@@ -6,7 +6,7 @@ import { PageHeader, ToastProvider, useToast } from "../../../admin-compo/AdminU
 import { getToken } from "../../../lib/auth";
 import CollegeForm from "../../../admin-compo/CollegeForm";
 
-const API = "http://localhost:5000";
+const API = "https://finale-beacon-backend.vercel.app";
 
 export default function AddCollegePage() {
   const router = useRouter();

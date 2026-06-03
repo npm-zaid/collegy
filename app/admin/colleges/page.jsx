@@ -13,10 +13,10 @@ import {
 import { getToken } from "../../../lib/auth";
 import CollegeForm from "../../../admin-compo/CollegeForm";
 
-const API = "http://localhost:5000";
+const API = "https://finale-beacon-backend.vercel.app";
 
 const fmtPkg = (pkg) => pkg?.amount > 0 ? `${pkg.amount} ${pkg.unit || "LPA"}` : null;
-const imgUrl = (filename) => `${API}/uploads/colleges/${filename}`;
+const imgUrl = (filename) => filename?.startsWith("http") ? filename : `${API}/uploads/colleges/${filename}`;
 
 // ── Delete Dialog ──────────────────────────────────────────────────────────────
 function DeleteDialog({ college, onConfirm, onClose, loading }) {

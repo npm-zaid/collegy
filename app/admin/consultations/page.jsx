@@ -22,7 +22,7 @@ export default function ConsultationsPage() {
 
   
   useEffect(() => {
-    fetch("http://localhost:5000/api/consultations")
+    fetch("https://finale-beacon-backend.vercel.app/api/consultations")
       .then((res) => res.json())
       .then((resData) => {
         if (resData.success) {

@@ -8,7 +8,7 @@ import {
 } from "../../../admin-compo/AdminUi";
 import { getToken } from "../../../lib/auth";
 
-const API = "http://localhost:5000";
+const API = "https://finale-beacon-backend.vercel.app";
 
 /* ── Tiny inline confirm dialog ─────────────────────────────────────────────── */
 function ConfirmModal({ open, onConfirm, onCancel, loading }) {

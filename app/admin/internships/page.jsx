@@ -20,7 +20,7 @@ export default function InternshipsPage() {
 
   
   useEffect(() => {
-    fetch("http://localhost:5000/api/internships")
+    fetch("https://finale-beacon-backend.vercel.app/api/internships")
       .then((res) => res.json())
       .then((resData) => {
         if (resData.success) {

@@ -19,7 +19,7 @@ export default function PartnersPage() {
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/partners")
+    fetch("https://finale-beacon-backend.vercel.app/api/partners")
       .then((res) => res.json())
       .then((resData) => {
         if (resData.success) {

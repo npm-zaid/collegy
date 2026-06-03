@@ -11,7 +11,7 @@ import {
   FormCard, FormGroup, Input, Select, Textarea, Btn,
 } from "./AdminUi";
 
-const API = "http://localhost:5000";
+const API = "https://finale-beacon-backend.vercel.app";
 
 // ── Static options ──────────────────────────────────────────────────────────────
 export const DEGREE_TYPES = ["B.Tech","M.Tech","MBA","MBBS","BDS","B.Sc","M.Sc","Ph.D","B.Arch","LLB","LLM","BBA","MCA","BCA","Diploma"];
@@ -462,7 +462,7 @@ export default function CollegeForm({
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {existingImages.map((img, i) => (
                   <img key={i}
-                    src={`${API}/uploads/colleges/${img.filename}`}
+                    src={img.filename?.startsWith("http") ? img.filename : `${API}/uploads/colleges/${img.filename}`}
                     alt={img.originalName}
                     className={`h-20 w-28 object-cover rounded-xl shrink-0 border transition-all ${imageFiles.length > 0 ? "opacity-40 border-rose-200 grayscale" : "border-slate-200"}`}
                   />
