@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-     "moduleResolution": "node",
-    "ignoreDeprecations": "5.0",
+    "moduleResolution": "bundler",
+    "ignoreDeprecations": "6.0",
     "target": "ES2017",
     "lib": [
       "dom",
