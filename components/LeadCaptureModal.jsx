@@ -229,14 +229,14 @@ export default function LeadCaptureModal() {
                 </form>
 
                 {/* Benefits — 2×2 compact grid */}
-                <div className="mt-5 grid grid-cols-2 gap-2">
+                {/* <div className="mt-5 grid grid-cols-2 gap-2">
                   {['No Processing Fee', 'SOP & LOR Prep', 'Visa Assistance', 'Education Loan'].map((text, i) => (
                     <div key={i} className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-500 uppercase tracking-tight">
                       <ShieldCheck size={12} className="text-[#E39F4A] shrink-0" />
                       {text}
                     </div>
                   ))}
-                </div>
+                </div> */}
               </>
             )}
           </div>
