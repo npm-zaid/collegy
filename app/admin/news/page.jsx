@@ -7,14 +7,13 @@ import { Plus, Trash2, ExternalLink, Search } from "lucide-react";
 import { PageHeader, Chip, Btn, ToastProvider, useToast } from "../../../admin-compo/AdminUi";
 import { NEWS_DATA } from "../../../data/adminData";
 
+const API = process.env.NEXT_PUBLIC_API;
+
 const CAT_COLOR_MAP = {
-  "JEE/NEET": "blue",
-  Rankings: "purple",
-  Scholarships: "amber",
-  Placements: "green",
-  Policy: "rose",
-  Admissions: "blue",
-  General: "gray",
+  "Exam": "blue",
+  "Admission": "purple",
+  "Academics": "green",
+  "All": "gray",
 };
 
 function NewsCard({ article, onDelete, index }) {
@@ -27,20 +26,17 @@ function NewsCard({ article, onDelete, index }) {
     );
   }, [index]);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     gsap.to(ref.current, {
       opacity: 0, x: 30, height: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0,
       duration: 0.3, ease: "power2.in",
-      onComplete: () => onDelete(article.id),
+      onComplete: () => onDelete(article._id || article.id),
     });
   };
 
   return (
     <div ref={ref} className="bg-white border border-slate-100 rounded-[20px] p-5 flex items-start gap-4 hover:border-[#2667ff]/30 hover:shadow-md transition-all duration-200 group">
-      {/* Emoji thumb */}
-      <div className="w-12 h-12 rounded-[14px] bg-[#EEF3FF] flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition-transform">
-        {article.emoji}
-      </div>
+
 
       {/* Content */}
       <div className="flex-1 min-w-0">
@@ -84,23 +80,42 @@ function NewsCard({ article, onDelete, index }) {
 export default function NewsPage() {
   const router = useRouter();
   const toast = useToast();
-  const [articles, setArticles] = useState(NEWS_DATA);
+  const [articles, setArticles] = useState([]);
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("All");
 
-  const CATS = ["All", "JEE/NEET", "Rankings", "Scholarships", "Placements", "Policy", "Admissions", "General"];
+  const CATS = ["All", "Academics", "Exam", "Admission"];
+
+  useEffect(() => {
+    fetch(`${API}/api/notifications`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setArticles(data.data);
+      })
+      .catch(err => console.error(err));
+  }, []);
 
   const filtered = articles.filter((a) => {
     const matchSearch = [a.title, a.summary, a.source].some((f) =>
-      f.toLowerCase().includes(search.toLowerCase())
+      f?.toLowerCase().includes(search.toLowerCase())
     );
-    const matchCat = catFilter === "All" || a.category === catFilter;
+    const matchCat = catFilter === "All" || a.category === catFilter || a.tag === catFilter;
     return matchSearch && matchCat;
   });
 
-  const handleDelete = (id) => {
-    setArticles((prev) => prev.filter((a) => a.id !== id));
-    toast("🗑️ Article deleted");
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`${API}/api/notifications/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setArticles((prev) => prev.filter((a) => (a._id || a.id) !== id));
+        toast("🗑️ Article deleted");
+      } else {
+        toast("❌ Failed to delete");
+      }
+    } catch (err) {
+      console.error(err);
+      toast("❌ Network error");
+    }
   };
 
   return (
@@ -149,7 +164,7 @@ export default function NewsPage() {
       <div className="flex flex-col gap-3">
         {filtered.length > 0 ? (
           filtered.map((article, i) => (
-            <NewsCard key={article.id} article={article} onDelete={handleDelete} index={i} />
+            <NewsCard key={article._id || article.id} article={article} onDelete={handleDelete} index={i} />
           ))
         ) : (
           <div className="text-center py-20 text-slate-400">

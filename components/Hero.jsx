@@ -90,6 +90,22 @@ export default function Hero() {
   const [activeTab,   setActiveTab]   = useState("All");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [newsOpen,    setNewsOpen]    = useState(false);
+  const [apiNotifications, setApiNotifications] = useState(null);
+  const API = process.env.NEXT_PUBLIC_API;
+  useEffect(() => {
+    const fetchNotifs = async () => {
+      try {
+        const res = await fetch(`${API}/api/notifications`);
+        if (res.ok) {
+          const json = await res.json();
+          setApiNotifications(json.data);
+        }
+      } catch (e) {
+        console.error("Failed to fetch notifications:", e);
+      }
+    };
+    fetchNotifs();
+  }, []);
 
   // ── Entry animation ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -184,7 +200,9 @@ export default function Hero() {
   const hoverIn  = (e) => gsap.to(e.currentTarget, { scale: 1.08, duration: 0.2 });
   const hoverOut = (e) => gsap.to(e.currentTarget, { scale: 1,    duration: 0.2 });
 
-  const notifications = NOTIFICATIONS[activeTab];
+  const notifications = apiNotifications 
+    ? (activeTab === "All" ? apiNotifications : apiNotifications.filter(n => (n.category || n.tag) === activeTab))
+    : NOTIFICATIONS[activeTab];
 
   return (
     <>
@@ -288,7 +306,7 @@ export default function Hero() {
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
               </svg>
               <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-400 rounded-full border-2 border-white text-[8px] font-bold flex items-center justify-center">
-                {NOTIFICATIONS["All"].length}
+                {apiNotifications ? apiNotifications.length : NOTIFICATIONS["All"].length}
               </span>
             </span>
             <div className="text-left">
@@ -400,7 +418,7 @@ export default function Hero() {
             <div className="flex items-center gap-2 mt-4">
               <span className="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-600 text-[11px] font-semibold px-3 py-1 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 inline-block" />
-                {NOTIFICATIONS["All"].length} active notices
+                {apiNotifications ? apiNotifications.length : NOTIFICATIONS["All"].length} active notices
               </span>
             </div>
           </div>
@@ -420,7 +438,7 @@ export default function Hero() {
                 {tab}
                 {tab === "All" && (
                   <span className={`ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full ${activeTab === tab ? "bg-white/20 text-white" : "bg-gray-200 text-gray-500"}`}>
-                    {NOTIFICATIONS["All"].length}
+                    {apiNotifications ? apiNotifications.length : NOTIFICATIONS["All"].length}
                   </span>
                 )}
               </button>
@@ -442,14 +460,14 @@ export default function Hero() {
               </div>
             ) : (
               notifications.map((n) => {
-                const ts = TAG_STYLES[n.tag] ?? TAG_STYLES["Academics"];
+                const ts = TAG_STYLES[n.category || n.tag] ?? TAG_STYLES["Academics"];
                 return (
                   <div
-                    key={n.id}
+                    key={n._id || n.id}
                     className="notif-card group flex items-start gap-3 p-4 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/40 cursor-pointer"
                   >
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${ts.wrap}`}>
-                      <TagIcon tag={n.tag} />
+                      <TagIcon tag={n.category || n.tag} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-semibold text-gray-800 leading-snug group-hover:text-indigo-700 transition-colors">
@@ -460,10 +478,10 @@ export default function Hero() {
                           <svg width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                             <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
                           </svg>
-                          {n.date}
+                          {n.date || (n.createdAt ? new Date(n.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase() : "")}
                         </span>
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${ts.badge}`}>
-                          {n.tag}
+                          {n.category || n.tag}
                         </span>
                       </div>
                     </div>
@@ -484,110 +502,6 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* ══════════════════════════════════════════════════════════════════
-            NEWS SIDEBAR
-        ══════════════════════════════════════════════════════════════════ */}
-
-        {/* Overlay */}
-        <div
-          ref={newsOverlayRef}
-          onClick={() => setNewsOpen(false)}
-          className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-[3px]"
-          style={{ display: "none" }}
-        />
-
-        {/* Sidebar shell */}
-        <div
-          ref={newsSidebarRef}
-          className="fixed top-0 right-0 h-full z-50 flex-col bg-white shadow-[-10px_0_60px_rgba(79,70,229,0.14)] w-[min(420px,92vw)]"
-          style={{ display: "none", borderRadius: "24px 0 0 24px" }}
-          onWheel={e => e.stopPropagation()}
-          onTouchMove={e => e.stopPropagation()}
-        >
-          {/* ── Header ── */}
-          <div className="px-6 pt-7 pb-5 border-b border-gray-100">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-400 to-rose-500 flex items-center justify-center shadow-[0_4px_12px_rgba(249,115,22,0.35)]">
-                  <span className="text-lg">📰</span>
-                </div>
-                <div>
-                  <h2 className="font-bold text-[1.1rem] text-gray-900 leading-tight">Latest News</h2>
-                  <p className="text-[11px] text-gray-400 mt-0.5">College & exam updates</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setNewsOpen(false)}
-                className="w-8 h-8 rounded-xl flex items-center justify-center bg-gray-100 hover:bg-red-50 hover:text-red-500 transition-all text-gray-400 mt-0.5"
-              >
-                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path d="M18 6 6 18M6 6l12 12"/>
-                </svg>
-              </button>
-            </div>
-
-            {/* Live badge */}
-            <div className="flex items-center gap-2 mt-4">
-              <span className="inline-flex items-center gap-1.5 bg-orange-50 text-orange-600 text-[11px] font-semibold px-3 py-1 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 inline-block animate-pulse" />
-                {ALL_NEWS.length} stories today
-              </span>
-            </div>
-          </div>
-
-          {/* ── News list (scrollable) ── */}
-          <div
-            className="flex-1 overflow-y-auto px-4 py-4 space-y-3 overscroll-contain"
-            onWheel={e => e.stopPropagation()}
-            onTouchMove={e => e.stopPropagation()}
-          >
-            {ALL_NEWS.map((n, i) => (
-              <div
-                key={n.id}
-                className="news-card group flex items-start gap-3.5 p-4 rounded-2xl border border-gray-100 cursor-pointer bg-white"
-              >
-                {/* Rank number */}
-                <div className="flex flex-col items-center gap-2 shrink-0">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${n.color} shrink-0`}>
-                    {n.emoji}
-                  </div>
-                  <span className="text-[10px] font-bold text-gray-300">#{i + 1}</span>
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-semibold text-gray-800 leading-snug group-hover:text-indigo-700 transition-colors">
-                    {n.headline}
-                  </p>
-
-                  <div className="flex items-center gap-2 mt-2 flex-wrap">
-                    {/* Source pill */}
-                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${n.color}`}>
-                      {n.source}
-                    </span>
-                    {/* Time */}
-                    <span className="flex items-center gap-1 text-[11px] text-gray-400">
-                      <svg width="9" height="9" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-                      </svg>
-                      {n.time}
-                    </span>
-                  </div>
-                </div>
-
-                <svg className="shrink-0 text-gray-300 group-hover:text-indigo-400 transition-colors mt-1" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path d="m9 18 6-6-6-6"/>
-                </svg>
-              </div>
-            ))}
-          </div>
-
-          {/* ── Footer ── */}
-          <div className="px-5 py-4 border-t border-gray-100 bg-gray-50/60">
-            <button className="w-full py-3 rounded-2xl text-white font-bold text-[13px] tracking-wide hover:opacity-90 active:scale-[0.98] transition-all bg-gradient-to-r from-orange-400 to-rose-500 shadow-[0_4px_16px_rgba(249,115,22,0.3)]">
-              Open News Portal →
-            </button>
-          </div>
-        </div>
 
       </section>
     </>

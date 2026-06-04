@@ -8,22 +8,12 @@ import {
   Btn, ToastProvider, useToast,
 } from  "../../../admin-compo/AdminUi";
 
-const CATEGORIES = ["JEE/NEET", "Admissions", "Scholarships", "Placements", "Policy", "Rankings", "General"];
-const EMOJIS = [
-  { value: "📰", label: "📰 Newspaper" },
-  { value: "🎓", label: "🎓 Graduation" },
-  { value: "📊", label: "📊 Chart" },
-  { value: "🏛️", label: "🏛️ Institute" },
-  { value: "💰", label: "💰 Money" },
-  { value: "🔬", label: "🔬 Science" },
-  { value: "⚡", label: "⚡ Flash" },
-  { value: "📚", label: "📚 Books" },
-  { value: "🏆", label: "🏆 Trophy" },
-  { value: "📅", label: "📅 Calendar" },
-];
+const API = process.env.NEXT_PUBLIC_API;
+
+const CATEGORIES = ["All", "Academics", "Exam", "Admission"];
 
 const EMPTY = {
-  title: "", category: "JEE/NEET", emoji: "📰",
+  title: "", category: "Exam",
   source: "", date: "", summary: "", url: "",
 };
 
@@ -38,21 +28,35 @@ export default function AddNewsPage() {
 
   const preview = form.title || form.summary;
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     if (!form.title.trim() || !form.summary.trim()) {
       toast("⚠️ Headline and summary are required!");
       return;
     }
     const article = {
-      id: Date.now(),
       ...form,
       date: form.date || new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
       source: form.source || "Collegy",
     };
-    console.log("New Article:", article); // Replace with API call
-    setSaved(true);
-    toast("📰 News article published!");
-    setTimeout(() => { setSaved(false); setForm(EMPTY); }, 2000);
+    
+    try {
+      const res = await fetch(`${API}/api/notifications`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(article),
+      });
+
+      if (res.ok) {
+        setSaved(true);
+        toast("📰 News article published!");
+        setTimeout(() => { setSaved(false); setForm(EMPTY); }, 2000);
+      } else {
+        toast("❌ Error publishing article!");
+      }
+    } catch (error) {
+      console.error(error);
+      toast("❌ Network error!");
+    }
   };
 
   return (
@@ -77,9 +81,6 @@ export default function AddNewsPage() {
               </FormGroup>
               <FormGroup label="Category">
                 <Select options={CATEGORIES} value={form.category} onChange={set("category")} />
-              </FormGroup>
-              <FormGroup label="Emoji / Icon">
-                <Select options={EMOJIS} value={form.emoji} onChange={set("emoji")} />
               </FormGroup>
               <FormGroup label="Source">
                 <Input placeholder="e.g. Times of India, NTA Official" value={form.source} onChange={set("source")} />
@@ -125,7 +126,6 @@ export default function AddNewsPage() {
               {preview ? (
                 <>
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-2xl">{form.emoji}</span>
                     {form.category && (
                       <span className="bg-[#EEF3FF] text-[#2667ff] text-[9px] font-black px-2 py-1 rounded-full uppercase tracking-wider">
                         {form.category}
