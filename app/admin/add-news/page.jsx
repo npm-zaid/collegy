@@ -8,7 +8,7 @@ import {
   Btn, ToastProvider, useToast,
 } from  "../../../admin-compo/AdminUi";
 
-const API = process.env.NEXT_PUBLIC_API;
+const API = 'https://finale-beacon-backend.vercel.app';
 
 const CATEGORIES = ["All", "Academics", "Exam", "Admission"];
 

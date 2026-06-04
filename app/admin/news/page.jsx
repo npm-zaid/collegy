@@ -7,7 +7,7 @@ import { Plus, Trash2, ExternalLink, Search } from "lucide-react";
 import { PageHeader, Chip, Btn, ToastProvider, useToast } from "../../../admin-compo/AdminUi";
 import { NEWS_DATA } from "../../../data/adminData";
 
-const API = process.env.NEXT_PUBLIC_API;
+const API = 'https://finale-beacon-backend.vercel.app'
 
 const CAT_COLOR_MAP = {
   "Exam": "blue",

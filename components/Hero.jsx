@@ -91,7 +91,7 @@ export default function Hero() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [newsOpen,    setNewsOpen]    = useState(false);
   const [apiNotifications, setApiNotifications] = useState(null);
-  const API = process.env.NEXT_PUBLIC_API;
+  const API = 'https://finale-beacon-backend.vercel.app';
   useEffect(() => {
     const fetchNotifs = async () => {
       try {
