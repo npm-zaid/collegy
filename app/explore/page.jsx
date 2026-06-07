@@ -3,11 +3,12 @@ import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   Search, MapPin, GraduationCap, BookOpen,
-  Building2, Info, Filter, ChevronRight, Star, X, Wifi, Monitor, Clock, Users,
+  Building2, Info, Filter, ChevronRight, Star, X, Wifi, Monitor, Clock, Users, Image as ImageIcon
 } from "lucide-react";
-import { COLLEGES, ALL_COURSES, ALL_STUDY_MODES, MAX_FEE, toSlug } from "../../data/collegeData";
+import { useEffect } from "react";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
+const toSlug = (str) => str?.toLowerCase().replace(/\s+/g, '-') || "";
 const formatFee = (val) => {
   if (val >= 100000) return `₹${(val / 100000).toFixed(val % 100000 === 0 ? 0 : 1)}L`;
   if (val >= 1000)   return `₹${(val / 1000).toFixed(0)}K`;
@@ -19,11 +20,51 @@ const STUDY_MODE_META = {
   Hybrid:     { icon: Monitor, color: "text-violet-400", active: "bg-violet-500/20 text-violet-300 border-violet-500/40" },
   "Part-Time":{ icon: Clock,   color: "text-amber-400",  active: "bg-amber-500/20 text-amber-300 border-amber-500/40" },
   Regular:    { icon: Users,   color: "text-emerald-400",active: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" },
+  Offline:    { icon: Users,   color: "text-rose-400",   active: "bg-rose-500/20 text-rose-300 border-rose-500/40" },
+  Distance:   { icon: Wifi,    color: "text-amber-400",  active: "bg-amber-500/20 text-amber-300 border-amber-500/40" },
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function ExplorePage() {
   const router = useRouter();
+
+  const [colleges, setColleges] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchColleges = async () => {
+      try {
+        const res = await fetch("https://finale-beacon-backend.vercel.app/api/colleges");
+        const json = await res.json();
+        if (json.success) {
+          const mapped = json.data.map(c => ({
+            id: c._id || c.collegeId,
+            name: c.collegeName || "Unknown",
+            city: c.location?.city || "Unknown",
+            state: c.location?.state || "Unknown",
+            courses: c.courses?.map(co => co.courseName) || [],
+            category: c.collegeType || "Private",
+            featured: c.isFeatured || false,
+            studyMode: c.modes || [],
+            feeNumeric: Math.min(...(c.courses?.map(co => co.fees?.totalFees || 0).filter(f => f > 0) || [0]), 0) || 0,
+            fee: c.feesRange || (c.courses?.[0]?.fees?.totalFees ? formatFee(c.courses[0].fees.totalFees) : "N/A"),
+            rank: c.nirfRanking?.overallRank || "-",
+            seats: c.courses?.reduce((acc, curr) => acc + (curr.seatIntake || 0), 0) || 0,
+            type: c.collegeType || "Private",
+            estd: c.establishedYear || "Unknown",
+            image: c.media?.images?.[0]?.filename || null,
+            raw: c,
+          }));
+          setColleges(mapped);
+        }
+      } catch (err) {
+        console.error("Failed to fetch colleges", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchColleges();
+  }, []);
 
   const [search,            setSearch]            = useState("");
   const [selectedState,     setSelectedState]     = useState("All States");
@@ -31,17 +72,22 @@ export default function ExplorePage() {
   const [selectedCourse,    setSelectedCourse]    = useState("All Courses");
   const [selectedCategory,  setSelectedCategory]  = useState("All");
   const [showFeaturedOnly,  setShowFeaturedOnly]  = useState(false);
-  const [selectedModes,     setSelectedModes]     = useState([]);   // multi-select
-  const [maxFee,            setMaxFee]            = useState(MAX_FEE);
+  const [selectedModes,     setSelectedModes]     = useState([]);
 
-  const states = ["All States", ...Array.from(new Set(COLLEGES.map((c) => c.state))).sort()];
+  const states = useMemo(() => ["All States", ...Array.from(new Set(colleges.map((c) => c.state))).filter(Boolean).sort()], [colleges]);
+  const ALL_COURSES = useMemo(() => Array.from(new Set(colleges.flatMap((c) => c.courses))).sort(), [colleges]);
+  const ALL_STUDY_MODES = useMemo(() => Array.from(new Set(colleges.flatMap((c) => c.studyMode))).sort(), [colleges]);
+  const MAX_FEE = useMemo(() => colleges.length > 0 ? Math.max(...colleges.map((c) => c.feeNumeric)) : 5000000, [colleges]);
+
+  const [maxFee, setMaxFee] = useState(MAX_FEE);
+  useEffect(() => { setMaxFee(MAX_FEE); }, [MAX_FEE]);
 
   const cities = useMemo(() => {
-    const base = COLLEGES
+    const base = colleges
       .filter((c) => selectedState === "All States" || c.state === selectedState)
-      .map((c) => c.city);
+      .map((c) => c.city).filter(Boolean);
     return ["All Cities", ...Array.from(new Set(base)).sort()];
-  }, [selectedState]);
+  }, [selectedState, colleges]);
 
   const toggleMode = (mode) =>
     setSelectedModes((prev) =>
@@ -49,13 +95,13 @@ export default function ExplorePage() {
     );
 
   const filteredColleges = useMemo(() => {
-    return COLLEGES.filter((clg) => {
+    return colleges.filter((clg) => {
       const q = search.toLowerCase();
       const modeMatch =
         selectedModes.length === 0 ||
         selectedModes.some((m) => clg.studyMode?.includes(m));
       return (
-        (clg.name.toLowerCase().includes(q) || clg.city.toLowerCase().includes(q)) &&
+        (clg.name.toLowerCase().includes(q) || clg.city.toLowerCase().includes(q) || clg.courses.some(course => course.toLowerCase().includes(q))) &&
         (selectedState    === "All States"  || clg.state    === selectedState) &&
         (selectedCity     === "All Cities"  || clg.city     === selectedCity) &&
         (selectedCourse   === "All Courses" || clg.courses.includes(selectedCourse)) &&
@@ -64,8 +110,13 @@ export default function ExplorePage() {
         modeMatch &&
         (clg.feeNumeric === undefined || clg.feeNumeric <= maxFee)
       );
-    }).sort((a, b) => a.rank - b.rank);
-  }, [search, selectedState, selectedCity, selectedCourse, selectedCategory, showFeaturedOnly, selectedModes, maxFee]);
+    }).sort((a, b) => {
+      // sort by rank if rank is a number
+      const rankA = typeof a.rank === 'number' ? a.rank : 99999;
+      const rankB = typeof b.rank === 'number' ? b.rank : 99999;
+      return rankA - rankB;
+    });
+  }, [search, selectedState, selectedCity, selectedCourse, selectedCategory, showFeaturedOnly, selectedModes, maxFee, colleges]);
 
   const hasFilters =
     search || selectedState !== "All States" || selectedCity !== "All Cities" ||
@@ -238,7 +289,7 @@ export default function ExplorePage() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search by college name or city…"
+                placeholder="Search by college name, city or course…"
                 className="w-full bg-zinc-100 border-2 border-transparent pl-14 pr-6 py-5 rounded-[2rem] text-base font-bold text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#2667ff]/30 focus:bg-white transition-all"
               />
             </div>
@@ -284,6 +335,11 @@ export default function ExplorePage() {
                     }`}
                   >
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
+                      {clg.image ? (
+                        <img src={clg.image.startsWith("http") ? clg.image : `https://finale-beacon-backend.vercel.app/uploads/colleges/${clg.image}`} alt={clg.name} className="w-full md:w-32 md:h-32 object-cover rounded-2xl shrink-0 border border-zinc-200" />
+                      ) : (
+                        <div className="w-full md:w-32 md:h-32 bg-zinc-100 rounded-2xl shrink-0 flex items-center justify-center text-zinc-300 border border-zinc-200"><ImageIcon size={32} /></div>
+                      )}
 
                       <div className="space-y-2.5 flex-1">
                         {/* Badges */}
