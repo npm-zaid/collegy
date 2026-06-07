@@ -98,8 +98,8 @@ const SectionLabel = ({ color, bg, emoji, children, mobile }) => (
 
 const ViewAllLink = ({ label, onClose }) => (
   <div className="mt-5 pt-4 border-t border-gray-100 flex justify-end">
-    <a
-      href="#"
+    <Link
+      href="/explore"
       onClick={onClose}
       className="group inline-flex items-center gap-2 text-[0.78rem] font-bold text-[#2667ff] px-4 py-2 rounded-xl bg-[#2667ff]/8 border border-[#2667ff]/20 hover:bg-[#2667ff]/15 hover:border-[#2667ff]/40 transition-all duration-200"
     >
@@ -108,7 +108,7 @@ const ViewAllLink = ({ label, onClose }) => (
         className="group-hover:translate-x-1 transition-transform duration-200">
         <path d="M5 12h14M12 5l7 7-7 7" />
       </svg>
-    </a>
+    </Link>
   </div>
 );
 
@@ -190,7 +190,7 @@ const MegaContent = ({ megaKey, onClose }) => {
         <PanelHeading>Quick Links</PanelHeading>
         <div className="grid grid-cols-4 gap-3">
           {DATA.more.links.map(({ icon, label, desc }) => (
-            <a key={label} href={`/${toSlug(label)}`} onClick={onClose}
+            <Link key={label} href={`/${toSlug(label)}`} onClick={onClose}
               className="group flex items-start gap-3 px-4 py-3.5 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/60 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
             >
               <span className="text-xl shrink-0 mt-0.5">{icon}</span>
@@ -198,7 +198,7 @@ const MegaContent = ({ megaKey, onClose }) => {
                 <div className="text-[0.82rem] font-semibold text-gray-800 group-hover:text-indigo-700 transition-colors leading-tight">{label}</div>
                 <div className="text-[0.7rem] text-gray-400 mt-0.5">{desc}</div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -226,10 +226,10 @@ const MobileContent = ({ megaKey, onClose }) => {
     return (
       <div className="pb-3 mt-1">
         {DATA.more.links.map(({ icon, label }) => (
-          <a key={label} href="#" onClick={onClose}
-            className="flex items-center gap-2 px-3 py-[9px] rounded-xl text-[0.82rem] font-semibold text-slate-800 hover:bg-indigo-50 transition-colors">
+          <Link key={label} href={`/${toSlug(label)}`} onClick={onClose}
+            className="flex items-center gap-2 px-3 py-[9px] rounded-xl text-[0.82rem] font-semibold text-slate-800 hover:bg-indigo-50 transition-colors no-underline">
             <span>{icon}</span><span>{label}</span>
-          </a>
+          </Link>
         ))}
       </div>
     );
@@ -477,9 +477,9 @@ export default function Navbar() {
             <div className="w-px h-6 bg-indigo-100" />
 
         
-           <button className="flex btn items-center bg-gradient-to-br from-[#2667ff] to-[#3f8efc] gap-2 px-5 py-2.5 rounded-3xl text-sm font-bold text-white cursor-pointer border-0 shadow-[0_4px_18px_rgba(79,70,229,0.38)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.55)]">
+           <Link href="/contact-us" className="flex btn items-center bg-gradient-to-br from-[#2667ff] to-[#3f8efc] gap-2 px-5 py-2.5 rounded-3xl text-sm font-bold text-white cursor-pointer border-0 shadow-[0_4px_18px_rgba(79,70,229,0.38)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.55)] no-underline">
            Join Us Now
-          </button>
+          </Link>
           </div>
 
           <HamburgerButton open={mobileOpen} onClick={() => setMobileOpen((p) => !p)} />
@@ -539,13 +539,23 @@ export default function Navbar() {
         >
           {[{ label: "Home", key: null }, ...NAV_KEYS.map((k) => ({ label: k.charAt(0).toUpperCase() + k.slice(1), key: k }))].map(({ label, key }) => (
             <div key={label}>
-              <button
-                onClick={() => key && toggleMobileExpand(key)}
-                className="flex items-center justify-between w-full py-3 border-b border-indigo-50 text-[0.9rem] font-semibold text-[#1e1b4b] bg-transparent cursor-pointer border-x-0 border-t-0"
-              >
-                <span>{label}</span>
-                {key && <ChevronIcon open={mobileExpand === key} />}
-              </button>
+              {key === null ? (
+                <Link
+                  href="/"
+                  onClick={() => { setMobileOpen(false); setMobileExpand(null); }}
+                  className="flex items-center justify-between w-full py-3 border-b border-indigo-50 text-[0.9rem] font-semibold text-[#1e1b4b] bg-transparent cursor-pointer border-x-0 border-t-0 no-underline"
+                >
+                  <span>{label}</span>
+                </Link>
+              ) : (
+                <button
+                  onClick={() => toggleMobileExpand(key)}
+                  className="flex items-center justify-between w-full py-3 border-b border-indigo-50 text-[0.9rem] font-semibold text-[#1e1b4b] bg-transparent cursor-pointer border-x-0 border-t-0"
+                >
+                  <span>{label}</span>
+                  <ChevronIcon open={mobileExpand === key} />
+                </button>
+              )}
               {key && mobileExpand === key && (
                 <MobileContent megaKey={key} onClose={() => { setMobileOpen(false); setMobileExpand(null); }} />
               )}
@@ -553,12 +563,12 @@ export default function Navbar() {
           ))}
 
           <div className="mt-4 pt-4 border-t border-indigo-50">
-            <button className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white border-0 cursor-pointer bg-gradient-to-r from-[#2667ff] to-[#3f8efc]">
+            <Link href="/contact-us" onClick={() => setMobileOpen(false)} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white border-0 cursor-pointer bg-gradient-to-r from-[#2667ff] to-[#3f8efc] no-underline">
               Join Us
               <svg width="13" height="13" fill="none" stroke="white" strokeWidth="2.5" viewBox="0 0 24 24">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
-            </button>
+            </Link>
           </div>
         </div>
       </nav>

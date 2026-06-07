@@ -8,7 +8,7 @@ import {
   TrendingUp, BookOpen,
 } from "lucide-react";
 import {
-  FormCard, FormGroup, Input, Select, Textarea, Btn,
+  FormCard, FormGroup, Input, Select, Textarea, Btn, TagsInput
 } from "./AdminUi";
 
 const API = "https://finale-beacon-backend.vercel.app";
@@ -48,6 +48,7 @@ export const emptyReview = () => ({
 
 export const EMPTY_FORM = {
   collegeId:"", collegeName:"", establishedYear:"", description:"",
+  collegeType:"", feesRange:"", modes:[],
   country:"India", state:"", city:"", address:"", pincode:"", latitude:"", longitude:"",
   nirfOverallRank:"", nirfYear: new Date().getFullYear(),
   videoLink:"",
@@ -62,6 +63,9 @@ export const EMPTY_FORM = {
 export const collegeToForm = (c) => ({
   collegeId:           c.collegeId           || "",
   collegeName:         c.collegeName         || "",
+  collegeType:         c.collegeType         || "",
+  feesRange:           c.feesRange           || "",
+  modes:               c.modes               || [],
   establishedYear:     c.establishedYear     || "",
   description:         c.description         || "",
   country:             c.location?.country   || "India",
@@ -94,6 +98,9 @@ export const buildFormData = ({ form, courses, companies, reviews, imageFiles })
   const fd = new FormData();
   fd.append("collegeId",       form.collegeId.trim());
   fd.append("collegeName",     form.collegeName.trim());
+  fd.append("collegeType",     form.collegeType || "");
+  fd.append("feesRange",       form.feesRange || "");
+  fd.append("modes",           JSON.stringify(form.modes || []));
   fd.append("establishedYear", form.establishedYear || "0");
   fd.append("description",     form.description || "");
   fd.append("location", JSON.stringify({
@@ -524,6 +531,29 @@ export default function CollegeForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
           <FormGroup label="College ID *"><Input placeholder="e.g. IITB-001" value={form.collegeId} onChange={set("collegeId")}/></FormGroup>
           <FormGroup label="College Name *"><Input placeholder="e.g. IIT Bombay" value={form.collegeName} onChange={set("collegeName")}/></FormGroup>
+          <FormGroup label="College Type"><Select options={["Private", "Government", "Semi-Government", "Other"]} value={form.collegeType} onChange={set("collegeType")} placeholder="Select Type"/></FormGroup>
+          <FormGroup label="Fees Range"><Input placeholder="e.g. 3lakh to 6lakh" value={form.feesRange} onChange={set("feesRange")}/></FormGroup>
+          <FormGroup label="Study Modes">
+            <div className="flex flex-wrap gap-4 mt-1.5">
+              {["Online", "Offline", "Hybrid", "Distance", "Regular"].map(mode => (
+                <label key={mode} className="flex items-center gap-1.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.modes?.includes(mode) || false}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setForm(p => ({ ...p, modes: [...(p.modes || []), mode] }));
+                      } else {
+                        setForm(p => ({ ...p, modes: (p.modes || []).filter(m => m !== mode) }));
+                      }
+                    }}
+                    className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                  />
+                  <span className="text-[13px] font-medium text-slate-700">{mode}</span>
+                </label>
+              ))}
+            </div>
+          </FormGroup>
           <FormGroup label="Established Year"><Input type="number" placeholder="1958" value={form.establishedYear} onChange={set("establishedYear")}/></FormGroup>
           <FormGroup label="NIRF Overall Rank"><Input type="number" placeholder="3" value={form.nirfOverallRank} onChange={set("nirfOverallRank")}/></FormGroup>
           <FormGroup label="NIRF Ranking Year"><Input type="number" placeholder="2024" value={form.nirfYear} onChange={set("nirfYear")}/></FormGroup>

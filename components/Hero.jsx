@@ -91,6 +91,7 @@ export default function Hero() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [newsOpen,    setNewsOpen]    = useState(false);
   const [apiNotifications, setApiNotifications] = useState(null);
+  const [selectedNotification, setSelectedNotification] = useState(null);
   const API = 'https://finale-beacon-backend.vercel.app';
   useEffect(() => {
     const fetchNotifs = async () => {
@@ -137,7 +138,7 @@ export default function Hero() {
   // Uses position:fixed trick — works on iOS Safari, Chrome, Firefox, all.
   // Saves & restores scroll position so the page doesn't jump.
   useEffect(() => {
-    const isOpen = sidebarOpen || newsOpen;
+    const isOpen = sidebarOpen || newsOpen || !!selectedNotification;
     if (isOpen) {
       const scrollY = window.scrollY;
       document.body.style.position = "fixed";
@@ -163,7 +164,7 @@ export default function Hero() {
       document.body.style.overflow = "";
       if (scrollY) window.scrollTo(0, scrollY);
     };
-  }, [sidebarOpen, newsOpen]);
+  }, [sidebarOpen, newsOpen, selectedNotification]);
 
   // ── Notification sidebar animation ───────────────────────────────────────
   useEffect(() => {
@@ -222,6 +223,11 @@ export default function Hero() {
         /* ── Notif sidebar card hover ── */
         .notif-card { transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease; }
         .notif-card:hover { transform: translateX(3px); }
+
+        @keyframes modal-fade { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes modal-scale { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .animate-modal-bg { animation: modal-fade 0.3s ease-out forwards; }
+        .animate-modal-content { animation: modal-scale 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       `}</style>
 
       <section
@@ -331,7 +337,7 @@ export default function Hero() {
 
           <p
             ref={subtitleRef}
-            className="text-gray-500 max-w-[580px] mx-auto mb-10 lg:text-lg text-base"
+            className="text-gray-500 max-w-[600px] mx-auto mb-10 lg:text-lg text-base"
           >
             Explore thousands of colleges, compare programs, check cutoffs, and
             get personalized recommendations — all in one place.
@@ -464,6 +470,7 @@ export default function Hero() {
                 return (
                   <div
                     key={n._id || n.id}
+                    onClick={() => { setSelectedNotification(n); setSidebarOpen(false); }}
                     className="notif-card group flex items-start gap-3 p-4 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/40 cursor-pointer"
                   >
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${ts.wrap}`}>
@@ -502,6 +509,76 @@ export default function Hero() {
           </div>
         </div>
 
+        {/* ══════════════════════════════════════════════════════════════════
+            DETAILED NOTIFICATION POPUP
+        ══════════════════════════════════════════════════════════════════ */}
+        {selectedNotification && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center px-4">
+            {/* Black blur background */}
+            <div 
+              className="absolute inset-0 bg-black/60 backdrop-blur-md animate-modal-bg cursor-pointer"
+              onClick={() => setSelectedNotification(null)}
+            />
+            
+            {/* Popup Content */}
+            <div className="relative bg-white rounded-[24px] w-full max-w-[500px] shadow-2xl p-7 sm:p-8 animate-modal-content">
+              <button 
+                onClick={() => setSelectedNotification(null)}
+                className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors"
+              >
+                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path d="M18 6 6 18M6 6l12 12"/>
+                </svg>
+              </button>
+
+              <div className="flex items-center gap-3 mb-5">
+                <div className={`px-3 py-1 rounded-full text-[11px] font-bold tracking-wide ${TAG_STYLES[selectedNotification.category || selectedNotification.tag]?.badge || TAG_STYLES["Academics"].badge}`}>
+                  {selectedNotification.category || selectedNotification.tag}
+                </div>
+                <span className="text-[13px] text-gray-400 font-medium">
+                  {selectedNotification.date || (selectedNotification.createdAt ? new Date(selectedNotification.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase() : "")}
+                </span>
+              </div>
+
+              <h3 className="text-[1.4rem] font-bold text-gray-900 mb-4 leading-[1.3]">
+                {selectedNotification.title}
+              </h3>
+              
+              {(selectedNotification.summary || selectedNotification.fullDetail) ? (
+                <div className="text-[15px] text-gray-600 space-y-3 mb-7 max-h-[40vh] overflow-y-auto no-scrollbar pr-2">
+                  {selectedNotification.summary && <p className="font-medium text-gray-800">{selectedNotification.summary}</p>}
+                  {selectedNotification.fullDetail && <p className="whitespace-pre-wrap leading-relaxed">{selectedNotification.fullDetail}</p>}
+                </div>
+              ) : (
+                <div className="text-[15px] text-gray-500 mb-7">
+                  <p>No further details are available for this notification.</p>
+                </div>
+              )}
+
+              <div className="flex justify-end gap-3 border-t border-gray-100 pt-5">
+                <button 
+                  onClick={() => setSelectedNotification(null)}
+                  className="px-5 py-2.5 rounded-xl font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors text-sm"
+                >
+                  Close
+                </button>
+                {selectedNotification.url && (
+                  <a 
+                    href={selectedNotification.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-gradient-to-r from-[#2667ff] to-[#3f8efc] text-white px-5 py-2.5 rounded-xl font-semibold shadow-[0_4px_16px_rgba(38,103,255,0.3)] hover:shadow-[0_4px_20px_rgba(38,103,255,0.4)] hover:-translate-y-0.5 transition-all text-sm"
+                  >
+                    Read More
+                    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
       </section>
     </>

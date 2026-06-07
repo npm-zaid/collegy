@@ -108,6 +108,9 @@ function ViewDrawer({ college: c, onClose, onEdit, onDelete }) {
           <div className="bg-slate-50 rounded-2xl p-4 flex flex-col gap-3">
             {[
               ["College ID", c.collegeId || "—"],
+              ["College Type", c.collegeType || "—"],
+              ["Fees Range", c.feesRange || "—"],
+              ["Study Modes", c.modes?.length > 0 ? c.modes.join(", ") : "—"],
               ["Address", [c.location?.address, c.location?.city, c.location?.state, c.location?.pincode].filter(Boolean).join(", ") || "—"],
               ["NIRF Rank", c.nirfRanking?.overallRank > 0 ? `#${c.nirfRanking.overallRank} (${c.nirfRanking.year})` : "—"],
               ["Rating", c.collegeRatings?.averageRating > 0 ? `${c.collegeRatings.averageRating}/5 (${c.collegeRatings.totalReviews} reviews)` : "—"],
@@ -304,6 +307,7 @@ function CollegeCard({ college: c, onView, onEdit, onDelete }) {
           <h3 className="text-[14px] font-black text-slate-800 leading-tight capitalize line-clamp-1">{c.collegeName}</h3>
           <div className="flex items-center gap-2 mt-0.5">
             <span className="text-[10px] font-mono text-slate-400">{c.collegeId}</span>
+            {c.collegeType && <span className="text-[10px] text-[#2667ff] font-bold">· {c.collegeType}</span>}
             {c.establishedYear > 0 && <span className="text-[10px] text-slate-400">· Est. {c.establishedYear}</span>}
           </div>
         </div>

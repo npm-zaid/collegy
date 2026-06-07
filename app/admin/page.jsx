@@ -4,41 +4,42 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import {
   GraduationCap, Users, MessageSquare, Briefcase,
-  CreditCard, Newspaper, Star,
+  Newspaper, Star, PieChart, Building2, Activity, ShieldCheck
 } from "lucide-react";
 import { StatCard } from "../../admin-compo/AdminUi";
 import { ACTIVITY_DATA } from "../../data/adminData";
 
 const STATS = [
-  { icon: <GraduationCap size={18} />, value: "34", label: "Total Colleges", change: "+3 this month", changeType: "up", colorClass: "blue" },
-  { icon: <Users size={18} />, value: "248", label: "Registered Users", change: "+31 this week", changeType: "up", colorClass: "green" },
-  { icon: <MessageSquare size={18} />, value: "12", label: "Pending Consults", change: "4 overdue", changeType: "down", colorClass: "amber" },
-  { icon: <Briefcase size={18} />, value: "19", label: "Internship Requests", change: "New today", changeType: "up", colorClass: "rose" },
+  { icon: <GraduationCap size={18} />, value: "157", label: "Total Colleges", change: "+12 this month", changeType: "up", colorClass: "blue" },
+  { icon: <Users size={18} />, value: "1,248", label: "Registered Users", change: "+131 this week", changeType: "up", colorClass: "green" },
+  { icon: <MessageSquare size={18} />, value: "32", label: "Pending Consults", change: "8 overdue", changeType: "down", colorClass: "amber" },
+  { icon: <Briefcase size={18} />, value: "45", label: "Internship Requests", change: "12 New today", changeType: "up", colorClass: "rose" },
 ];
 
 const QUICK = [
-  { emoji: "🏦", val: "8", label: "Loan Requests" },
-  { emoji: "📰", val: "6", label: "News Published" },
-  { emoji: "⭐", val: "8", label: "Featured Colleges" },
-  { emoji: "🏛️", val: "22", label: "Govt. Colleges" },
-  { emoji: "🏢", val: "12", label: "Private Colleges" },
-  { emoji: "✅", val: "4", label: "Consults Done" },
+  { icon: <Newspaper size={20} />, val: "24", label: "News Published" },
+  { icon: <Star size={20} />, val: "18", label: "Featured Colleges" },
+  { icon: <Building2 size={20} />, val: "45", label: "Govt. Colleges" },
+  { icon: <Building2 size={20} />, val: "112", label: "Private Colleges" },
+  { icon: <ShieldCheck size={20} />, val: "12", label: "Active Partners" },
+  { icon: <MessageSquare size={20} />, val: "18", label: "Consults Done" },
 ];
 
 const BAR_DATA = [
-  { label: "Consultations", val: 12, max: 20, color: "#2667ff" },
-  { label: "Loans", val: 8, max: 20, color: "#f59e0b" },
-  { label: "Internships", val: 19, max: 20, color: "#f43f5e" },
-  { label: "News Articles", val: 6, max: 20, color: "#10b981" },
-  { label: "New Users", val: 31, max: 50, color: "#8b5cf6" },
+  { label: "Consultations", val: 32, max: 100, color: "#2667ff" },
+  { label: "Internships", val: 45, max: 100, color: "#f43f5e" },
+  { label: "News Articles", val: 24, max: 100, color: "#10b981" },
+  { label: "New Users", val: 86, max: 100, color: "#8b5cf6" },
+  { label: "Partner Requests", val: 12, max: 100, color: "#f59e0b" },
 ];
 
+
 const CAT_DATA = [
-  { label: "Government", val: 22, max: 34, color: "#2667ff" },
-  { label: "Private", val: 12, max: 34, color: "#8b5cf6" },
-  { label: "Featured", val: 8, max: 34, color: "#f59e0b" },
-  { label: "IITs", val: 5, max: 34, color: "#10b981" },
-  { label: "NITs", val: 4, max: 34, color: "#f43f5e" },
+  { label: "Government", val: 45, max: 157, color: "#2667ff" },
+  { label: "Private", val: 112, max: 157, color: "#8b5cf6" },
+  { label: "Featured", val: 18, max: 157, color: "#f59e0b" },
+  { label: "IITs", val: 23, max: 157, color: "#10b981" },
+  { label: "NITs", val: 31, max: 157, color: "#f43f5e" },
 ];
 
 export default function DashboardPage() {
@@ -77,8 +78,10 @@ export default function DashboardPage() {
       {/* Quick stats */}
       <div className="grid grid-cols-3 xl:grid-cols-6 gap-3 mb-7">
         {QUICK.map((q) => (
-          <div key={q.label} className="quick-card bg-white border border-slate-100 rounded-[16px] p-4 flex items-center gap-3 shadow-sm">
-            <span className="text-2xl">{q.emoji}</span>
+          <div key={q.label} className="quick-card bg-white border border-slate-100 rounded-[16px] p-4 flex items-center gap-4 shadow-sm">
+            <span className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-indigo-500 shrink-0">
+              {q.icon}
+            </span>
             <div>
               <div className="font-black text-[20px] leading-none tracking-tight" style={{ fontFamily: "'Syne', sans-serif" }}>{q.val}</div>
               <div className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mt-0.5">{q.label}</div>
@@ -91,8 +94,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-5">
         {/* Bar charts */}
         <div className="bg-white border border-slate-100 rounded-[20px] p-6 shadow-sm">
-          <div className="font-bold text-[13px] mb-5 flex items-center gap-2">
-            📊 <span>Requests by Type</span>
+          <div className="font-bold text-[13px] mb-5 flex items-center gap-2 text-slate-800">
+            <PieChart size={16} className="text-indigo-500" /> <span>Requests by Type</span>
           </div>
           <div ref={barsRef} className="flex flex-col gap-4">
             {BAR_DATA.map((b) => (
@@ -112,8 +115,8 @@ export default function DashboardPage() {
         </div>
 
         <div className="bg-white border border-slate-100 rounded-[20px] p-6 shadow-sm">
-          <div className="font-bold text-[13px] mb-5 flex items-center gap-2">
-            🏛️ <span>Colleges by Category</span>
+          <div className="font-bold text-[13px] mb-5 flex items-center gap-2 text-slate-800">
+            <Building2 size={16} className="text-indigo-500" /> <span>Colleges by Category</span>
           </div>
           <div className="flex flex-col gap-4">
             {CAT_DATA.map((b) => (
@@ -134,8 +137,8 @@ export default function DashboardPage() {
 
         {/* Activity */}
         <div className="bg-white border border-slate-100 rounded-[20px] p-6 shadow-sm">
-          <div className="font-bold text-[13px] mb-5 flex items-center gap-2">
-            ⚡ <span>Recent Activity</span>
+          <div className="font-bold text-[13px] mb-5 flex items-center gap-2 text-slate-800">
+            <Activity size={16} className="text-indigo-500" /> <span>Recent Activity</span>
           </div>
           <div ref={actRef} className="flex flex-col divide-y divide-slate-50">
             {ACTIVITY_DATA.map((a, i) => (
