@@ -114,7 +114,7 @@ const ViewAllLink = ({ label, onClose }) => (
 
 // ─── Section grid ─────────────────────────────────────────────────────────────
 
-const SectionGrid = ({ sections, cols, mobile = false, routable = false, onClose }) => (
+const SectionGrid = ({ sections, cols, mobile = false, routable = false, searchRoute = false, onClose }) => (
   <div
     className={mobile ? "space-y-4" : "grid gap-6"}
     style={!mobile ? { gridTemplateColumns: `repeat(${cols}, minmax(0,1fr))` } : {}}
@@ -124,11 +124,19 @@ const SectionGrid = ({ sections, cols, mobile = false, routable = false, onClose
         <SectionLabel color={sec.color} bg={sec.bg} emoji={sec.emoji} mobile={mobile}>
           {sec.title}
         </SectionLabel>
-        {sec.items.map((item) => (
-          <NavLink key={item} href={routable ? `/explore/${toSlug(item)}` : undefined} onClose={onClose}>
-            {item}
-          </NavLink>
-        ))}
+        {sec.items.map((item) => {
+          let href = undefined;
+          if (routable) {
+            href = `/explore/${toSlug(item)}`;
+          } else if (searchRoute) {
+            href = `/explore?search=${encodeURIComponent(item)}`;
+          }
+          return (
+            <NavLink key={item} href={href} onClose={onClose}>
+              {item}
+            </NavLink>
+          );
+        })}
       </div>
     ))}
   </div>
@@ -158,9 +166,9 @@ const MegaContent = ({ megaKey, onClose }) => {
     const [row1, row2] = [sections.slice(0, 4), sections.slice(4)];
     return (
       <div className="p-7">
-        <SectionGrid sections={row1} cols={4} routable onClose={onClose} />
+        <SectionGrid sections={row1} cols={4} searchRoute onClose={onClose} />
         <div className="mt-6 pt-6 border-t border-gray-100">
-          <SectionGrid sections={row2} cols={4} routable onClose={onClose} />
+          <SectionGrid sections={row2} cols={4} searchRoute onClose={onClose} />
         </div>
         <ViewAllLink label={viewAll} onClose={onClose} />
       </div>
@@ -175,7 +183,7 @@ const MegaContent = ({ megaKey, onClose }) => {
           {columns.map((col, i) => (
             <div key={i}>
               {col.map((item) => (
-                <NavLink key={item} href={`/explore/${toSlug(item)}`} onClose={onClose}>{item}</NavLink>
+                <NavLink key={item} href={`/explore?search=${encodeURIComponent(item)}`} onClose={onClose}>{item}</NavLink>
               ))}
             </div>
           ))}
@@ -213,12 +221,12 @@ const MobileContent = ({ megaKey, onClose }) => {
   if (megaKey === "colleges")
     return <div className="pb-3 pt-2"><SectionGrid sections={DATA.colleges.sections} cols={1} mobile routable onClose={onClose} /></div>;
   if (megaKey === "exams")
-    return <div className="pb-3 pt-2"><SectionGrid sections={DATA.exams.sections} cols={1} mobile routable onClose={onClose} /></div>;
+    return <div className="pb-3 pt-2"><SectionGrid sections={DATA.exams.sections} cols={1} mobile searchRoute onClose={onClose} /></div>;
   if (megaKey === "courses")
     return (
       <div className="pb-3 grid grid-cols-2 gap-x-4 mt-2">
         {DATA.courses.columns.flat().map((item) => (
-          <NavLink key={item} href={`/explore/${toSlug(item)}`} onClose={onClose}>{item}</NavLink>
+          <NavLink key={item} href={`/explore?search=${encodeURIComponent(item)}`} onClose={onClose}>{item}</NavLink>
         ))}
       </div>
     );

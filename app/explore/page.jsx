@@ -1,11 +1,10 @@
 "use client";
-import React, { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useMemo, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Search, MapPin, GraduationCap, BookOpen,
   Building2, Info, Filter, ChevronRight, Star, X, Wifi, Monitor, Clock, Users, Image as ImageIcon
 } from "lucide-react";
-import { useEffect } from "react";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 const toSlug = (str) => str?.toLowerCase().replace(/\s+/g, '-') || "";
@@ -15,17 +14,32 @@ const formatFee = (val) => {
   return `₹${val}`;
 };
 
+const parseFeeRange = (rangeStr) => {
+  if (!rangeStr) return 0;
+  const clean = rangeStr.toLowerCase().replace(/,/g, '');
+  const matches = clean.match(/[\d.]+/g);
+  if (!matches || matches.length === 0) return 0;
+  
+  const isLakh = clean.includes("lakh") || clean.includes("lac") || clean.includes("l");
+  const isK = clean.includes("k") || clean.includes("thousand");
+  
+  const baseNum = parseFloat(matches[matches.length - 1]);
+  let multiplier = 1;
+  if (isLakh) multiplier = 100000;
+  else if (isK) multiplier = 1000;
+  
+  return baseNum * multiplier;
+};
+
 const STUDY_MODE_META = {
   Online:     { icon: Wifi,    color: "text-cyan-400",   active: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40" },
   Hybrid:     { icon: Monitor, color: "text-violet-400", active: "bg-violet-500/20 text-violet-300 border-violet-500/40" },
   "Part-Time":{ icon: Clock,   color: "text-amber-400",  active: "bg-amber-500/20 text-amber-300 border-amber-500/40" },
   Regular:    { icon: Users,   color: "text-emerald-400",active: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" },
-  Offline:    { icon: Users,   color: "text-rose-400",   active: "bg-rose-500/20 text-rose-300 border-rose-500/40" },
   Distance:   { icon: Wifi,    color: "text-amber-400",  active: "bg-amber-500/20 text-amber-300 border-amber-500/40" },
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
-export default function ExplorePage() {
+function ExplorePageContent() {
   const router = useRouter();
 
   const [colleges, setColleges] = useState([]);
@@ -43,10 +57,21 @@ export default function ExplorePage() {
             city: c.location?.city || "Unknown",
             state: c.location?.state || "Unknown",
             courses: c.courses?.map(co => co.courseName) || [],
+            exams: c.exams || [],
             category: c.collegeType || "Private",
             featured: c.isFeatured || false,
             studyMode: c.modes || [],
-            feeNumeric: Math.min(...(c.courses?.map(co => co.fees?.totalFees || 0).filter(f => f > 0) || [0]), 0) || 0,
+            feeNumeric: (() => {
+              const feesList = c.courses?.map(co => co.fees?.yearlyFees || co.fees?.totalFees || 0).filter(f => f > 0) || [];
+              if (feesList.length > 0) {
+                return Math.min(...feesList);
+              }
+              if (c.feesRange) {
+                const parsed = parseFeeRange(c.feesRange);
+                if (parsed > 0) return parsed;
+              }
+              return 0;
+            })(),
             fee: c.feesRange || (c.courses?.[0]?.fees?.totalFees ? formatFee(c.courses[0].fees.totalFees) : "N/A"),
             rank: c.nirfRanking?.overallRank || "-",
             seats: c.courses?.reduce((acc, curr) => acc + (curr.seatIntake || 0), 0) || 0,
@@ -67,6 +92,13 @@ export default function ExplorePage() {
   }, []);
 
   const [search,            setSearch]            = useState("");
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const query = searchParams.get("search");
+    if (query) {
+      setSearch(query);
+    }
+  }, [searchParams]);
   const [selectedState,     setSelectedState]     = useState("All States");
   const [selectedCity,      setSelectedCity]      = useState("All Cities");
   const [selectedCourse,    setSelectedCourse]    = useState("All Courses");
@@ -76,11 +108,10 @@ export default function ExplorePage() {
 
   const states = useMemo(() => ["All States", ...Array.from(new Set(colleges.map((c) => c.state))).filter(Boolean).sort()], [colleges]);
   const ALL_COURSES = useMemo(() => Array.from(new Set(colleges.flatMap((c) => c.courses))).sort(), [colleges]);
-  const ALL_STUDY_MODES = useMemo(() => Array.from(new Set(colleges.flatMap((c) => c.studyMode))).sort(), [colleges]);
-  const MAX_FEE = useMemo(() => colleges.length > 0 ? Math.max(...colleges.map((c) => c.feeNumeric)) : 5000000, [colleges]);
+  const ALL_STUDY_MODES = useMemo(() => Array.from(new Set(colleges.flatMap((c) => c.studyMode))).filter(m => m !== "Offline").sort(), [colleges]);
+  const MAX_FEE = 3000000; // 30 Lakhs max limit
 
   const [maxFee, setMaxFee] = useState(MAX_FEE);
-  useEffect(() => { setMaxFee(MAX_FEE); }, [MAX_FEE]);
 
   const cities = useMemo(() => {
     const base = colleges
@@ -101,14 +132,14 @@ export default function ExplorePage() {
         selectedModes.length === 0 ||
         selectedModes.some((m) => clg.studyMode?.includes(m));
       return (
-        (clg.name.toLowerCase().includes(q) || clg.city.toLowerCase().includes(q) || clg.courses.some(course => course.toLowerCase().includes(q))) &&
+        (clg.name.toLowerCase().includes(q) || clg.city.toLowerCase().includes(q) || clg.courses.some(course => course.toLowerCase().includes(q)) || clg.exams.some(exam => exam.toLowerCase().includes(q))) &&
         (selectedState    === "All States"  || clg.state    === selectedState) &&
         (selectedCity     === "All Cities"  || clg.city     === selectedCity) &&
         (selectedCourse   === "All Courses" || clg.courses.includes(selectedCourse)) &&
         (selectedCategory === "All"         || clg.category === selectedCategory) &&
         (!showFeaturedOnly || clg.featured) &&
         modeMatch &&
-        (clg.feeNumeric === undefined || clg.feeNumeric <= maxFee)
+        (clg.feeNumeric === 0 || clg.feeNumeric <= maxFee)
       );
     }).sort((a, b) => {
       // sort by rank if rank is a number
@@ -156,7 +187,7 @@ export default function ExplorePage() {
             </div>
 
             {/* Featured toggle */}
-            <button
+            {/* <button
               onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
               className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-[8px] font-black uppercase tracking-[0.2em] border transition-all ${
                 showFeaturedOnly
@@ -166,7 +197,7 @@ export default function ExplorePage() {
             >
               <Star size={10} className={showFeaturedOnly ? "fill-zinc-900" : ""} />
               Top / Featured Only
-            </button>
+            </button> */}
 
             {/* Category */}
             <div className="space-y-1.5">
@@ -441,5 +472,17 @@ export default function ExplorePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ExplorePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-zinc-900"></div>
+      </div>
+    }>
+      <ExplorePageContent />
+    </Suspense>
   );
 }

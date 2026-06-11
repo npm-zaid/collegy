@@ -111,6 +111,7 @@ function ViewDrawer({ college: c, onClose, onEdit, onDelete }) {
               ["College Type", c.collegeType || "—"],
               ["Fees Range", c.feesRange || "—"],
               ["Study Modes", c.modes?.length > 0 ? c.modes.join(", ") : "—"],
+              ["Exams Accepted", c.exams?.length > 0 ? c.exams.join(", ") : "—"],
               ["Address", [c.location?.address, c.location?.city, c.location?.state, c.location?.pincode].filter(Boolean).join(", ") || "—"],
               ["NIRF Rank", c.nirfRanking?.overallRank > 0 ? `#${c.nirfRanking.overallRank} (${c.nirfRanking.year})` : "—"],
               ["Rating", c.collegeRatings?.averageRating > 0 ? `${c.collegeRatings.averageRating}/5 (${c.collegeRatings.totalReviews} reviews)` : "—"],
