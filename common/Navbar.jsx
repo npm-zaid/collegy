@@ -471,7 +471,7 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <div ref={ctaRef} className="hidden lg:flex items-center gap-3 ml-auto shrink-0">
-            <button
+            {/* <button
               onClick={() => setIsNotiOpen(true)}
               className="relative w-[38px] h-[38px] rounded-xl flex items-center justify-center bg-indigo-50 border border-indigo-100 text-indigo-500 hover:bg-indigo-100 hover:border-indigo-200 transition-all cursor-pointer"
             >
@@ -480,9 +480,9 @@ export default function Navbar() {
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
               </svg>
               <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 border-[1.5px] border-white" />
-            </button>
+            </button> */}
 
-            <div className="w-px h-6 bg-indigo-100" />
+            {/* <div className="w-px h-6 bg-indigo-100" /> */}
 
         
            <Link href="/contact-us" className="flex btn items-center bg-gradient-to-br from-[#2667ff] to-[#3f8efc] gap-2 px-5 py-2.5 rounded-3xl text-sm font-bold text-white cursor-pointer border-0 shadow-[0_4px_18px_rgba(79,70,229,0.38)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.55)] no-underline">

@@ -258,7 +258,7 @@ export default function Hero() {
           ref={el => { leftRefs.current[1] = el; }}
           className="absolute block z-10 rounded-full will-change-transform sm:bottom-[33%] bottom-[80%] left-[8%] sm:w-[100px] sm:h-[100px] w-[76px] h-[76px]"
         >
-           <img className="w-[7vw] drop-shadow-xl drop-shadow-black/30" src="https://framerusercontent.com/images/1MtrArv5ytvv15au3DiRsr3Yg.png" alt="" />
+           <img className="md:w-[7vw] w-[15vw] drop-shadow-xl drop-shadow-black/30" src="https://framerusercontent.com/images/1MtrArv5ytvv15au3DiRsr3Yg.png" alt="" />
           {/* <div className="absolute -top-5 left-1/2 -translate-x-1/2 flex gap-[5px] pointer-events-none">
             {["-rotate-[35deg]", "rotate-0", "rotate-[35deg]"].map((r, j) => (
               <div key={j} className={`w-[3px] h-[18px] bg-gradient-to-br from-[#2667ff] to-[#3f8efc] rounded-full origin-bottom ${r}`} />
@@ -275,7 +275,7 @@ export default function Hero() {
          
         >
           <SoundWrapper>
-            <img className="w-[8vw] drop-shadow-xl drop-shadow-black/30" src="https://framerusercontent.com/images/iDma5TKwdehxlWmrAQNAlFsuVAA.png" alt="" />
+            <img className="md:w-[8vw] w-[15vw] drop-shadow-xl drop-shadow-black/30" src="https://framerusercontent.com/images/iDma5TKwdehxlWmrAQNAlFsuVAA.png" alt="" />
           {/* <button
             onClick={() => { setNewsOpen(p => !p); setSidebarOpen(false); }}
             onMouseEnter={hoverIn} onMouseLeave={hoverOut}
@@ -298,14 +298,15 @@ export default function Hero() {
         </div>
 
         {/* RIGHT 1 — Live Updates trigger */}
+        <SoundWrapper>
         <div
           ref={el => { rightRefs.current[1] = el; }}
-          className="absolute z-10 will-change-transform rotate-6 lg:bottom-[25%] lg:right-[5%] bottom-[5%] right-[2%]"
+          className="absolute  z-10 will-change-transform rotate-6 lg:bottom-[25%] lg:right-[5%] bottom-[5%] right-[2%]"
         >
           <button
             onClick={() => { setSidebarOpen(p => !p); setNewsOpen(false); }}
             onMouseEnter={hoverIn} onMouseLeave={hoverOut}
-            className="relative flex items-center gap-2.5 text-white rounded-2xl px-4 py-3 shadow-[0_8px_28px_rgba(79,70,229,0.4)] cursor-pointer bg-gradient-to-br from-[#2667ff] to-[#3f8efc]"
+            className="relative btn flex items-center gap-2.5 text-white rounded-2xl px-4 py-3 shadow-[0_8px_28px_rgba(79,70,229,0.4)] cursor-pointer bg-gradient-to-br from-[#2667ff] to-[#3f8efc]"
           >
             <span className="relative">
               <svg width="20" height="20" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24">
@@ -320,7 +321,7 @@ export default function Hero() {
               <div className="text-[10px] opacity-80">Tap to view</div>
             </div>
           </button>
-        </div>
+        </div></SoundWrapper>
 
         {/* ── Center content ─────────────────────────────────────────────── */}
         <div className="relative z-20 text-center max-w-[700px] w-full mx-auto">
@@ -359,7 +360,7 @@ export default function Hero() {
             />
             <Link
               href="/explore"
-              className="bg-gradient-to-r from-[#2667ff] to-[#3f8efc] text-white font-semibold text-[0.95rem] rounded-full px-7 py-3 whitespace-nowrap shadow-[0_4px_16px_rgba(79,70,229,0.35)] hover:opacity-90 hover:scale-[1.04] transition-all duration-150"
+              className="bg-gradient-to-r from-[#2667ff] to-[#3f8efc] text-white font-semibold text-[0.95rem] rounded-full px-7 py-3 whitespace-nowrap shadow-[0_4px_16px_rgba(79,70,229,0.35)]  btn"
             >
               <span className="hidden lg:block text-white">Find Colleges</span>
               <SendHorizontal className="lg:hidden text-white" />
