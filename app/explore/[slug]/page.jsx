@@ -211,9 +211,9 @@ export default function CollegeDetailPage() {
                 NIRF #{college.rank}
               </span>
             )}
-            <span className="px-3 py-1 bg-zinc-100 text-zinc-500 text-[10px] font-black rounded-xl uppercase tracking-widest">
+            {/* <span className="px-3 py-1 bg-zinc-100 text-zinc-500 text-[10px] font-black rounded-xl uppercase tracking-widest">
               {college.accreditation}
-            </span>
+            </span> */}
             {college.featured && (
               <span className="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-black rounded-xl uppercase tracking-widest flex items-center gap-1">
                 <Star size={9} className="fill-amber-500" /> Featured

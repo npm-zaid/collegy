@@ -5,6 +5,9 @@ import {
   ChevronRight, Sparkles, GraduationCap, Plane, Globe,
   ShieldCheck, Zap, BookOpen, Search, X, CheckCircle2
 } from 'lucide-react';
+import SoundWrapper from './SoundWrapper';
+import { useRouter } from 'next/navigation';
+
 
 const ADMISSION_MODES = [
   { id: 1, title: 'Normal Admission', icon: GraduationCap, desc: 'Normal admission is available for all streams and courses, including both government and private colleges.' },
@@ -20,6 +23,7 @@ const ADMISSION_MODES = [
 ];
 
 export default function AdmissionModes() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState(ADMISSION_MODES[0]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const contentRef = useRef(null);
@@ -50,6 +54,7 @@ export default function AdmissionModes() {
           {/* Sidebar Tabs */}
           <div className="lg:col-span-4 space-y-2 sticky top-24">
             {ADMISSION_MODES.map((mode) => (
+              <SoundWrapper>
               <button
                 key={mode.id}
                 onClick={() => setActiveTab(mode)}
@@ -64,6 +69,7 @@ export default function AdmissionModes() {
                 </div>
                 <ChevronRight size={14} className={activeTab.id === mode.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} />
               </button>
+              </SoundWrapper>
             ))}
           </div>
 
@@ -87,12 +93,15 @@ export default function AdmissionModes() {
                 </p>
 
                 <div className="flex flex-wrap gap-4 pt-8 border-t border-zinc-100">
-                  <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="px-10 py-5 bg-[#3D6BE8] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-900 transition-all shadow-xl shadow-blue-200"
-                  >
-                    Enroll for {activeTab.title}
-                  </button>
+                <button
+  onClick={() => {
+    // setIsModalOpen(true);
+    router.push(`/contact-us`);
+  }}
+  className="px-10 py-5 bg-[#3D6BE8] cursor-pointer text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-900 transition-all shadow-xl shadow-blue-200"
+>
+  Enroll for {activeTab.title}
+</button>
                   <button className="px-10 py-5 border border-zinc-200 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-50 transition-all">
                     Download Guidelines
                   </button>
