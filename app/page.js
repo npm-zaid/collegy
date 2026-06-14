@@ -9,6 +9,7 @@ import StudentWallOfProof from "../components/StudentWallOfProof";
 import ExpertsReview from "../components/ExpertsReview";
 import Awards from "../components/Awards";
 import WhyChooseUs from "../components/WhyChooseUs";
+import YouTubeShowcase from "../components/YouTubeShowcase";
 import FAQ from "../components/FAQ";
 import CollegeShowcase from "../components/CollegeShowcase";
 import StudyAbroad from "../components/StudyAbroad";
@@ -37,6 +38,7 @@ export default function Home() {
       <ExpertsReview/>
       <Awards/>
       <WhyChooseUs/>
+      <YouTubeShowcase/>
       <CollegeShowcase/>
       <StudyAbroad/>
        <FAQ/>

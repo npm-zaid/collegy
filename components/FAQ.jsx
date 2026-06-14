@@ -22,7 +22,7 @@ import { Plus, Minus, HelpCircle } from "lucide-react";
   },
   {
     id:4,
-    question: "Is the application process through Collegy free?",
+    question: "Is the application process through Finale Beacon free?",
     answer: "Browsing and comparing colleges is 100% free. If you choose to apply through our 'One-Click Apply' system, you only pay the college's official application fee—there are no hidden platform charges.",
   },
   {

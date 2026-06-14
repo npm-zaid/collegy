@@ -110,7 +110,7 @@ export default function WhyChooseUs() {
                 alt="Student Success" 
               />
               <div className="absolute bottom-0 w-full py-3 bg-black/80 backdrop-blur-md text-center">
-                <p className="text-[9px] font-black text-[#E39F4A] uppercase tracking-widest">Collegy Nexus</p>
+                <p className="text-[9px] font-black text-[#E39F4A] uppercase tracking-widest">Finale Beacon</p>
               </div>
             </div>
             {/* Pulsing Ring */}

@@ -15,7 +15,7 @@ const NEWS_CUTTINGS = [
     source: "Amar Ujala",
     logo: "https://www.pngkey.com/png/detail/610-6106470_amar-ujala-amar-ujala-logo.png",
     headline: "FinaleBeacon AI Predictor Sees 40% Surge in Tier-2 City Usage",
-    date: "24 Feb, 2026",
+    date: "24 Jan, 2026",
     tag: "Market Trend",
     image: "/assets/news1.jpeg",
     rotation: "-1.5deg"
@@ -25,7 +25,7 @@ const NEWS_CUTTINGS = [
     source: "Hindustan Times",
     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Hindustan_Times_logo.svg/1280px-Hindustan_Times_logo.svg.png",
     headline: "FinaleBeacon Revolutionizes Student Placements with New AI Platform",
-    date: "22 Feb, 2026",
+    date: "22 Dec, 2025",
     tag: "Education Tech",
     image: "/assets/news2.jpeg",
     rotation: "2deg"
@@ -86,7 +86,7 @@ export default function NewsCuttings() {
               {/* Source & Date */}
               <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
-                  <img src={news.logo} alt={news.source} className="w-[8vw]" />
+                  <img src={news.logo} alt={news.source} className="md:w-[8vw]  w-[15vw]" />
                   {/* <span className="text-[11px] font-[1000] text-[#3D6BE8] uppercase tracking-[0.15em] border-b-2 border-[#3D6BE8] pb-0.5">
                     {news.source}
                   </span> */}
@@ -118,10 +118,10 @@ export default function NewsCuttings() {
 
         {/* --- BOTTOM PARTNERS --- */}
         <div className="mt-28 py-10 border-y border-[#3D6BE8] flex flex-wrap items-center justify-around gap-10">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/The_Indian_Express_logo.svg/1280px-The_Indian_Express_logo.svg.png" alt="Financial Express" className="w-[15vw]" />
-          <img src="https://www.pngkey.com/png/detail/610-6106470_amar-ujala-amar-ujala-logo.png" alt="Dainik Bhaskar" className="w-[10vw]" />
-          <img src="https://upload.wikimedia.org/wikipedia/en/9/9a/Dainik_Jagran_logo.png" alt="The Hindu" className="w-[10vw]" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Hindustan_Times_logo.svg/1280px-Hindustan_Times_logo.svg.png" alt="Mint" className="w-[15vw]" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/The_Indian_Express_logo.svg/1280px-The_Indian_Express_logo.svg.png" alt="Financial Express" className="w-[30vw] md:w-[15vw]" />
+          <img src="https://www.pngkey.com/png/detail/610-6106470_amar-ujala-amar-ujala-logo.png" alt="Dainik Bhaskar" className="w-[30vw] md:w-[10vw]" />
+          <img src="https://upload.wikimedia.org/wikipedia/en/9/9a/Dainik_Jagran_logo.png" alt="The Hindu" className="w-[30vw] md:w-[10vw]" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Hindustan_Times_logo.svg/1280px-Hindustan_Times_logo.svg.png" alt="Mint" className="w-[30vw] md:w-[15vw]" />
         </div>
       </div>
     </section>

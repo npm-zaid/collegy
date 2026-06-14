@@ -20,24 +20,8 @@ export default function Footer() {
         
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-16 mb-24">
           <div className="col-span-2 lg:col-span-2">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="bg-[#2667ff] p-2.5 rounded-2xl shadow-lg shadow-blue-500/30">
-                <Stethoscope className="text-white w-6 h-6" strokeWidth={3} />
-              </div>
-              <span className="text-3xl font-[1000] tracking-tighter text-slate-900 uppercase">
-               Collegy
-              </span>
-            </div>
-            <p className="text-zinc-600 font-bold max-w-xs leading-relaxed mb-10 text-base">
-              India's #1  platform, engineered with precision for every aspirant.
-            </p>
-            <div className="flex gap-5">
-              {/* {[ Twitter, Youtube].map((Icon, i) => (
-                <a key={i} href="#" className="w-12 h-12 rounded-2xl border-2 border-zinc-600 flex items-center justify-center text-zinc-600 hover:bg-[#2667ff] hover:text-white hover:border-[#2667ff] transition-all hover:-translate-y-1">
-                  <Icon size={20} strokeWidth={2.5} />
-                </a>
-              ))} */}
-            </div>
+            <img src="assets/Finale_beacon_logo.png" alt="Collegy" className="md:w-[15vw] w-[25vw]" />
+            
           </div>
 
           {[

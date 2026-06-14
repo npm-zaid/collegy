@@ -25,6 +25,10 @@ const videos = [
   {
     id: 4,
     videoUrl: "/assets/vid4.mp4",
+  },
+   {
+    id: 5,
+    videoUrl: "/assets/vid5.mp4",
   }
 ];
 
