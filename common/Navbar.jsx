@@ -248,7 +248,7 @@ const MobileContent = ({ megaKey, onClose }) => {
 
 const Logo = () => (
   <Link href="/" className="flex items-center gap-2.5 mr-5 shrink-0">
-    <img src="assets/Finale_beacon_logo.png" alt="Collegy" className="w-[11vw]" />
+    <img src="assets/Finale_beacon_logo.png" alt="Collegy" className="md:w-[11vw] w-[25vw]" />
     {/* <div className="w-10 h-10 rounded-[13px] bg-[#2667ff] flex items-center justify-center shadow-[0_4px_16px_rgba(38,103,255,0.4)]">
       <svg width="21" height="21" fill="none" stroke="white" strokeWidth="2.1" viewBox="0 0 24 24">
         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />

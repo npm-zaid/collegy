@@ -208,7 +208,7 @@ const Mission = () => {
       {/* WhatsApp floating button — fixed, appears on Mission scroll */}
       <a
         ref={whatsappBtnRef}
-        href="https://wa.me/919999999999?text=Hi%2C%20I%20want%20to%20know%20more%20about%20Collegy!"
+        href="https://wa.me/916266637374?text=Hi%2C%20I%20want%20to%20know%20more%20about%20Finale%20Beacon!"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"

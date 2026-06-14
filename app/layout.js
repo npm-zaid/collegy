@@ -18,7 +18,7 @@ const sora = Sora({
 });
 
 export const metadata = {
-  title: "Collegy",
+  title: "Finale Beacon",
   description: "India's #1 Platform for College Admissions",
 };
 
