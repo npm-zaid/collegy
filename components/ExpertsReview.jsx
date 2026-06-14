@@ -4,16 +4,16 @@ import { gsap } from "gsap";
 import { ChevronLeft, ChevronRight, Star, ExternalLink, Award, Sparkles } from "lucide-react";
 
 const EXPERTS_REVIEW = [
-  { id: 1,  name: "Rohit Gupta",     title: "Education Expert",  detail: "MBA · 8 Years",  rating: 4.8, image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400",  tag: "Top Rated" },
-  { id: 2,  name: "Sarthak Garg",    title: "Sr. Mentor",        detail: "MCA · 6 Years",  rating: 4.7, image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400",  tag: "Popular" },
-  { id: 3,  name: "Sakshi Rajput",   title: "Sr. Mentor",        detail: "M.Com · 5 Years", rating: 4.5, image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400", tag: "New" },
-  { id: 4,  name: "Manish Thapliyal",title: "Sr. Mentor",        detail: "MA · 6 Years",   rating: 4.6, image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400",  tag: "Popular" },
-  { id: 5,  name: "Ananya Iyer",     title: "Career Coach",      detail: "M.Sc · 7 Years", rating: 4.9, image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400",  tag: "Top Rated" },
-  { id: 6,  name: "Vikram Seth",     title: "Admissions Head",   detail: "PhD · 12 Years", rating: 4.8, image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400",  tag: "Expert" },
-  { id: 7,  name: "Priya Sharma",    title: "Global Advisor",    detail: "MBA · 4 Years",  rating: 4.7, image: "https://images.unsplash.com/photo-1567532939604-b6c5b0ad2e01?q=80&w=400",  tag: "New" },
-  { id: 8,  name: "Karan Oberoi",    title: "Tech Mentor",       detail: "M.Tech · 9 Years",rating: 4.6, image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400", tag: "Popular" },
-  { id: 9,  name: "Meera Das",       title: "Counselor",         detail: "MSW · 10 Years", rating: 4.5, image: "https://images.unsplash.com/photo-1598550874175-4d0fe4a2c90b?q=80&w=400",  tag: "Expert" },
-  { id: 10, name: "Arjun Verma",     title: "Strategy Lead",     detail: "PGDM · 15 Years",rating: 4.9, image: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?q=80&w=400",  tag: "Top Rated" },
+  { id: 1,  name: "Vikas B.",     title: "Education Expert",  detail: "MBA · 8 Years",  rating: 4.8, image: "/assets/vikas.jpeg",  tag: "Top Rated" },
+  { id: 2,  name: "Sarthak Garg",    title: "Sr. Mentor",        detail: "MCA · 6 Years",  rating: 4.7, image: "https://images.unsplash.com/photo-14799645785-5658abf4ff4e?q=80&w=00",  tag: "Popular" },
+  { id: 3,  name: "Sakshi Rajput",   title: "Sr. Mentor",        detail: "M.Com · 5 Years", rating: 4.5, image: "https://images.unsplash.com/photo-157496359142-b8d87734a5a2?q=80&w=40", tag: "New" },
+  { id: 4,  name: "Manish Thapliyal",title: "Sr. Mentor",        detail: "MA · 6 Years",   rating: 4.6, image: "https://images.unsplash.com/photo-1519853653-af0119f7cbe7?q=80&w=400",  tag: "Popular" },
+  { id: 5,  name: "Ananya Iyer",     title: "Career Coach",      detail: "M.Sc · 7 Years", rating: 4.9, image: "https://images.unsplash.com/photo-15804994461-15a19d654956?q=80&=00",  tag: "Top Rated" },
+  { id: 6,  name: "Vikram Seth",     title: "Admissions Head",   detail: "PhD · 12 Years", rating: 4.8, image: "https://images.unsplash.com/photo-150700321169-0a1dd7228f2d?q=80&w=400",  tag: "Expert" },
+  { id: 7,  name: "Priya Sharma",    title: "Global Advisor",    detail: "MBA · 4 Years",  rating: 4.7, image: "https://images.unsplash.com/photo-156753239604-b6c5b0ad2e01?q=80w=400",  tag: "New" },
+  { id: 8,  name: "Karan Oberoi",    title: "Tech Mentor",       detail: "M.Tech · 9 Years",rating: 4.6, image: "https://images.unsplash.com/photo-150064867791-00dcc994a43e?q=80w=400", tag: "Popular" },
+  { id: 9,  name: "Meera Das",       title: "Counselor",         detail: "MSW · 10 Years", rating: 4.5, image: "https://images.unsplash.com/photo-159855874175-4d0fe4a2c90b?q=80&=400",  tag: "Expert" },
+  { id: 10, name: "Arjun Verma",     title: "Strategy Lead",     detail: "PGDM · 15 Years",rating: 4.9, image: "https://images.unsplash.com/photo-151934518560-3f2917c472ef?q=80&=400",  tag: "Top Rated" },
 ];
 
 const TAG_STYLES = {
@@ -279,7 +279,7 @@ export default function ExpertsReview() {
         </div>
 
         {/* ── Bottom CTA strip ── */}
-        <div className="mt-10 sm:mt-14 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-[#2667ff]/6 to-indigo-50/60 border border-[#2667ff]/15 rounded-3xl px-6 sm:px-8 py-5 sm:py-6">
+        {/* <div className="mt-10 sm:mt-14 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-[#2667ff]/6 to-indigo-50/60 border border-[#2667ff]/15 rounded-3xl px-6 sm:px-8 py-5 sm:py-6">
           <div>
             <p className="font-black text-slate-900 text-base sm:text-lg">Not sure which expert to pick?</p>
             <p className="text-slate-400 text-sm mt-0.5">Get matched with the right mentor in under 2 minutes.</p>
@@ -288,7 +288,7 @@ export default function ExpertsReview() {
             Find My Expert
             <ChevronRight size={16} />
           </button>
-        </div>
+        </div> */}
 
       </div>
     </section>

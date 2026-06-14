@@ -120,7 +120,7 @@ const Mission = () => {
           {/* Main Card — happy student */}
           <div ref={leftCardRef} className="relative flex-1 h-full">
             <img
-              src="https://images.pexels.com/photos/8199556/pexels-photo-8199556.jpeg"
+              src="/assets/vikas.jpeg"
               className="w-full h-full object-cover rounded-[3rem] shadow-2xl shadow-black/50"
               alt="Student at college"
             />
@@ -147,12 +147,12 @@ const Mission = () => {
             {/* Bottom profile strip */}
             <div className="absolute bottom-8 sm:left-8 left-4 flex items-center gap-3">
               <img
-                src="https://images.pexels.com/photos/8199248/pexels-photo-8199248.jpeg"
+                src="/assets/vikas.jpeg"
                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
                 alt="Student"
               />
               <span className="text-white font-semibold flex items-center gap-1">
-                Mia K. &nbsp;
+                Vikas
                 <CheckCircle2 size={16} className="fill-[#2667ff] text-white" />
               </span>
             </div>
@@ -161,7 +161,7 @@ const Mission = () => {
           {/* Secondary Card — campus */}
           <div ref={rightCardRef} className="relative w-[45%] h-[75%] rounded-[3rem]">
             <img
-              src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=800"
+              src="https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg"
               className="w-full h-full object-cover rounded-[3rem] shadow-2xl shadow-black/50"
               alt="College campus"
             />
@@ -194,7 +194,7 @@ const Mission = () => {
         {/* ══ RIGHT SIDE: COPY ══ */}
         <div className="flex flex-col items-start lg:pl-10">
           <h2 className="text-2xl md:text-4xl font-semibold text-zinc-900 leading-[1.1] tracking-tight mb-8">
-            Collegy is where students find their perfect college — with AI-powered matching, real data, and a community that guides every step of the journey.
+            Finalebeacon is where students find their perfect college — with AI-powered matching, real data, and a community that guides every step of the journey.
           </h2>
 
            <button className="flex btn items-center bg-gradient-to-br from-[#2667ff] to-[#3f8efc] gap-2 px-5 py-2.5 rounded-3xl text-sm font-bold text-white cursor-pointer border-0 shadow-[0_4px_18px_rgba(79,70,229,0.38)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.55)]">

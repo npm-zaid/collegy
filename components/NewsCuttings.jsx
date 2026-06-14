@@ -12,29 +12,32 @@ import {
 const NEWS_CUTTINGS = [
   {
     id: 1,
-    source: "The Economic Times",
-    headline: "Collegy AI Predictor Sees 40% Surge in Tier-2 City Usage",
+    source: "Amar Ujala",
+    logo: "https://www.pngkey.com/png/detail/610-6106470_amar-ujala-amar-ujala-logo.png",
+    headline: "FinaleBeacon AI Predictor Sees 40% Surge in Tier-2 City Usage",
     date: "24 Feb, 2026",
     tag: "Market Trend",
-    image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800&auto=format&fit=crop",
+    image: "/assets/news1.jpeg",
     rotation: "-1.5deg"
   },
   {
     id: 2,
-    source: "Business Standard",
-    headline: "New UGC Guidelines 2026: What Every Aspirant Must Know",
+    source: "Hindustan Times",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Hindustan_Times_logo.svg/1280px-Hindustan_Times_logo.svg.png",
+    headline: "FinaleBeacon Revolutionizes Student Placements with New AI Platform",
     date: "22 Feb, 2026",
-    tag: "Education Policy",
-    image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=800&auto=format&fit=crop",
+    tag: "Education Tech",
+    image: "/assets/news2.jpeg",
     rotation: "2deg"
   },
   {
     id: 3,
-    source: "Education World",
-    headline: "Top 10 Engineering Colleges Redefining Placement Records",
+    source: "The Indian Express",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/The_Indian_Express_logo.svg/1280px-The_Indian_Express_logo.svg.png",
+    headline: "Top Colleges Adopt FinaleBeacon to Redefine Placement Records",
     date: "20 Feb, 2026",
-    tag: "Ranking 2026",
-    image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=800&auto=format&fit=crop",
+    tag: "Placements 2026",
+    image: "/assets/news3.jpeg",
     rotation: "-0.8deg"
   }
 ];
@@ -45,7 +48,7 @@ export default function NewsCuttings() {
       <div className="max-w-7xl mx-auto">
         <SecIntro
           badgeText="Press Headlines"
-          prefix="Collegy in"
+          prefix="FinaleBeacon in"
           highlight="Media"
           suffix=""
         />
@@ -82,9 +85,12 @@ export default function NewsCuttings() {
 
               {/* Source & Date */}
               <div className="flex justify-between items-center mb-6">
-                <span className="text-[11px] font-[1000] text-[#3D6BE8] uppercase tracking-[0.15em] border-b-2 border-[#3D6BE8] pb-0.5">
-                  {news.source}
-                </span>
+                <div className="flex items-center gap-3">
+                  <img src={news.logo} alt={news.source} className="w-[8vw]" />
+                  {/* <span className="text-[11px] font-[1000] text-[#3D6BE8] uppercase tracking-[0.15em] border-b-2 border-[#3D6BE8] pb-0.5">
+                    {news.source}
+                  </span> */}
+                </div>
                 <div className="flex items-center gap-1.5 text-zinc-400 text-[10px] font-bold">
                   <Clock size={12} /> {news.date}
                 </div>
@@ -96,7 +102,7 @@ export default function NewsCuttings() {
               </h3>
 
               {/* Footer */}
-              <div className="flex items-center justify-between pt-6 border-t border-zinc-50">
+              <div className="flex items-center justify-between pt-3 border-t border-zinc-50">
                 <div className="flex items-center gap-2.5">
                   <div className="w-2 h-2 rounded-full bg-[#3D6BE8] animate-pulse" />
                   <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">{news.tag}</span>
@@ -111,14 +117,11 @@ export default function NewsCuttings() {
         </div>
 
         {/* --- BOTTOM PARTNERS --- */}
-        <div className="mt-28 py-10 border-y border-[#3D6BE8] flex flex-col md:flex-row items-center justify-around gap-10">
-         
-              <div className="text-2xl font-black tracking-tighter">FINANCIAL EXPRESS</div>
-              <div className="text-2xl font-black tracking-tighter">DAINIK BHASKAR</div>
-              <div className="text-2xl font-black tracking-tighter">THE HINDU</div>
-              <div className="text-2xl font-black tracking-tighter">MINT</div>
-       
-           
+        <div className="mt-28 py-10 border-y border-[#3D6BE8] flex flex-wrap items-center justify-around gap-10">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/The_Indian_Express_logo.svg/1280px-The_Indian_Express_logo.svg.png" alt="Financial Express" className="w-[15vw]" />
+          <img src="https://www.pngkey.com/png/detail/610-6106470_amar-ujala-amar-ujala-logo.png" alt="Dainik Bhaskar" className="w-[10vw]" />
+          <img src="https://upload.wikimedia.org/wikipedia/en/9/9a/Dainik_Jagran_logo.png" alt="The Hindu" className="w-[10vw]" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Hindustan_Times_logo.svg/1280px-Hindustan_Times_logo.svg.png" alt="Mint" className="w-[15vw]" />
         </div>
       </div>
     </section>
