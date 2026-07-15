@@ -166,7 +166,7 @@ export default function CollegePredictor() {
             <div className="w-1.5 h-1.5 rounded-full bg-[#2667ff]" />
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#2667ff]">AI Predictor</span>
           </div>
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.85] uppercase mb-4">
+          <h2 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.85] uppercase mb-4">
             Find Your <span className="bg-gradient-to-r from-[#2667ff] to-[#3f8efc] bg-clip-text text-transparent italic pr-2">Perfect Match</span>
           </h2>
           <div className="w-28 h-1.5 bg-gradient-to-r from-zinc-900 to-[#2667ff] rounded-full mb-6 mt-2" />

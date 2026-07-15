@@ -16,6 +16,7 @@ import StudyAbroad from "../components/StudyAbroad";
 import AdmissionModes from "../components/AdmissionModes";
 
 
+
 export default function Home() {
   return (
     <>
@@ -28,6 +29,7 @@ export default function Home() {
     enableFade={false}
     enableShaderEffect={false}
   /> */}
+
         <Hero />
       <Mission/>
       <CollegyDashboard/>
