@@ -31,6 +31,7 @@ const NAV = [
       // { id: "loans", label: "Education Loans", icon: CreditCard, href: "/admin/loans", badge: "8", badgeColor: "bg-amber-500" },
       { id: "internships", label: "Internships", icon: Briefcase, href: "/admin/internships", badge: "19", badgeColor: "bg-rose-500" },
       { id: "partners", label: "Partners", icon: Users, href: "/admin/partners", badge: null },
+      { id: "referrals", label: "Referrals", icon: MessageSquare, href: "/admin/referrals", badge: null },
     ],
   },
   {

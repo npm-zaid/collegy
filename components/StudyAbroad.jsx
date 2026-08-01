@@ -47,6 +47,104 @@ const COUNTRY_DATA = [
       '99% of Indian students receive scholarship to study in Ireland',
       'Ireland offers 2 years of PSW & PR for Indian students'
     ]
+  },
+  {
+    id: 'canada',
+    label: 'Canada',
+    flag: '🇨🇦',
+    title: 'Study in Canada',
+    color: '#FF0000',
+    image: 'https://images.unsplash.com/photo-1517935706615-2717063c2225?q=80&w=800',
+    benefits: [
+      'High-quality education with internationally recognized degrees',
+      'Affordable tuition fees compared to other English-speaking countries',
+      'Excellent post-graduation work permit (PGWP) opportunities',
+      'Welcoming multicultural society with a path to PR'
+    ]
+  },
+  {
+    id: 'australia',
+    label: 'Australia',
+    flag: '🇦🇺',
+    title: 'Study in Australia',
+    color: '#00008B',
+    image: 'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?q=80&w=800',
+    benefits: [
+      'Home to 6 of the top 100 universities globally',
+      'High standard of living and safe environment',
+      'Generous post-study work rights (up to 4 years)',
+      'Opportunities for internships and part-time work'
+    ]
+  },
+  {
+    id: 'germany',
+    label: 'Germany',
+    flag: '🇩🇪',
+    title: 'Study in Germany',
+    color: '#FFCC00',
+    image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=800',
+    benefits: [
+      'Tuition-free education at public universities',
+      'World-class engineering and technical programs',
+      'Strong economy with excellent job prospects',
+      '18-month post-study visa to search for employment'
+    ]
+  },
+  {
+    id: 'new_zealand',
+    label: 'New Zealand',
+    flag: '🇳🇿',
+    title: 'Study in New Zealand',
+    color: '#000000',
+    image: 'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?q=80&w=800',
+    benefits: [
+      'All universities ranked in the global top 3%',
+      'Safe, peaceful, and beautiful environment',
+      'Post-study work visa up to 3 years',
+      'Focus on research and practical learning'
+    ]
+  },
+  {
+    id: 'france',
+    label: 'France',
+    flag: '🇫🇷',
+    title: 'Study in France',
+    color: '#0055A4',
+    image: 'https://images.unsplash.com/photo-1502602898657-3e907fa00863?q=80&w=800',
+    benefits: [
+      'Highly subsidized tuition fees for international students',
+      'World-renowned business and management schools',
+      'Rich culture and central European location',
+      '2-year post-study work visa for master\'s graduates'
+    ]
+  },
+  {
+    id: 'italy',
+    label: 'Italy',
+    flag: '🇮🇹',
+    title: 'Study in Italy',
+    color: '#009246',
+    image: 'https://images.unsplash.com/photo-1516483638261-f4085ee6b3c9?q=80&w=800',
+    benefits: [
+      'One of the oldest and most prestigious education systems',
+      'Affordable living costs and tuition fees',
+      'Rich in history, art, and architecture',
+      'Numerous scholarships available for international students'
+    ]
+  },
+  {
+    id: 'singapore',
+    label: 'Singapore',
+    flag: '🇸🇬',
+    title: 'Study in Singapore',
+    color: '#ED2939',
+    image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=800',
+    benefits: [
+      'Global hub for business, technology, and finance',
+      'Top-ranked Asian universities (NUS, NTU)',
+      'Safe, clean, and English-speaking environment',
+      'Strong job market with high graduate employability'
+    ]
   }
 ];
 
@@ -64,6 +162,19 @@ const StudyAbroad = () => {
 
   return (
     <section className="w-full  py-24 px-6 md:px-20 relative overflow-hidden">
+      <style dangerouslySetInnerHTML={{__html: `
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: black;
+          border-radius: 4px;
+        }
+       
+      `}} />
       {/* Decorative Brand Accent (Top Right) */}
       <div className="absolute top-10 right-[-5%] w-1/4 h-1/4 bg-[#3D6BE8]/5 blur-[100px] rounded-full" />
 
@@ -138,42 +249,35 @@ const StudyAbroad = () => {
               Choose your destination
             </h4>
             
-            {COUNTRY_DATA.map((country) => (
-              <button
-                key={country.id}
-                onClick={() => setActiveTab(country)}
-                className={`flex items-center justify-between p-6 rounded-3xl border transition-all duration-300 ${
-                  activeTab.id === country.id 
-                  ? 'bg-white border-zinc-200 shadow-xl scale-[1.02] z-10' 
-                  : 'bg-zinc-50 border-transparent hover:border-zinc-200'
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-3xl filter grayscale-[0.5] group-hover:grayscale-0">{country.flag}</span>
-                  <div className="text-left">
-                    <p className={`font-black text-sm uppercase tracking-widest ${activeTab.id === country.id ? 'text-zinc-900' : 'text-zinc-500'}`}>
-                      {country.label}
-                    </p>
-                    <p className="text-[10px] font-bold text-zinc-400">View Scholarships</p>
+            <div data-lenis-prevent="true" className="flex flex-col gap-4 max-h-[440px] overflow-y-auto pr-2 custom-scrollbar">
+              {COUNTRY_DATA.map((country) => (
+                <button
+                  key={country.id}
+                  onClick={() => setActiveTab(country)}
+                  className={`flex items-center justify-between p-6 rounded-3xl border transition-all duration-300 flex-shrink-0 ${
+                    activeTab.id === country.id 
+                    ? 'bg-white border-zinc-200 shadow-xl scale-[1.02] z-10' 
+                    : 'bg-zinc-50 border-transparent hover:border-zinc-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="text-3xl filter grayscale-[0.5] group-hover:grayscale-0">{country.flag}</span>
+                    <div className="text-left">
+                      <p className={`font-black text-sm uppercase tracking-widest ${activeTab.id === country.id ? 'text-zinc-900' : 'text-zinc-500'}`}>
+                        {country.label}
+                      </p>
+                      <p className="text-[10px] font-bold text-zinc-400">View Scholarships</p>
+                    </div>
                   </div>
-                </div>
-                {activeTab.id === country.id && (
-                  <div className="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-white">
-                    <GraduationCap size={16} />
-                  </div>
-                )}
-              </button>
-            ))}
-
-            {/* Support CTA */}
-            <div className="mt-auto p-6 rounded-3xl bg-[#E39F4A]/5 border border-[#E39F4A]/10">
-              <p className="text-[10px] font-black uppercase tracking-widest text-[#E39F4A] mb-2 flex items-center gap-2">
-                <PhoneCall size={12} /> Live Assistance
-              </p>
-              <p className="text-zinc-600 font-bold text-xs leading-relaxed">
-                Need help with Visa? Our experts are available since 2019.
-              </p>
+                  {activeTab.id === country.id && (
+                    <div className="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-white">
+                      <GraduationCap size={16} />
+                    </div>
+                  )}
+                </button>
+              ))}
             </div>
+
           </div>
 
         </div>
