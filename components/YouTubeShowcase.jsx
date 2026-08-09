@@ -137,16 +137,16 @@ export default function YouTubeShowcase() {
   return (
     <section 
       ref={containerRef} 
-      className="min-h-fit w-full bg-[#050505] flex flex-col items-center justify-center overflow-hidden relative py-20 px-6 md:px-10"
+      className="min-h-fit w-full bg-zinc-950 flex flex-col items-center justify-center overflow-hidden relative py-20 px-6 md:px-10"
     >
       {/* Background Micro-Grid */}
-      <div 
+      {/* <div 
         className="absolute inset-0 opacity-[0.05] pointer-events-none" 
         style={{ 
           backgroundImage: `linear-gradient(#3D6BE8 1px, transparent 1px), linear-gradient(90deg, #3D6BE8 1px, transparent 1px)`, 
           backgroundSize: '50px 50px' 
         }} 
-      />
+      /> */}
       
       {/* Ambient background glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[120px] pointer-events-none z-0" />
@@ -160,16 +160,17 @@ export default function YouTubeShowcase() {
             <FaYoutube size={12} className="fill-red-500" /> FinaleBeacon TV
           </div>
           
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter leading-none">
+          <h2 className="text-4xl md:text-5xl  font-black text-white tracking-tighter leading-none">
             Reality Checks <br />
             <span className="bg-gradient-to-r from-red-500 to-[#E39F4A] bg-clip-text text-transparent italic">
               Exposing the Ground Truth.
             </span>
           </h2>
+           <div className="w-36 h-1.5 bg-gradient-to-r from-zinc-950 via-red-500 to-[#E39F4A] rounded-full mt-2 m-auto" />
           
-          <p className="text-zinc-500 font-bold text-xs md:text-sm max-w-md mx-auto leading-relaxed px-4">
+          {/* <p className="text-zinc-500 font-bold text-xs md:text-sm max-w-md mx-auto leading-relaxed px-4">
             We review colleges, programs, and EdTech claiming "guarantees" so you can make informed decisions. Watch our trending videos below.
-          </p>
+          </p> */}
         </div>
 
         {/* VIDEOS GRID */}

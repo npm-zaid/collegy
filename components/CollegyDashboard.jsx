@@ -274,7 +274,7 @@ const CollegyDashboard = () => {
                 </div>
                 <input
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") router.push("/find/ai-search");
+                    if (e.key === "Enter") router.push("/AiCollegePredictor");
                   }}
                   className="bg-transparent border-none outline-none text-zinc-800 font-medium placeholder:text-zinc-400 w-1/2 sm:w-64"
                   placeholder="e.g. Engineering in Mumbai…"

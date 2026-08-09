@@ -25,7 +25,7 @@ const SecIntro  = ({
 
       {/* Heading */}
       <div className="relative mb-12 flex flex-col items-center">
-        <h2 className="sm:text-5xl text-4xl font-black tracking-tighter text-center leading-[0.9] mb-4">
+        <h2 className="md:text-6xl text-4xl font-black tracking-tighter text-center leading-[0.9] mb-4">
           <span className="text-zinc-900">{prefix} </span>
 
           <span className="bg-gradient-to-r from-[#2667ff]  to-[#2667ff] bg-clip-text text-transparent italic pr-2">

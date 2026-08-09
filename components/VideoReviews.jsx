@@ -62,17 +62,10 @@ const VideoReviews = () => {
       });
     });
 
-    // Control play/pause of the video elements
+    // Pause non-active videos without forcing autoplay on the active video
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
-      if (index === activeIndex) {
-        video.muted = false;
-        video.play().catch((err) => {
-          // If browser autoplay policy blocks unmuted playback, play muted
-          video.muted = true;
-          video.play().catch((e) => console.log("Video playback failed: ", e));
-        });
-      } else {
+      if (index !== activeIndex) {
         video.pause();
         video.currentTime = 0;
       }
@@ -89,7 +82,7 @@ const VideoReviews = () => {
   };
 
   return (
-    <section className="relative py-20 flex flex-col items-center overflow-hidden min-h-[800px]">
+    <section className="relative py-20 flex flex-col items-center overflow-hidden min-h-[750px] md:min-h-[800px]">
       
       <SecIntro
         badgeText="Student Stories"
@@ -102,11 +95,11 @@ const VideoReviews = () => {
       <div className="relative z-10 w-full max-w-6xl h-[550px] flex items-center justify-center perspective-1500">
         
         {/* Navigation Arrows */}
-        <div className="absolute inset-x-0 sm:top-1/2 top-[105%] -translate-y-0 sm:-translate-y-1/2 flex sm:justify-between justify-center gap-12 px-6 md:px-12 z-[50]">
-          <button onClick={handlePrev} className="p-4 rounded-full bg-zinc-900 text-white shadow-2xl hover:scale-110 active:scale-95 transition-all">
+        <div className="absolute inset-x-0 sm:top-1/2 top-[102%] -translate-y-0 sm:-translate-y-1/2 flex sm:justify-between justify-center gap-10 px-6 md:px-12 z-[50]">
+          <button onClick={handlePrev} className="p-4 rounded-full bg-zinc-900 text-white shadow-2xl hover:scale-110 active:scale-95 transition-all cursor-pointer">
             <ChevronLeft size={24} />
           </button>
-          <button onClick={handleNext} className="p-4 rounded-full bg-zinc-900 text-white shadow-2xl hover:scale-110 active:scale-95 transition-all">
+          <button onClick={handleNext} className="p-4 rounded-full bg-zinc-900 text-white shadow-2xl hover:scale-110 active:scale-95 transition-all cursor-pointer">
             <ChevronRight size={24} />
           </button>
         </div>
@@ -136,16 +129,6 @@ const VideoReviews = () => {
             );
           })}
         </div>
-      </div>
-
-      {/* Mobile Page Indicator */}
-      <div className="flex gap-2 mt-20 md:hidden">
-        {videos.map((_, i) => (
-          <div 
-            key={i} 
-            className={`h-1.5 rounded-full transition-all duration-300 ${activeIndex === i ? 'w-8 bg-[#3D6BE8]' : 'w-2 bg-zinc-200'}`} 
-          />
-        ))}
       </div>
     </section>
   );

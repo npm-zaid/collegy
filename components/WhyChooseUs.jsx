@@ -75,10 +75,10 @@ export default function WhyChooseUs() {
   }, []);
 
   return (
-    <section ref={containerRef} className="min-h-screen w-full bg-[#050505] flex items-center justify-center overflow-hidden relative p-6 md:p-10">
+    <section ref={containerRef} className="min-h-screen w-full bg-zinc-950 flex items-center justify-center overflow-hidden relative p-6 md:p-10">
       {/* Background Micro-Grid */}
       <div className="absolute inset-0 opacity-[0.05] pointer-events-none" 
-           style={{ backgroundImage: `linear-gradient(#3D6BE8 1px, transparent 1px), linear-gradient(90deg, #3D6BE8 1px, transparent 1px)`, backgroundSize: '50px 50px' }} />
+           style={{ backgroundImage: `linear-gradient(#3D6BE8 2px, transparent 2px), linear-gradient(90deg, #3D6BE8 2px, transparent 2px)`, backgroundSize: '50px 50px' ,height:"100%", width:"100vw"}} />
 
       <div className="max-w-6xl w-full relative flex flex-col items-center">
         
@@ -87,13 +87,14 @@ export default function WhyChooseUs() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 text-[#3D6BE8] text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] border border-blue-500/20">
             <Zap size={12} /> Why Choose Us
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tighter leading-none">
+          <h2 className="text-4xl md:text-6xl  font-black text-white tracking-tighter leading-none">
             The Intelligence <br />
             <span className="bg-gradient-to-r from-[#2667ff] to-[#3f8efc] bg-clip-text text-transparent italic">Behind Your Success.</span>
           </h2>
-          <p className="text-zinc-500 font-bold text-xs md:text-sm max-w-md mx-auto leading-relaxed px-4">
+           <div className="w-36 h-1.5 bg-gradient-to-r from-zinc-900 to-[#2667ff] rounded-full mt-2 m-auto" />
+          {/* <p className="text-zinc-500 font-bold text-xs md:text-sm max-w-md mx-auto leading-relaxed px-4">
             We bridge the gap between raw information and your dream college through a specialized ecosystem of data and human expertise.
-          </p>
+          </p> */}
         </div>
 
         {/* ECOSYSTEM VISUAL WRAPPER */}
@@ -153,13 +154,7 @@ export default function WhyChooseUs() {
           </svg>
         </div>
 
-        {/* FOOTER DETAIL */}
-        <div className="mt-16 flex items-center gap-4 bg-zinc-900/50 px-8 py-4 rounded-3xl border border-white/5">
-          <ShieldCheck size={20} className="text-[#E39F4A] shrink-0" />
-          <p className="text-[10px] md:text-[11px] font-black text-zinc-500 uppercase tracking-[0.2em]">
-            Human Verified Counselors. AI Optimized Matching.
-          </p>
-        </div>
+     
 
       </div>
     </section>

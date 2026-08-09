@@ -140,13 +140,11 @@ export default function AwardsSection() {
 
   return (
     <section
-      className="relative py-24 overflow-hidden"
-      style={{ background: "#080808" }}
+      className="relative py-24 overflow-hidden bg-zinc-950" 
+      
     >
-      {/* Ambient background blobs */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,220,120,0.06), transparent 70%), radial-gradient(ellipse 50% 40% at 20% 80%, rgba(61,107,232,0.04), transparent 60%), radial-gradient(ellipse 50% 40% at 80% 80%, rgba(200,100,60,0.04), transparent 60%)" }} />
-      </div>
+  
+  
 
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         {/* Header */}
@@ -157,7 +155,7 @@ export default function AwardsSection() {
             Recognized Excellence
           </span>
         </div>
-        <h1 className="sm:text-6xl text-5xl font-black tracking-tighter text-center leading-[1.2] mb-4">
+        <h1 className="sm:text-6xl text-4xl font-black tracking-tighter text-center leading-[1.2] mb-4">
           <span className="text-zinc-200">Our </span>
           <span className="bg-gradient-to-r from-[#2667ff] via-[#818CF8] to-[#2667ff] bg-clip-text text-transparent italic pr-3">
             Global Awards

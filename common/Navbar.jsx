@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
+import { GiTakeMyMoney } from "react-icons/gi";
 
 const toSlug = (name) =>
   name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -44,15 +45,15 @@ const DATA = {
   },
   more: {
     links: [
-      { icon: "ℹ️",  label: "About Us",          desc: "Our story & mission" },
-      { icon: "📬",  label: "Contact Us",         desc: "Get in touch" },
-      { icon: "🤝",  label: "Be a Partner",       desc: "Grow with us" },
-      { icon: "🎯",  label: "College Predictor",  desc: "Find your best fit" },
-      { icon: "🧑‍💻", label: "Internships",         desc: "Kick-start your career" },
-      // { icon: "💳",  label: "Education Loan",     desc: "Fund your education" },
-      { icon: "📅",  label: "Book Consultation",  desc: "Talk to an expert" },
-      { icon: "🤝",  label: "Refer & Earn",       desc: "Earn rewards" },
-      { icon: "📄",  label: "Terms & Conditions", desc: "Policies & rules" },
+      { icon: "🎯",  label: "College Predictor",  desc: "Find your best fit",     href: "/AiCollegePredictor" },
+      { icon: "ℹ️",  label: "About Us",          desc: "Our story & mission",    href: "/about-us" },
+      { icon: "📬",  label: "Contact Us",         desc: "Get in touch",           href: "/contact-us" },
+      { icon: "🧑‍💻", label: "Internships",         desc: "Kick-start your career", href: "/internships" },
+      // { icon: "🤝",  label: "Be a Partner",       desc: "Grow with us",           href: "/be-a-partner" },
+      { icon: "💳",  label: "Education Loan",     desc: "Fund your education",     href: "/education-loan" },
+      { icon: "📅",  label: "Book Consultation",  desc: "Talk to an expert",      href: "/book-consultation" },
+      { icon: "🎁",  label: "Refer & Earn",       desc: "Earn rewards",           href: "/refer-earn" },
+      { icon: "📄",  label: "Terms & Conditions", desc: "Policies & rules",       href: "/terms-conditions" },
     ],
   },
 };
@@ -197,8 +198,8 @@ const MegaContent = ({ megaKey, onClose }) => {
       <div className="p-7">
         <PanelHeading>Quick Links</PanelHeading>
         <div className="grid grid-cols-4 gap-3">
-          {DATA.more.links.map(({ icon, label, desc }) => (
-            <Link key={label} href={`/${toSlug(label)}`} onClick={onClose}
+          {DATA.more.links.map(({ icon, label, desc, href }) => (
+            <Link key={label} href={href || `/${toSlug(label)}`} onClick={onClose}
               className="group flex items-start gap-3 px-4 py-3.5 rounded-2xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/60 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
             >
               <span className="text-xl shrink-0 mt-0.5">{icon}</span>
@@ -233,8 +234,8 @@ const MobileContent = ({ megaKey, onClose }) => {
   if (megaKey === "more")
     return (
       <div className="pb-3 mt-1">
-        {DATA.more.links.map(({ icon, label }) => (
-          <Link key={label} href={`/${toSlug(label)}`} onClick={onClose}
+        {DATA.more.links.map(({ icon, label, href }) => (
+          <Link key={label} href={href || `/${toSlug(label)}`} onClick={onClose}
             className="flex items-center gap-2 px-3 py-[9px] rounded-xl text-[0.82rem] font-semibold text-slate-800 hover:bg-indigo-50 transition-colors no-underline">
             <span>{icon}</span><span>{label}</span>
           </Link>
@@ -248,7 +249,7 @@ const MobileContent = ({ megaKey, onClose }) => {
 
 const Logo = () => (
   <Link href="/" className="flex items-center gap-2.5 mr-5 shrink-0">
-    <img src="assets/Finale_beacon_logo.png" alt="Collegy" className="md:w-[11vw] w-[25vw]" />
+    <img src="assets/Finale_beacon_logo.png" alt="Collegy" className="md:w-[8vw] w-[25vw]" />
     {/* <div className="w-10 h-10 rounded-[13px] bg-[#2667ff] flex items-center justify-center shadow-[0_4px_16px_rgba(38,103,255,0.4)]">
       <svg width="21" height="21" fill="none" stroke="white" strokeWidth="2.1" viewBox="0 0 24 24">
         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
@@ -439,7 +440,7 @@ export default function Navbar() {
         style={{ backdropFilter: "blur(24px) saturate(180%)" }}
       >
         {/* ── Top bar ── */}
-        <div className="max-w-[1280px] mx-auto px-7 flex items-center h-[66px] gap-2">
+        <div className="w-full mx-auto px-10 flex items-center h-[66px] gap-2">
 
           <div ref={logoRef}><Logo /></div>
 
@@ -472,25 +473,20 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <div ref={ctaRef} className="hidden lg:flex items-center gap-3 ml-auto shrink-0">
-            {/* <button
-              onClick={() => setIsNotiOpen(true)}
-              className="relative w-[38px] h-[38px] rounded-xl flex items-center justify-center bg-indigo-50 border border-indigo-100 text-indigo-500 hover:bg-indigo-100 hover:border-indigo-200 transition-all cursor-pointer"
+            <Link
+              href="/refer-earn"
+              title="Refer & Earn"
+              className="w-10 h-10 rounded-2xl flex items-center justify-center text-[#2667ff] hover:bg-[#2667ff] hover:text-white transition-all duration-300 cursor-pointer hover:scale-105"
             >
-              <svg width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-              </svg>
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 border-[1.5px] border-white" />
-            </button> */}
+              <GiTakeMyMoney size={26} />
+            </Link>
 
-            {/* <div className="w-px h-6 bg-indigo-100" /> */}
-
-        
-           <Link href="/contact-us" className="flex btn items-center bg-gradient-to-br from-[#2667ff] to-[#3f8efc] gap-2 px-5 py-2.5 rounded-3xl text-sm font-bold text-white cursor-pointer border-0 shadow-[0_4px_18px_rgba(79,70,229,0.38)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.55)] no-underline">
-           Join Us Now
-          </Link>
+            <Link href="/contact-us" className="flex btn items-center bg-gradient-to-br from-[#2667ff] to-[#3f8efc] gap-2 px-5 py-2.5 rounded-3xl text-sm font-bold text-white cursor-pointer border-0 shadow-[0_4px_18px_rgba(79,70,229,0.38)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.55)] no-underline">
+              Join Us Now
+            </Link>
           </div>
 
+         
           <HamburgerButton open={mobileOpen} onClick={() => setMobileOpen((p) => !p)} />
         </div>
 

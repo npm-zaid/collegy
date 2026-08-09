@@ -202,7 +202,7 @@ export default function ContactPage() {
                 <div>
                   <h3 className="text-[10px] font-black uppercase tracking-widest text-[#3f8efc] mb-1">Expert Support</h3>
                   <p className="text-xl font-bold cursor-pointer hover:text-[#3f8efc] transition-colors truncate">
-                    admissions@collegy.in
+                    finalebeacone@gmail.com
                   </p>
                 </div>
               </div>
@@ -217,9 +217,7 @@ export default function ContactPage() {
                 <div>
                   <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">Our Base</h3>
                   <p className="text-sm font-bold text-zinc-800 leading-relaxed">
-                    A-930, Bhutani Cyber Park <br />
-                    Sector 62, Noida-201301 <br />
-                    Uttar Pradesh, India
+                    2nd Floor, Indraprastha Tower, 203, Mahatma Gandhi Rd, <br />Near Apollo Tower, South Tukoganj, Indore, Madhya Pradesh 452001 <br />
                   </p>
                 </div>
               </div>
@@ -240,7 +238,7 @@ export default function ContactPage() {
                     <div className="p-2.5 bg-[#2667ff] rounded-xl text-white shadow-lg shadow-blue-500/30">
                       <GraduationCap size={18} />
                     </div>
-                    <p className="text-white font-black text-sm uppercase tracking-widest">Collegy Elite</p>
+                    <p className="text-white font-black text-sm uppercase tracking-widest">Finalebeacon Elite</p>
                   </div>
                   <ArrowUpRight className="text-white/40 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
                 </div>

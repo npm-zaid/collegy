@@ -1,4 +1,5 @@
 import Hero from "../components/Hero";
+import PageLoader from "../common/PageLoader";
 import Ribbons from '../common/Ribbons'
 import CollegyDashboard from '../components/CollegyDashboard'
 import Mission from "../components/Mission";
@@ -11,6 +12,7 @@ import Awards from "../components/Awards";
 import WhyChooseUs from "../components/WhyChooseUs";
 import YouTubeShowcase from "../components/YouTubeShowcase";
 import FAQ from "../components/FAQ";
+import NewAgeSchools from "../components/NewAgeSchools";
 import CollegeShowcase from "../components/CollegeShowcase";
 import StudyAbroad from "../components/StudyAbroad";
 import AdmissionModes from "../components/AdmissionModes";
@@ -19,7 +21,7 @@ import AdmissionModes from "../components/AdmissionModes";
 
 export default function Home() {
   return (
-    <>
+    <PageLoader borderColor="#2667ff" autoRevealDelay={500}>
       <div className="relative  overflow-hidden bg-gradient-to-br from-indigo-50 via-blue-50 to-blue-100">
          {/* <Ribbons
     baseThickness={30}
@@ -41,6 +43,7 @@ export default function Home() {
       <Awards/>
       <WhyChooseUs/>
       <YouTubeShowcase/>
+      <NewAgeSchools/>
       <CollegeShowcase/>
       <StudyAbroad/>
        <FAQ/>
@@ -49,6 +52,6 @@ export default function Home() {
  
        
       </div>
-    </>
+    </PageLoader>
   );
 }

@@ -37,72 +37,132 @@ export default function AdmissionModes() {
   }, [activeTab]);
 
   return (
-    <section className="w-full py-24 px-6">
+    <section className="w-full py-16 md:py-24 px-4 md:px-6">
+      <style>{`
+        .modes-scrollbar {
+          overscroll-behavior-y: contain;
+          touch-action: pan-y;
+        }
+        .modes-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .modes-scrollbar::-webkit-scrollbar-track {
+          background: #f4f4f5;
+          border-radius: 9999px;
+        }
+        .modes-scrollbar::-webkit-scrollbar-thumb {
+          background: #3D6BE8;
+          border-radius: 9999px;
+        }
+
+        .modes-scrollbar-x {
+          overscroll-behavior-x: contain;
+          touch-action: pan-x;
+        }
+        .modes-scrollbar-x::-webkit-scrollbar {
+          height: 4px;
+        }
+        .modes-scrollbar-x::-webkit-scrollbar-track {
+          background: #f4f4f5;
+          border-radius: 9999px;
+        }
+        .modes-scrollbar-x::-webkit-scrollbar-thumb {
+          background: #3D6BE8;
+          border-radius: 9999px;
+        }
+      `}</style>
+
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <div className="mb-16">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="mb-10 md:mb-16">
+          <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-px bg-[#3D6BE8]" />
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#3D6BE8]">Explore Admission Pathways</span>
           </div>
-          <h2 className="text-5xl font-[1000] tracking-tighter text-zinc-900 italic">Admission <span className="text-[#3D6BE8]">Modes</span></h2>
+          <h2 className="text-3xl md:text-5xl font-[1000] tracking-tighter text-zinc-900 italic">Admission <span className="text-[#3D6BE8]">Modes</span></h2>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-12 items-start">
-
-          {/* Sidebar Tabs */}
-          <div className="lg:col-span-4 space-y-2 sticky top-24">
+        {/* Mobile Horizontal Tabs (< lg) */}
+        <div className="lg:hidden mb-6">
+          <div className="modes-scrollbar-x flex overflow-x-auto gap-2.5 pb-3 pt-1 -mx-2 px-2 scroll-smooth">
             {ADMISSION_MODES.map((mode) => (
-              <SoundWrapper>
-              <button
-                key={mode.id}
-                onClick={() => setActiveTab(mode)}
-                className={`w-full flex items-center justify-between p-5 rounded-2xl border transition-all duration-300 group ${activeTab.id === mode.id
-                    ? 'bg-zinc-900 border-zinc-900 text-white shadow-xl translate-x-2'
-                    : 'bg-white border-zinc-100 text-zinc-500 hover:border-[#3D6BE8]/30 hover:bg-zinc-50'
+              <SoundWrapper key={mode.id}>
+                <button
+                  onClick={() => setActiveTab(mode)}
+                  className={`shrink-0 flex items-center gap-2.5 px-4 py-3 rounded-xl border text-[11px] font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                    activeTab.id === mode.id
+                      ? 'bg-zinc-900 border-zinc-900 text-white shadow-md'
+                      : 'bg-white border-zinc-200 text-zinc-600 hover:border-[#3D6BE8]/40 hover:bg-zinc-50'
                   }`}
-              >
-                <div className="flex items-center gap-4">
-                  <mode.icon size={18} className={activeTab.id === mode.id ? 'text-[#E39F4A]' : 'group-hover:text-[#3D6BE8]'} />
-                  <span className="text-[11px] font-black uppercase tracking-widest">{mode.title}</span>
-                </div>
-                <ChevronRight size={14} className={activeTab.id === mode.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} />
-              </button>
+                >
+                  <mode.icon size={16} className={activeTab.id === mode.id ? 'text-[#E39F4A]' : 'text-zinc-400'} />
+                  <span>{mode.title}</span>
+                </button>
               </SoundWrapper>
             ))}
           </div>
+        </div>
 
-          {/* Right Content Card */}
-          <div className="lg:col-span-8" ref={contentRef}>
-            <div className="bg-white border border-zinc-100 rounded-[3rem] p-10 md:p-16 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.04)] relative overflow-hidden h-full min-h-[500px] flex flex-col justify-center">
+        {/* Desktop Grid Layout (lg+) */}
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+
+          {/* Desktop Sidebar Tabs (hidden on mobile, visible on lg+) */}
+          <div className="hidden lg:flex lg:col-span-4 lg:h-[520px] flex-col min-h-0">
+            <div 
+              className="modes-scrollbar overflow-y-auto h-[520px] max-h-[520px] pr-3 space-y-2.5"
+              onWheel={(e) => e.stopPropagation()}
+            >
+              {ADMISSION_MODES.map((mode) => (
+                <SoundWrapper key={mode.id}>
+                  <button
+                    onClick={() => setActiveTab(mode)}
+                    className={`w-full flex items-center justify-between p-4 md:p-5 rounded-2xl border transition-all duration-300 group cursor-pointer ${
+                      activeTab.id === mode.id
+                        ? 'bg-zinc-900 border-zinc-900 text-white shadow-xl translate-x-1'
+                        : 'bg-white border-zinc-100 text-zinc-500 hover:border-[#3D6BE8]/30 hover:bg-zinc-50'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <mode.icon size={18} className={activeTab.id === mode.id ? 'text-[#E39F4A]' : 'group-hover:text-[#3D6BE8]'} />
+                      <span className="text-[11px] font-black uppercase tracking-widest text-left">{mode.title}</span>
+                    </div>
+                    <ChevronRight size={14} className={activeTab.id === mode.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} />
+                  </button>
+                </SoundWrapper>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Content Card (Equal height on desktop, flexible height on mobile) */}
+          <div className="lg:col-span-8 flex min-h-[380px] lg:h-[520px]" ref={contentRef}>
+            <div className="w-full bg-white border border-zinc-100 rounded-3xl md:rounded-[3rem] p-6 md:p-14 shadow-[0_30px_70px_-20px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col justify-between">
               {/* Decorative Accent */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#3D6BE8]/5 blur-[80px] rounded-full" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#3D6BE8]/5 blur-[80px] rounded-full pointer-events-none" />
 
-              <div className="relative z-10">
-                <div className="w-20 h-20 rounded-3xl bg-zinc-50 flex items-center justify-center text-[#3D6BE8] mb-8">
-                  <activeTab.icon size={40} />
+              <div className="relative z-10 my-auto">
+                <div className="w-14 h-14 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-zinc-50 flex items-center justify-center text-[#3D6BE8] mb-6 md:mb-8">
+                  <activeTab.icon size={32} className="md:w-10 md:h-10" />
                 </div>
 
-                <h3 className="text-4xl font-[1000] tracking-tighter text-zinc-900 mb-6 italic">
+                <h3 className="text-2xl md:text-4xl font-[1000] tracking-tighter text-zinc-900 mb-4 md:mb-6 italic">
                   {activeTab.title}
                 </h3>
 
-                <p className="text-xl font-bold text-zinc-500 leading-relaxed max-w-2xl mb-12">
+                <p className="text-sm md:text-xl font-bold text-zinc-500 leading-relaxed max-w-2xl mb-6 md:mb-12">
                   {activeTab.desc}
                 </p>
 
-                <div className="flex flex-wrap gap-4 pt-8 border-t border-zinc-100">
-                <button
-  onClick={() => {
-    // setIsModalOpen(true);
-    router.push(`/contact-us`);
-  }}
-  className="px-10 py-5 bg-[#3D6BE8] cursor-pointer text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-900 transition-all shadow-xl shadow-blue-200"
->
-  Enroll for {activeTab.title}
-</button>
-                  <button className="px-10 py-5 border border-zinc-200 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-50 transition-all">
+                <div className="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 pt-6 md:pt-8 border-t-2 border-zinc-200">
+                  <button
+                    onClick={() => {
+                      router.push(`/contact-us`);
+                    }}
+                    className="w-full sm:w-auto px-6 md:px-10 py-4 md:py-5 bg-[#3D6BE8] cursor-pointer text-white rounded-xl md:rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-900 transition-all shadow-xl shadow-blue-200 text-center"
+                  >
+                    Enroll 
+                  </button>
+                  <button className="w-full sm:w-auto px-6 md:px-10 py-4 md:py-5 border border-zinc-200 cursor-pointer rounded-xl md:rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-50 transition-all text-center">
                     Download Guidelines
                   </button>
                 </div>

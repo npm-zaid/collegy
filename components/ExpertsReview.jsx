@@ -69,7 +69,7 @@ function ExpertCard({ expert, index }) {
       ref={cardRef}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
-      className="relative bg-white rounded-[28px] overflow-hidden border border-slate-100 will-change-transform cursor-pointer"
+      className="relative rounded-[28px] overflow-hidden border border-slate-100 will-change-transform cursor-pointer"
       style={{
         boxShadow: "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)",
         animationDelay: `${index * 80}ms`,
@@ -195,12 +195,9 @@ export default function ExpertsReview() {
   const visible = EXPERTS_REVIEW.slice(startIndex, startIndex + visibleCount);
 
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-b from-slate-50/80 to-white relative overflow-hidden">
+    <section className="py-16 sm:py-24 px-4 sm:px-6 relative overflow-hidden">
 
-      {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#2667ff]/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-100/40 rounded-full blur-[80px] pointer-events-none translate-y-1/2 -translate-x-1/4" />
-
+     
       <div className="max-w-7xl mx-auto relative">
 
         {/* ── Header ── */}

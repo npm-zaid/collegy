@@ -71,7 +71,7 @@ export default function FAQ() {
   return (
     <section className=" py-10 relative overflow-hidden">
       {/* Soft Background Accent */}
-      <div className="absolute w-[500px] h-[500px] rounded-full blur-[150px] bg-[#2667ff]/10 -bottom-40 -left-20 pointer-events-none" />
+      {/* <div className="absolute w-[500px] h-[500px] rounded-full blur-[150px] bg-[#2667ff]/10 -bottom-40 -left-20 pointer-events-none" /> */}
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header Section */}

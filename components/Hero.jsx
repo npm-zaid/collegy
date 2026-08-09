@@ -235,6 +235,22 @@ export default function Hero() {
         className="relative min-h-screen w-full overflow-hidden flex items-center justify-center px-6 py-20"
       >
 
+            <div className="main-glow absolute -top-24 -left-50 w-[500px] h-[500px] rounded-full bg-[#2667ff]/30 blur-[180px] pointer-events-none" />
+      <div className="main-glow absolute hidden sm:block -top-50 -right-50 w-[500px] h-[500px] rounded-full bg-[#2667ff]/30 blur-[180px] pointer-events-none" /> 
+      
+      <div
+        className="absolute top-0 left-0 right-0 h-[100vh] z-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+        linear-gradient(to right, #829cec38 1px, transparent 1px),
+        linear-gradient(to bottom, #829cec38 1px, transparent 1px)
+      `,
+          backgroundSize: "40px 40px",
+          WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+          maskImage: "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
+        }}
+      />
+
         {/* LEFT 0 — College card */}
         <div
           ref={el => { leftRefs.current[0] = el; }}
@@ -301,12 +317,12 @@ export default function Hero() {
         <SoundWrapper>
         <div
           ref={el => { rightRefs.current[1] = el; }}
-          className="absolute  z-10 will-change-transform rotate-6 lg:bottom-[25%] lg:right-[5%] bottom-[5%] right-[2%]"
+          className="absolute shadow-xl  z-10 will-change-transform rotate-6 lg:bottom-[25%] lg:right-[5%] bottom-[5%] right-[2%]"
         >
           <button
             onClick={() => { setSidebarOpen(p => !p); setNewsOpen(false); }}
             onMouseEnter={hoverIn} onMouseLeave={hoverOut}
-            className="relative btn flex items-center gap-2.5 text-white rounded-2xl px-4 py-3 shadow-[0_8px_28px_rgba(79,70,229,0.4)] cursor-pointer bg-gradient-to-br from-[#2667ff] to-[#3f8efc]"
+            className="relative btn  flex items-center gap-2.5 text-white rounded-2xl px-4 py-3 shadow-[0_8px_28px_rgba(79,70,229,0.4)] cursor-pointer bg-gradient-to-br from-[#2667ff] to-[#3f8efc]"
           >
             <span className="relative">
               <svg width="20" height="20" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24">
