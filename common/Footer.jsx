@@ -31,7 +31,7 @@ export default function Footer() {
               <a href="#" aria-label="Twitter" className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-[#2667ff] hover:text-white transition-all duration-300 shadow-sm border border-gray-100">
                 <FiTwitter size={18} />
               </a>
-              <a href="#" aria-label="Instagram" className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-[#2667ff] hover:text-white transition-all duration-300 shadow-sm border border-gray-100">
+              <a href="https://www.instagram.com/finalebeacon" aria-label="Instagram" className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-[#2667ff] hover:text-white transition-all duration-300 shadow-sm border border-gray-100">
                 <FiInstagram size={18} />
               </a>
               {/* LinkedIn page link */}
