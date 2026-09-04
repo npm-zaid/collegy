@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import Link from "next/link";
 import { SendHorizontal } from "lucide-react";
 import SoundWrapper from './SoundWrapper'
+import HighFiveHands from "./Highfivehands";
 
 const NOTIFICATIONS = {
   All: [
@@ -250,6 +251,8 @@ export default function Hero() {
           maskImage: "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
         }}
       />
+
+      
 
         {/* LEFT 0 — College card */}
         <div

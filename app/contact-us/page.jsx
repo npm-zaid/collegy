@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { gsap } from "gsap";
 import { 
   Sparkles, 
@@ -9,14 +10,45 @@ import {
   Send, 
   CheckCircle2, 
   GraduationCap,
-  ArrowUpRight
+  ArrowUpRight,
+  ChevronDown,
+  X
 } from "lucide-react";
 
-export default function ContactPage() {
+const ADMISSION_MODES_LIST = [
+  "Normal Admission",
+  "100% Scholarship",
+  "0% Attendance Policy",
+  "Private Degree",
+  "100% Placement Guarantee",
+  "Direct Govt. Admission",
+  "Online & Distance Learning",
+  "Aviation Courses",
+  "Medical / Paramedical",
+  "MBBS Abroad",
+];
+
+function ContactPageContent() {
   const containerRef = useRef(null);
+  const searchParams = useSearchParams();
+  const modeParam = searchParams.get("mode") || "";
+
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);  const [form, setForm] = useState({ name: '', phone: '', email: '', course: '' });
-  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    course: "",
+    admissionMode: modeParam,
+  });
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (modeParam) {
+      setForm((p) => ({ ...p, admissionMode: modeParam }));
+    }
+  }, [modeParam]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -34,43 +66,51 @@ export default function ContactPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const name  = form.name.trim();
+    const name = form.name.trim();
     const phone = form.phone.trim();
     const email = form.email.trim();
     const course = form.course.trim();
+    const admissionMode = form.admissionMode.trim();
 
-    if (!name) { setError('Your name is required.'); return; }
-    if (name.length < 2) { setError('Name must be at least 2 characters.'); return; }
+    if (!name) { setError("Your name is required."); return; }
+    if (name.length < 2) { setError("Name must be at least 2 characters."); return; }
 
-    if (!phone) { setError('Mobile number is required.'); return; }
-    if (!/^\d{10}$/.test(phone)) { setError('Enter a valid 10-digit mobile number.'); return; }
+    if (!phone) { setError("Mobile number is required."); return; }
+    if (!/^\d{10}$/.test(phone)) { setError("Enter a valid 10-digit mobile number."); return; }
 
-    if (!email) { setError('Email address is required.'); return; }
+    if (!email) { setError("Email address is required."); return; }
     if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-      setError('Enter a valid email address.'); return;
+      setError("Enter a valid email address."); return;
     }
 
     setIsSubmitting(true);
-    setError('');
+    setError("");
 
     try {
-      const res = await fetch('https://finale-beacon-backend.vercel.app/api/enquiries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, phone, email, course }),
+      const API_URL = process.env.NEXT_PUBLIC_API || "https://finale-beacon-backend.vercel.app";
+      const res = await fetch(`${API_URL}/api/enquiries`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          phone,
+          email,
+          course: course || undefined,
+          admissionMode: admissionMode || undefined,
+        }),
       });
 
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setError(data.errors?.join(', ') || data.message || 'Something went wrong.');
+        setError(data.errors?.join(", ") || data.message || "Something went wrong.");
         return;
       }
 
       setIsSubmitted(true);
-      setForm({ name: '', phone: '', email: '', course: '' });
+      setForm({ name: "", phone: "", email: "", course: "", admissionMode: "" });
     } catch {
-      setError('Network error — please try again.');
+      setError("Network error — please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -93,7 +133,7 @@ export default function ContactPage() {
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.85] mb-4">
-            Let's find your <br />
+            Let&apos;s find your <br />
             <span className="bg-gradient-to-r from-[#2667ff] via-[#3f8efc] to-[#2667ff] bg-clip-text text-transparent italic pr-3">
               perfect fit.
             </span>
@@ -122,6 +162,28 @@ export default function ContactPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                {form.admissionMode && (
+                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50/80 border border-[#2667ff]/20 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#2667ff] text-white flex items-center justify-center shadow-md shadow-blue-500/20">
+                        <GraduationCap size={20} />
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[#2667ff]">Selected Pathway</span>
+                        <p className="text-sm font-black text-zinc-900">{form.admissionMode}</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setForm(p => ({ ...p, admissionMode: '' }))}
+                      className="flex items-center gap-1 text-[11px] font-bold text-zinc-400 hover:text-zinc-700 hover:bg-zinc-200/60 px-3 py-1.5 rounded-xl transition-all cursor-pointer"
+                      title="Clear admission mode"
+                    >
+                      <X size={13} /> Clear
+                    </button>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-1">
                     <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Student Name *</label>
@@ -159,14 +221,37 @@ export default function ContactPage() {
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Target Course (Optional)</label>
-                  <input
-                    placeholder="e.g. B.Tech CSE"
-                    value={form.course}
-                    onChange={(e) => { setForm(p => ({ ...p, course: e.target.value })); setError(''); }}
-                    className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none transition-all font-bold placeholder:text-zinc-300 shadow-sm"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Target Course (Optional)</label>
+                    <input
+                      placeholder="e.g. B.Tech CSE"
+                      value={form.course}
+                      onChange={(e) => { setForm(p => ({ ...p, course: e.target.value })); setError(''); }}
+                      className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none transition-all font-bold placeholder:text-zinc-300 shadow-sm"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-2 italic">Admission Mode (Optional)</label>
+                    <div className="relative">
+                      <select
+                        value={form.admissionMode}
+                        onChange={(e) => { setForm(p => ({ ...p, admissionMode: e.target.value })); setError(''); }}
+                        className="w-full bg-zinc-50 border-2 border-transparent focus:border-[#2667ff] focus:bg-white p-5 rounded-2xl outline-none transition-all font-bold text-zinc-800 shadow-sm appearance-none cursor-pointer pr-10"
+                      >
+                        <option value="">Select Pathway (Optional)</option>
+                        {ADMISSION_MODES_LIST.map((mode) => (
+                          <option key={mode} value={mode}>
+                            {mode}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400">
+                        <ChevronDown size={18} />
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
                 {error && (
@@ -176,7 +261,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="group relative w-full bg-zinc-900 overflow-hidden p-6 rounded-2xl transition-all hover:shadow-[0_20px_40px_rgba(38,103,255,0.2)] disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="group relative w-full bg-zinc-900 overflow-hidden p-6 rounded-2xl transition-all hover:shadow-[0_20px_40px_rgba(38,103,255,0.2)] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <div className="absolute inset-0 w-0 bg-gradient-to-r from-[#2667ff] to-[#3f8efc] transition-all duration-500 group-hover:w-full" />
                   <span className="relative z-10 flex items-center justify-center gap-2 text-white font-black uppercase tracking-[0.3em] text-xs group-hover:text-white">
@@ -249,5 +334,17 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ContactPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2667ff]" />
+      </div>
+    }>
+      <ContactPageContent />
+    </Suspense>
   );
 }

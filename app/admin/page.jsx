@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { gsap } from "gsap";
 import {
   GraduationCap, Users, MessageSquare, Briefcase,
-  Newspaper, Star, Building2, ShieldCheck, Loader2
+  Newspaper, Star, Building2, ShieldCheck, Loader2, Video
 } from "lucide-react";
 import { StatCard } from "../../admin-compo/AdminUi";
 import { getToken } from "../../lib/auth";
+import { getWebinarsApi } from "../../lib/webinarApi";
 
 const API = "https://finale-beacon-backend.vercel.app";
 
@@ -28,7 +29,8 @@ export default function DashboardPage() {
           consultRes,
           internRes,
           newsRes,
-          partnersRes
+          partnersRes,
+          webinarsData
         ] = await Promise.all([
           fetch(`${API}/api/admin/colleges`, { headers }).then(r => r.json()).catch(() => ({ data: [] })),
           fetch(`${API}/api/admin/enquiries`, { headers }).then(r => r.json()).catch(() => ({ data: [] })),
@@ -36,6 +38,7 @@ export default function DashboardPage() {
           fetch(`${API}/api/internships`).then(r => r.json()).catch(() => ({ data: [] })),
           fetch(`${API}/api/notifications`).then(r => r.json()).catch(() => ({ data: [] })),
           fetch(`${API}/api/partners`).then(r => r.json()).catch(() => ({ data: [] })),
+          getWebinarsApi().catch(() => []),
         ]);
 
         const colleges = collegesRes?.data || [];
@@ -62,6 +65,7 @@ export default function DashboardPage() {
           ],
           quick: [
             { icon: <Newspaper size={20} />, val: news.length, label: "News Published" },
+            { icon: <Video size={20} />, val: Array.isArray(webinarsData) ? webinarsData.length : 0, label: "Live Webinars" },
             { icon: <Star size={20} />, val: featuredColleges, label: "Featured Colleges" },
             { icon: <Building2 size={20} />, val: govtColleges, label: "Govt. Colleges" },
             { icon: <Building2 size={20} />, val: privateColleges, label: "Private Colleges" },
@@ -107,7 +111,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick stats */}
-      <div className="grid grid-cols-3 xl:grid-cols-6 gap-3 mb-7">
+      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-7 gap-3 mb-7">
         {statsData.quick.map((q) => (
           <div key={q.label} className="quick-card bg-white border border-slate-100 rounded-[16px] p-4 flex items-center gap-4 shadow-sm">
             <span className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-indigo-500 shrink-0">

@@ -156,7 +156,7 @@ export default function AdmissionModes() {
                 <div className="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 pt-6 md:pt-8 border-t-2 border-zinc-200">
                   <button
                     onClick={() => {
-                      router.push(`/contact-us`);
+                      router.push(`/contact-us?mode=${encodeURIComponent(activeTab.title)}`);
                     }}
                     className="w-full sm:w-auto px-6 md:px-10 py-4 md:py-5 bg-[#3D6BE8] cursor-pointer text-white rounded-xl md:rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-900 transition-all shadow-xl shadow-blue-200 text-center"
                   >

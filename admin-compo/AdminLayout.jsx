@@ -6,7 +6,7 @@ import { gsap } from "gsap";
 import {
   LayoutDashboard, GraduationCap, PlusCircle, MessageSquare,
   CreditCard, Briefcase, Newspaper, FilePlus, Users, LogOut,
-  Bell, ChevronLeft, ChevronRight, Menu,
+  Bell, ChevronLeft, ChevronRight, Menu, Video,
 } from "lucide-react";
 
 const NAV = [
@@ -39,6 +39,13 @@ const NAV = [
     items: [
       { id: "news", label: "Latest News", icon: Newspaper, href: "/admin/news", badge: null },
       { id: "add-news", label: "Add News", icon: FilePlus, href: "/admin/add-news", badge: null },
+    ],
+  },
+  {
+    label: "Webinars",
+    items: [
+      { id: "webinars", label: "Webinar List", icon: Video, href: "/admin/webinars", badge: null },
+      { id: "add-webinar", label: "Add Webinar", icon: PlusCircle, href: "/admin/add-webinar", badge: null },
     ],
   },
 ];

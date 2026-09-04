@@ -114,7 +114,7 @@ export default function EnquiriesPage() {
   /* ── Client-side search ── */
   const filtered = enquiries.filter((e) => {
     const q = search.toLowerCase();
-    return [e.name, e.phone, e.email].some((f) => f?.toLowerCase().includes(q));
+    return [e.name, e.phone, e.email, e.course, e.admissionMode].some((f) => f?.toLowerCase().includes(q));
   });
 
   return (
@@ -143,19 +143,19 @@ export default function EnquiriesPage() {
       />
 
       <TableWrap
-        searchPlaceholder="Search by name, email, phone…"
+        searchPlaceholder="Search by name, email, phone, course, mode…"
         onSearch={setSearch}
-        headers={["#", "Name", "Email", "Phone", "Course", "Submitted", "Actions"]}
+        headers={["#", "Name", "Email", "Phone", "Course", "Admission Mode", "Submitted", "Actions"]}
       >
         {loading ? (
           <tr>
-            <td colSpan={7} className="px-5 py-10 text-center text-[12px] text-slate-400">
+            <td colSpan={8} className="px-5 py-10 text-center text-[12px] text-slate-400">
               Loading enquiries…
             </td>
           </tr>
         ) : filtered.length === 0 ? (
           <tr>
-            <td colSpan={7} className="px-5 py-10 text-center text-[12px] text-slate-400">
+            <td colSpan={8} className="px-5 py-10 text-center text-[12px] text-slate-400">
               No enquiries found.
             </td>
           </tr>
@@ -176,6 +176,15 @@ export default function EnquiriesPage() {
               <td className="px-5 py-4 text-[12px] text-slate-500">{e.email}</td>
               <td className="px-5 py-4 text-[12px] text-slate-600">{e.phone}</td>
               <td className="px-5 py-4 text-[12px] text-slate-500">{e.course || "—"}</td>
+              <td className="px-5 py-4 text-[12px]">
+                {e.admissionMode ? (
+                  <span className="inline-block px-2.5 py-1 rounded-full bg-blue-50 text-[#2667ff] font-semibold text-[11px] whitespace-nowrap">
+                    {e.admissionMode}
+                  </span>
+                ) : (
+                  <span className="text-slate-400">—</span>
+                )}
+              </td>
 
               <td className="px-5 py-4 text-[12px] text-slate-400 whitespace-nowrap">
                 {e.createdAt ? new Date(e.createdAt).toLocaleDateString("en-IN", {
@@ -210,10 +219,11 @@ export default function EnquiriesPage() {
               </div>
             </div>
 
-            <ModalRow label="Name"      value={selected.name}  />
-            <ModalRow label="Email"     value={selected.email} />
-            <ModalRow label="Phone"     value={selected.phone} />
+            <ModalRow label="Name"           value={selected.name}  />
+            <ModalRow label="Email"          value={selected.email} />
+            <ModalRow label="Phone"          value={selected.phone} />
             {selected.course && <ModalRow label="Course" value={selected.course} />}
+            {selected.admissionMode && <ModalRow label="Admission Mode" value={selected.admissionMode} />}
             <ModalRow
               label="Submitted"
               value={selected.createdAt

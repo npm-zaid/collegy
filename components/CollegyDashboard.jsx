@@ -49,22 +49,20 @@ const featuredColleges = [
   { name: "Symbiosis Pune",     tag: "Management",   fee: "₹15L/yr", color: "bg-[#F59E0B]" },
 ];
 
-// Row 1 — scrolls LEFT
-const webinarRow1 = [
-  { id: 1,  title: "IIT JEE 2025 Strategy",     host: "Dr. Ramesh Kumar",    status: "LIVE",     viewers: "1.2K watching",  time: "Live now",           icon: "🎯" },
-  { id: 2,  title: "NEET Prep Masterclass",      host: "Prof. Ananya Singh",  status: "UPCOMING", viewers: "850 registered", time: "Today · 5:00 PM",    icon: "🔬" },
-  { id: 3,  title: "College Application Tips",   host: "Aditi Sharma",        status: "UPCOMING", viewers: "620 registered", time: "Tomorrow · 3:00 PM", icon: "📝" },
-  { id: 4,  title: "Scholarship Guide 2025",     host: "Rahul Mehta",         status: "RECORDED", viewers: "3.4K views",     time: "Watch anytime",      icon: "🏆" },
-  { id: 5,  title: "Engineering Career Paths",   host: "Vikram Nair",         status: "UPCOMING", viewers: "530 registered", time: "Sat · 11:00 AM",     icon: "⚙️" },
-];
+import { getWebinarsApi } from '../lib/webinarApi';
 
-// Row 2 — scrolls RIGHT
-const webinarRow2 = [
-  { id: 6,  title: "MBA Admissions 2025",        host: "Priya Khanna",        status: "UPCOMING", viewers: "920 registered", time: "Today · 7:00 PM",    icon: "💼" },
-  { id: 7,  title: "CUET Strategy Session",      host: "Dr. Suresh Iyer",     status: "LIVE",     viewers: "2.1K watching",  time: "Live now",           icon: "📚" },
-  { id: 8,  title: "Study Abroad 101",           host: "Neha Bose",           status: "RECORDED", viewers: "5.6K views",     time: "Watch anytime",      icon: "✈️" },
-  { id: 9,  title: "Financial Aid & Loans",      host: "Arjun Sethi",         status: "UPCOMING", viewers: "410 registered", time: "Sun · 4:00 PM",      icon: "💰" },
-  { id: 10, title: "Law School Journey",         host: "Kavya Menon",         status: "UPCOMING", viewers: "340 registered", time: "Mon · 6:00 PM",      icon: "⚖️" },
+// Fallback initial data in case of offline/network issues
+const FALLBACK_WEBINARS = [
+  { _id: "1", title: "IIT JEE 2025 Strategy", name: "Dr. Ramesh Kumar", host: "Dr. Ramesh Kumar", status: "LIVE", viewers: "1.2K watching", time: "Live now", icon: "🎯", url: "https://collegy.in" },
+  { _id: "2", title: "NEET Prep Masterclass", name: "Prof. Ananya Singh", host: "Prof. Ananya Singh", status: "UPCOMING", viewers: "850 registered", time: "Today · 5:00 PM", icon: "🔬", url: "https://collegy.in" },
+  { _id: "3", title: "College Application Tips", name: "Aditi Sharma", host: "Aditi Sharma", status: "UPCOMING", viewers: "620 registered", time: "Tomorrow · 3:00 PM", icon: "📝", url: "https://collegy.in" },
+  { _id: "4", title: "Scholarship Guide 2025", name: "Rahul Mehta", host: "Rahul Mehta", status: "RECORDED", viewers: "3.4K views", time: "Watch anytime", icon: "🏆", url: "https://collegy.in" },
+  { _id: "5", title: "Engineering Career Paths", name: "Vikram Nair", host: "Vikram Nair", status: "UPCOMING", viewers: "530 registered", time: "Sat · 11:00 AM", icon: "⚙️", url: "https://collegy.in" },
+  { _id: "6", title: "MBA Admissions 2025", name: "Priya Khanna", host: "Priya Khanna", status: "UPCOMING", viewers: "920 registered", time: "Today · 7:00 PM", icon: "💼", url: "https://collegy.in" },
+  { _id: "7", title: "CUET Strategy Session", name: "Dr. Suresh Iyer", host: "Dr. Suresh Iyer", status: "LIVE", viewers: "2.1K watching", time: "Live now", icon: "📚", url: "https://collegy.in" },
+  { _id: "8", title: "Study Abroad 101", name: "Neha Bose", host: "Neha Bose", status: "RECORDED", viewers: "5.6K views", time: "Watch anytime", icon: "✈️", url: "https://collegy.in" },
+  { _id: "9", title: "Financial Aid & Loans", name: "Arjun Sethi", host: "Arjun Sethi", status: "UPCOMING", viewers: "410 registered", time: "Sun · 4:00 PM", icon: "💰", url: "https://collegy.in" },
+  { _id: "10", title: "Law School Journey", name: "Kavya Menon", host: "Kavya Menon", status: "UPCOMING", viewers: "340 registered", time: "Mon · 6:00 PM", icon: "⚖️", url: "https://collegy.in" },
 ];
 
 // ─── WebinarCard sub-component (used in both marquee rows) ───────────────────
@@ -73,20 +71,31 @@ const WebinarCard = ({ webinar }) => {
   const isLive     = webinar.status === "LIVE";
   const isUpcoming = webinar.status === "UPCOMING";
   const isRecorded = webinar.status === "RECORDED";
+  const speakerName = webinar.name || webinar.host || "Expert Speaker";
+
+  const handleAction = (e) => {
+    e.stopPropagation();
+    if (webinar.url) {
+      window.open(webinar.url, "_blank", "noopener,noreferrer");
+    }
+  };
 
   return (
-    <div className="w-64 shrink-0 bg-white rounded-[2rem] p-5 border-2  border-[#3D6BE8]/50 transition-all shadow-lg">
+    <div
+      onClick={handleAction}
+      className="w-64 shrink-0 bg-white rounded-[2rem] p-5 border-2 border-[#3D6BE8]/50 transition-all shadow-lg hover:shadow-xl hover:border-[#3D6BE8] cursor-pointer group"
+    >
       {/* Top: icon + status badge */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-start gap-2 flex-1 min-w-0 mr-2">
-          <span className="text-xl shrink-0 mt-0.5">{webinar.icon}</span>
+          <span className="text-xl shrink-0 mt-0.5">{webinar.icon || "🎯"}</span>
           <div className="min-w-0">
-            <p className="text-[12px] font-bold text-zinc-900 leading-tight line-clamp-2">
+            <p className="text-[12px] font-bold text-zinc-900 leading-tight line-clamp-2 group-hover:text-[#3D6BE8] transition-colors">
               {webinar.title}
             </p>
             <p className="text-[9px] text-zinc-400 mt-0.5 flex items-center gap-1 truncate">
               <Mic size={7} />
-              {webinar.host}
+              {speakerName}
             </p>
           </div>
         </div>
@@ -116,10 +125,11 @@ const WebinarCard = ({ webinar }) => {
       {/* Meta row */}
       <div className="flex items-center justify-between mt-3">
         <div className="flex items-center gap-2 text-[9px] text-zinc-400">
-          <span className="flex items-center gap-0.5"><Users size={8} /> {webinar.viewers}</span>
-          <span className="flex items-center gap-0.5"><Clock size={8} /> {webinar.time}</span>
+          <span className="flex items-center gap-0.5"><Users size={8} /> {webinar.viewers || "500+ registered"}</span>
+          <span className="flex items-center gap-0.5"><Clock size={8} /> {webinar.time || "Upcoming"}</span>
         </div>
         <button
+          onClick={handleAction}
           className={`px-2.5 py-1 rounded-full text-[9px] font-black transition-all hover:opacity-85 ${
             isLive
               ? "bg-red-500 text-white"
@@ -144,6 +154,36 @@ const CollegyDashboard = () => {
   const webinarRow1Ref     = useRef(null);
   const webinarRow2Ref     = useRef(null);
   const router             = useRouter();
+
+  const [webinars, setWebinars] = React.useState(FALLBACK_WEBINARS);
+  const [loading, setLoading]   = React.useState(true);
+
+  // Fetch webinars from backend API
+  useEffect(() => {
+    let active = true;
+    async function fetchWebinarData() {
+      try {
+        const data = await getWebinarsApi();
+        if (active && data && data.length > 0) {
+          setWebinars(data);
+        }
+      } catch (err) {
+        console.error("Error loading webinars from backend:", err);
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+    fetchWebinarData();
+    return () => { active = false; };
+  }, []);
+
+  // Split webinars into two rows
+  const row1 = webinars.filter((_, idx) => idx % 2 === 0);
+  const row2 = webinars.filter((_, idx) => idx % 2 !== 0);
+
+  // Ensure minimum elements for infinite marquee looping
+  const displayRow1 = row1.length < 5 ? [...row1, ...row1, ...row1] : [...row1, ...row1];
+  const displayRow2 = row2.length < 5 ? [...row2, ...row2, ...row2] : [...row2, ...row2];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -179,7 +219,23 @@ const CollegyDashboard = () => {
         });
       }
 
-      // ── Card 4 · Horizontal marquee — row 1 scrolls LEFT, row 2 scrolls RIGHT ──
+      // LIVE badge pulse rings (both rows)
+      gsap.to(".live-ring", {
+        scale:   2.2,
+        opacity: 0,
+        duration: 1.1,
+        repeat:  -1,
+        ease:    "power2.out",
+      });
+
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  // Marquee horizontal scroll re-initialization when webinars are ready
+  useEffect(() => {
+    const ctx = gsap.context(() => {
       if (webinarRow1Ref.current) {
         const w = webinarRow1Ref.current.scrollWidth / 2;
         gsap.to(webinarRow1Ref.current, {
@@ -198,27 +254,17 @@ const CollegyDashboard = () => {
           { x: 0, duration: 34, ease: "none", repeat: -1 }
         );
       }
-
-      // LIVE badge pulse rings (both rows)
-      gsap.to(".live-ring", {
-        scale:   2.2,
-        opacity: 0,
-        duration: 1.1,
-        repeat:  -1,
-        ease:    "power2.out",
-      });
-
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [loading, webinars.length]);
 
   // ─── Render ──────────────────────────────────────────────────────────────
 
   return (
     <div
       ref={containerRef}
-      className="min-h-screen  p-6 lg:p-12 text-zinc-900 selection:bg-[#3D6BE8]/30 overflow-x-hidden"
+      className="min-h-screen   px-6 lg:px-22 py-12 text-zinc-900 selection:bg-[#3D6BE8]/30 overflow-x-hidden"
     >
       {/* ── HEADER ── */}
       <div className="relative mb-10 mt-16 flex flex-col items-center">
@@ -237,7 +283,7 @@ const CollegyDashboard = () => {
         <div className="w-36 h-1.5 bg-gradient-to-r from-zinc-900 to-[#3D6BE8] rounded-full mt-2" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
         {/* ══════════════════════════════════════════════════════════════════
             CARD 1 · AI COLLEGE SEARCH  (col-span-8)
@@ -490,8 +536,8 @@ const CollegyDashboard = () => {
                 ref={webinarRow1Ref}
                 className="flex gap-4 w-max"
               >
-                {[...webinarRow1, ...webinarRow1].map((webinar, i) => (
-                  <WebinarCard key={`r1-${i}`} webinar={webinar} />
+                {displayRow1.map((webinar, i) => (
+                  <WebinarCard key={`r1-${webinar._id || webinar.id || i}-${i}`} webinar={webinar} />
                 ))}
               </div>
             </div>
@@ -502,8 +548,8 @@ const CollegyDashboard = () => {
                 ref={webinarRow2Ref}
                 className="flex gap-4 w-max"
               >
-                {[...webinarRow2, ...webinarRow2].map((webinar, i) => (
-                  <WebinarCard key={`r2-${i}`} webinar={webinar} />
+                {displayRow2.map((webinar, i) => (
+                  <WebinarCard key={`r2-${webinar._id || webinar.id || i}-${i}`} webinar={webinar} />
                 ))}
               </div>
             </div>

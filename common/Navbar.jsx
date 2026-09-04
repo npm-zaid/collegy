@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
 import { GiTakeMyMoney } from "react-icons/gi";
+import HighFiveHands from "../components/Highfivehands";
 
 const toSlug = (name) =>
   name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -476,10 +477,13 @@ export default function Navbar() {
             <Link
               href="/refer-earn"
               title="Refer & Earn"
-              className="w-10 h-10 rounded-2xl flex items-center justify-center text-[#2667ff] hover:bg-[#2667ff] hover:text-white transition-all duration-300 cursor-pointer hover:scale-105"
+              className="w-10 h-10 animate-bounce rounded-2xl flex items-center justify-center  transition-all duration-300 cursor-pointer "
             >
-              <GiTakeMyMoney size={26} />
+              <img  src='/coin.png' width={35} height={35}/>
+              {/* <GiTakeMyMoney size={26} /> */}
             </Link>
+
+           
 
             <Link href="/contact-us" className="flex btn items-center bg-gradient-to-br from-[#2667ff] to-[#3f8efc] gap-2 px-5 py-2.5 rounded-3xl text-sm font-bold text-white cursor-pointer border-0 shadow-[0_4px_18px_rgba(79,70,229,0.38)] hover:shadow-[0_8px_30px_rgba(79,70,229,0.55)] no-underline">
               Join Us Now
