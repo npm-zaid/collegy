@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 import { CheckCircle2, GraduationCap, Sparkles, Star, MapPin } from 'lucide-react';
+import LuckyDrawPopup from './LuckyDrawWidget';
 
 const Mission = () => {
   const containerRef = useRef(null);
@@ -92,6 +93,8 @@ const Mission = () => {
       ref={containerRef}
       className=" min-h-screen relative py-10 px-6 md:px-20 flex flex-col items-center"
     >
+
+   
 
    
 

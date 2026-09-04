@@ -16,6 +16,7 @@ import NewAgeSchools from "../components/NewAgeSchools";
 import CollegeShowcase from "../components/CollegeShowcase";
 import StudyAbroad from "../components/StudyAbroad";
 import AdmissionModes from "../components/AdmissionModes";
+import LuckyDrawWidget from "../components/LuckyDrawWidget";
 
 
 
@@ -36,12 +37,16 @@ export default function Home() {
       <Mission/>
       <CollegyDashboard/>
       <VideoReviews/> 
-      <StudentWallOfProof/>    
-      <AdmissionModes/>
-      <NewsCuttings/>
-      <ExpertsReview/>
-      <Awards/>
-      <WhyChooseUs/>
+ 
+<div id="lucky-draw-start" />
+<StudentWallOfProof />
+<AdmissionModes />
+<NewsCuttings />
+<ExpertsReview />
+<Awards />
+<WhyChooseUs />
+<div id="lucky-draw-end" />
+<LuckyDrawWidget />
       <YouTubeShowcase/>
       <NewAgeSchools/>
       <CollegeShowcase/>
