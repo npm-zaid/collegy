@@ -185,14 +185,16 @@ export default function AdminLayout({ children }) {
         className="bg-white border-r border-slate-100 flex flex-col h-screen z-50 overflow-hidden flex-shrink-0"
         style={{ width: "25vw" }}
       >
-        <div className="sidebar-logo flex items-center gap-3 px-4 py-6 border-b border-slate-100 min-h-[73px]">
+        {/* <div className="sidebar-logo flex items-center gap-3 px-4 py-6 border-b border-slate-100 min-h-[73px]">
           <div className="w-8 h-8 bg-[#2667ff] rounded-xl flex items-center justify-center text-white text-[13px] font-black flex-shrink-0">
             C
           </div>
           <span ref={logoTextRef} className="font-black text-[18px] tracking-tight text-[#2667ff] whitespace-nowrap overflow-hidden">
             Collegy Admin
           </span>
-        </div>
+        </div> */}
+
+      <img src ='/finbea.jpeg' className="w-[10vw] p-4"/>
 
         <nav className="flex-1 py-4 overflow-y-auto overflow-x-hidden">
           {NAV.map((group, gi) => (

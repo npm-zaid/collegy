@@ -111,7 +111,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-7 gap-3 mb-7">
+      {/* <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-7 gap-3 mb-7">
         {statsData.quick.map((q) => (
           <div key={q.label} className="quick-card bg-white border border-slate-100 rounded-[16px] p-4 flex items-center gap-4 shadow-sm">
             <span className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-indigo-500 shrink-0">
@@ -123,7 +123,7 @@ export default function DashboardPage() {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
