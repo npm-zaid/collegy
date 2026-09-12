@@ -48,7 +48,7 @@ function ExplorePageContent() {
   useEffect(() => {
     const fetchColleges = async () => {
       try {
-        const res = await fetch("https://finale-beacon-backend.vercel.app/api/colleges");
+        const res = await fetch("http://localhost:5000/api/colleges");
         const json = await res.json();
         if (json.success) {
           const mapped = json.data.map(c => ({
