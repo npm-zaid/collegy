@@ -77,7 +77,7 @@ export default function CollegeDetailPage() {
             courses: c.courses || [],
             category: c.collegeType || "Private",
             featured: c.isFeatured || false,
-            fee: c.feesRange || (c.courses?.[0]?.fees?.totalFees ? formatFee(c.courses[0].fees.totalFees) : "N/A"),
+            fee: c.annualFees ? formatFee(c.annualFees) : (c.courses?.[0]?.fees?.totalFees ? formatFee(c.courses[0].fees.totalFees) : "N/A"),
             rank: c.nirfRanking?.overallRank || "-",
             seats: c.courses?.reduce((acc, curr) => acc + (curr.seatIntake || 0), 0) || 0,
             type: c.collegeType || "Private",

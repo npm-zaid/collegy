@@ -29,20 +29,10 @@ export default function CollegePredictor() {
         const json = await res.json();
         if (json.success) {
           const mapped = json.data.map(c => {
-              let feeNumeric = 0;
-              const feesList = c.courses?.map(co => co.fees?.yearlyFees || co.fees?.totalFees || 0).filter(f => f > 0) || [];
-              if (feesList.length > 0) {
-                feeNumeric = Math.min(...feesList);
-              } else if (c.feesRange) {
-                const clean = c.feesRange.toLowerCase().replace(/,/g, '');
-                const matches = clean.match(/[\d.]+/g);
-                if (matches && matches.length > 0) {
-                  const baseNum = parseFloat(matches[matches.length - 1]);
-                  let multiplier = 1;
-                  if (clean.includes("lakh") || clean.includes("lac") || clean.includes("l")) multiplier = 100000;
-                  else if (clean.includes("k") || clean.includes("thousand")) multiplier = 1000;
-                  feeNumeric = baseNum * multiplier;
-                }
+              let feeNumeric = c.annualFees || 0;
+              if (!feeNumeric) {
+                const feesList = c.courses?.map(co => co.fees?.yearlyFees || co.fees?.totalFees || 0).filter(f => f > 0) || [];
+                if (feesList.length > 0) feeNumeric = Math.min(...feesList);
               }
               
               return {
@@ -52,7 +42,7 @@ export default function CollegePredictor() {
                 state: c.location?.state || "Unknown",
                 courses: c.courses?.map(co => co.courseName) || [],
                 feeNumeric,
-                fee: c.feesRange || (c.courses?.[0]?.fees?.totalFees ? formatFee(c.courses[0].fees.totalFees) : "N/A"),
+                fee: c.annualFees ? formatFee(c.annualFees) : (c.courses?.[0]?.fees?.totalFees ? formatFee(c.courses[0].fees.totalFees) : "N/A"),
                 img: c.media?.images?.[0]?.filename 
                   ? (c.media.images[0].filename.startsWith('http') ? c.media.images[0].filename : `https://finale-beacon-backend.vercel.app/uploads/colleges/${c.media.images[0].filename}`)
                   : "https://images.unsplash.com/photo-1541339907198-e08756ebafe3?q=80&w=400"

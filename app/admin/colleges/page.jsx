@@ -109,7 +109,7 @@ function ViewDrawer({ college: c, onClose, onEdit, onDelete }) {
             {[
               ["College ID", c.collegeId || "—"],
               ["College Type", c.collegeType || "—"],
-              ["Fees Range", c.feesRange || "—"],
+              ["Annual Fees", c.annualFees > 0 ? `₹${(c.annualFees / 100000).toFixed(c.annualFees % 100000 === 0 ? 0 : 1)}L` : "—"],
               ["Study Modes", c.modes?.length > 0 ? c.modes.join(", ") : "—"],
               ["Exams Accepted", c.exams?.length > 0 ? c.exams.join(", ") : "—"],
               ["Address", [c.location?.address, c.location?.city, c.location?.state, c.location?.pincode].filter(Boolean).join(", ") || "—"],

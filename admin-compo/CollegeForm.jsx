@@ -48,7 +48,7 @@ export const emptyReview = () => ({
 
 export const EMPTY_FORM = {
   collegeId: "", collegeName: "", establishedYear: "", description: "",
-  collegeType: "", feesRange: "", modes: [],
+  collegeType: "", annualFees: "", modes: [],
   country: "India", state: "", city: "", address: "", pincode: "", latitude: "", longitude: "",
   nirfOverallRank: "", nirfYear: new Date().getFullYear(),
   videoLink: "",
@@ -64,7 +64,7 @@ export const collegeToForm = (c) => ({
   collegeId: c.collegeId || "",
   collegeName: c.collegeName || "",
   collegeType: c.collegeType || "",
-  feesRange: c.feesRange || "",
+  annualFees: c.annualFees || "",
   modes: c.modes || [],
   establishedYear: c.establishedYear || "",
   description: c.description || "",
@@ -99,7 +99,7 @@ export const buildFormData = ({ form, courses, exams, companies, reviews, imageF
   fd.append("collegeId", form.collegeId.trim());
   fd.append("collegeName", form.collegeName.trim());
   fd.append("collegeType", form.collegeType || "");
-  fd.append("feesRange", form.feesRange || "");
+  fd.append("annualFees", parseFloat(form.annualFees) || 0);
   fd.append("modes", JSON.stringify(form.modes || []));
   fd.append("establishedYear", form.establishedYear || "0");
   fd.append("description", form.description || "");
@@ -535,7 +535,7 @@ export default function CollegeForm({
           <FormGroup label="College ID *"><Input placeholder="e.g. IITB-001" value={form.collegeId} onChange={set("collegeId")} /></FormGroup>
           <FormGroup label="College Name *"><Input placeholder="e.g. IIT Bombay" value={form.collegeName} onChange={set("collegeName")} /></FormGroup>
           <FormGroup label="College Type"><Select options={["Private", "Government", "Semi-Government", "Other"]} value={form.collegeType} onChange={set("collegeType")} placeholder="Select Type" /></FormGroup>
-          <FormGroup label="Fees Range"><Input placeholder="e.g. 3lakh to 6lakh" value={form.feesRange} onChange={set("feesRange")} /></FormGroup>
+          <FormGroup label="Annual Fees (₹)"><Input type="number" placeholder="e.g. 300000 (= 3 Lakh)" value={form.annualFees} onChange={set("annualFees")} /></FormGroup>
           <FormGroup label="Study Modes">
             <div className="flex flex-wrap gap-4 mt-1.5">
               {["Online", "Offline", "Hybrid", "Distance", "Regular"].map(mode => (

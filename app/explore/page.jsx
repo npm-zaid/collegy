@@ -14,22 +14,7 @@ const formatFee = (val) => {
   return `₹${val}`;
 };
 
-const parseFeeRange = (rangeStr) => {
-  if (!rangeStr) return 0;
-  const clean = rangeStr.toLowerCase().replace(/,/g, '');
-  const matches = clean.match(/[\d.]+/g);
-  if (!matches || matches.length === 0) return 0;
-  
-  const isLakh = clean.includes("lakh") || clean.includes("lac") || clean.includes("l");
-  const isK = clean.includes("k") || clean.includes("thousand");
-  
-  const baseNum = parseFloat(matches[matches.length - 1]);
-  let multiplier = 1;
-  if (isLakh) multiplier = 100000;
-  else if (isK) multiplier = 1000;
-  
-  return baseNum * multiplier;
-};
+
 
 const STUDY_MODE_META = {
   Online:     { icon: Wifi,    color: "text-cyan-400",   active: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40" },
@@ -61,18 +46,11 @@ function ExplorePageContent() {
             category: c.collegeType || "Private",
             featured: c.isFeatured || false,
             studyMode: c.modes || [],
-            feeNumeric: (() => {
+            feeNumeric: c.annualFees || (() => {
               const feesList = c.courses?.map(co => co.fees?.yearlyFees || co.fees?.totalFees || 0).filter(f => f > 0) || [];
-              if (feesList.length > 0) {
-                return Math.min(...feesList);
-              }
-              if (c.feesRange) {
-                const parsed = parseFeeRange(c.feesRange);
-                if (parsed > 0) return parsed;
-              }
-              return 0;
+              return feesList.length > 0 ? Math.min(...feesList) : 0;
             })(),
-            fee: c.feesRange || (c.courses?.[0]?.fees?.totalFees ? formatFee(c.courses[0].fees.totalFees) : "N/A"),
+            fee: c.annualFees ? formatFee(c.annualFees) : (c.courses?.[0]?.fees?.totalFees ? formatFee(c.courses[0].fees.totalFees) : "N/A"),
             rank: c.nirfRanking?.overallRank || "-",
             seats: c.courses?.reduce((acc, curr) => acc + (curr.seatIntake || 0), 0) || 0,
             type: c.collegeType || "Private",
