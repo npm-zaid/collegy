@@ -14,7 +14,77 @@ import {
 const API = "https://finale-beacon-backend.vercel.app";
 
 // ── Static options ──────────────────────────────────────────────────────────────
-export const DEGREE_TYPES = ["B.Tech", "M.Tech", "MBA", "MBBS", "BDS", "B.Sc", "M.Sc", "Ph.D", "B.Arch", "LLB", "LLM", "BBA", "MCA", "BCA", "Diploma"];
+export const DEGREE_TYPES = [
+
+
+  // Engineering & Technology
+  "B.Tech",
+  "M.Tech",
+  "B.E.",
+  "M.E.",
+  "BCA",
+  "MCA",
+  "Diploma",
+
+  // Management & Commerce
+  "BBA",
+  "MBA",
+  "B.Com",
+  "M.Com",
+  "BMS",
+  "PGDM",
+
+  // Medical, Dental & Allied Health
+  "MBBS",
+  "BDS",
+  "BAMS",
+  "BHMS",
+  "B.Pharm",
+  "M.Pharm",
+  "BPT",
+
+  // Sciences & Research
+  "B.Sc",
+  "M.Sc",
+  "Ph.D",
+
+  // Arts, Humanities & Social Work
+  "B.A.",
+  "M.A.",
+  "BSW",
+  "MSW",
+  "BJMC",
+
+  // Law (Standalone)
+  "LLB",
+  "LLM",
+
+  // Design, Architecture & Fine Arts
+  "B.Arch",
+  "M.Arch",
+  "B.Des",
+  "M.Des",
+  "BFA",
+
+  // Education
+  "B.Ed",
+  "M.Ed",
+  "BA B.Ed",
+  "B.Sc B.Ed",
+
+    // Integrated Dual Degrees (Undergraduate + Law / Management)
+  "BBA LLB",
+  "BA LLB",
+  "B.Com LLB",
+  "B.Sc LLB",
+  "B.Tech LLB",
+  "BBA + MBA",
+  "B.Com + MBA",
+  "B.Sc + M.Sc",
+  "B.Tech + M.Tech",
+  "B.A. + M.A.",
+  "Integrated Ph.D",
+];
 export const STATES = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi", "Goa",
   "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh",
