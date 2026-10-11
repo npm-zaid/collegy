@@ -308,7 +308,18 @@ function CollegeCard({ college: c, onView, onEdit, onDelete }) {
           <h3 className="text-[14px] font-black text-slate-800 leading-tight capitalize line-clamp-1">{c.collegeName}</h3>
           <div className="flex items-center gap-2 mt-0.5">
             <span className="text-[10px] font-mono text-slate-400">{c.collegeId}</span>
-            {c.collegeType && <span className="text-[10px] text-[#2667ff] font-bold">· {c.collegeType}</span>}
+            {c.collegeType && (
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                c.collegeType.toLowerCase().includes("online") ? "bg-cyan-50 text-cyan-700 border-cyan-200" :
+                c.collegeType.toLowerCase().includes("next gen") ? "bg-violet-50 text-violet-700 border-violet-200" :
+                c.collegeType.toLowerCase().includes("abroad") ? "bg-amber-50 text-amber-800 border-amber-200" :
+                (c.collegeType.toLowerCase().includes("govt") || c.collegeType.toLowerCase().includes("government")) ? "bg-blue-50 text-blue-700 border-blue-200" :
+                c.collegeType.toLowerCase().includes("private") ? "bg-indigo-50 text-indigo-700 border-indigo-200" :
+                "bg-slate-100 text-slate-600 border-slate-200"
+              }`}>
+                {c.collegeType}
+              </span>
+            )}
             {c.establishedYear > 0 && <span className="text-[10px] text-slate-400">· Est. {c.establishedYear}</span>}
           </div>
         </div>
@@ -387,10 +398,24 @@ export default function CollegesPage() {
 
   useEffect(() => { fetchColleges(); }, [fetchColleges]);
 
-  const filtered = colleges.filter(c =>
-    [c.collegeName, c.location?.city, c.location?.state, c.collegeId]
-      .filter(Boolean).some(f => f.toLowerCase().includes(search.toLowerCase()))
-  );
+  const [selectedType, setSelectedType] = useState("All");
+
+  const filtered = colleges.filter(c => {
+    const matchSearch = [c.collegeName, c.location?.city, c.location?.state, c.collegeId, c.collegeType]
+      .filter(Boolean).some(f => f.toLowerCase().includes(search.toLowerCase()));
+    const matchType = (() => {
+      if (selectedType === "All") return true;
+      const t = (c.collegeType || "").toLowerCase();
+      const s = selectedType.toLowerCase();
+      if (s === "government" || s === "govt") return t.includes("govt") || t.includes("government");
+      if (s === "private") return t.includes("private");
+      if (s === "online") return t.includes("online");
+      if (s === "next gen") return t.includes("next gen");
+      if (s === "abroad") return t.includes("abroad");
+      return t.includes(s);
+    })();
+    return matchSearch && matchType;
+  });
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -433,18 +458,35 @@ export default function CollegesPage() {
         }
       />
 
-      {/* Search */}
-      <div className="relative mb-6">
-        <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-        <input value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Search by name, city, state, ID…"
-          className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-[13px] text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2667ff]/20 focus:border-[#2667ff] transition-all shadow-sm" />
-        {search && (
-          <button onClick={() => setSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all">
-            <X size={13} />
-          </button>
-        )}
+      {/* Search & Type Filter */}
+      <div className="flex flex-col gap-3 mb-6">
+        <div className="relative">
+          <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input value={search} onChange={e => setSearch(e.target.value)}
+            placeholder="Search by name, city, state, ID, type…"
+            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-[13px] text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2667ff]/20 focus:border-[#2667ff] transition-all shadow-sm" />
+          {search && (
+            <button onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all">
+              <X size={13} />
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          {["All", "Government", "Private", "Online", "Next Gen", "Abroad"].map(type => (
+            <button
+              key={type}
+              onClick={() => setSelectedType(type)}
+              className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all shrink-0 border ${
+                selectedType === type
+                  ? "bg-[#2667ff] text-white border-[#2667ff] shadow-sm shadow-[#2667ff]/20"
+                  : "bg-white text-slate-600 border-slate-200 hover:border-slate-300"
+              }`}
+            >
+              {type}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Loading skeleton */}

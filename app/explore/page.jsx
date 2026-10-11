@@ -24,6 +24,38 @@ const STUDY_MODE_META = {
   Distance:   { icon: Wifi,    color: "text-amber-400",  active: "bg-amber-500/20 text-amber-300 border-amber-500/40" },
 };
 
+export const getCategoryBadge = (cat = "") => {
+  const lower = (cat || "").toLowerCase();
+  if (lower.includes("online")) {
+    return {
+      label: cat || "Online",
+      className: "bg-cyan-50 text-cyan-700 border-cyan-200 shadow-sm shadow-cyan-100",
+    };
+  }
+  if (lower.includes("next gen")) {
+    return {
+      label: cat || "Next Gen",
+      className: "bg-violet-50 text-violet-700 border-violet-200 shadow-sm shadow-violet-100",
+    };
+  }
+  if (lower.includes("abroad")) {
+    return {
+      label: cat || "Abroad",
+      className: "bg-amber-50 text-amber-800 border-amber-200 shadow-sm shadow-amber-100",
+    };
+  }
+  if (lower.includes("govt") || lower.includes("government")) {
+    return {
+      label: cat || "Government",
+      className: "bg-blue-50 text-blue-700 border-blue-200 shadow-sm shadow-blue-100",
+    };
+  }
+  return {
+    label: cat || "Private",
+    className: "bg-indigo-50 text-indigo-700 border-indigo-200 shadow-sm shadow-indigo-100",
+  };
+};
+
 function ExplorePageContent() {
   const router = useRouter();
 
@@ -76,6 +108,16 @@ function ExplorePageContent() {
     if (query) {
       setSearch(query);
     }
+    const catQuery = searchParams.get("category") || searchParams.get("type");
+    if (catQuery) {
+      const lower = catQuery.toLowerCase();
+      if (lower.includes("online")) setSelectedCategory("Online");
+      else if (lower.includes("next")) setSelectedCategory("Next Gen");
+      else if (lower.includes("abroad")) setSelectedCategory("Abroad");
+      else if (lower.includes("govt") || lower.includes("government")) setSelectedCategory("Government");
+      else if (lower.includes("private")) setSelectedCategory("Private");
+      else setSelectedCategory(catQuery);
+    }
   }, [searchParams]);
   const [selectedState,     setSelectedState]     = useState("All States");
   const [selectedCity,      setSelectedCity]      = useState("All Cities");
@@ -109,12 +151,34 @@ function ExplorePageContent() {
       const modeMatch =
         selectedModes.length === 0 ||
         selectedModes.some((m) => clg.studyMode?.includes(m));
+      const categoryMatch = (() => {
+        if (selectedCategory === "All") return true;
+        const cat = (clg.category || clg.type || "").toLowerCase();
+        const sel = selectedCategory.toLowerCase();
+        if (sel === "government" || sel === "govt") {
+          return cat.includes("govt") || cat.includes("government");
+        }
+        if (sel === "private") {
+          return cat.includes("private");
+        }
+        if (sel === "online") {
+          return cat.includes("online");
+        }
+        if (sel === "next gen") {
+          return cat.includes("next gen");
+        }
+        if (sel === "abroad") {
+          return cat.includes("abroad");
+        }
+        return cat === sel || cat.includes(sel);
+      })();
+
       return (
         (clg.name.toLowerCase().includes(q) || clg.city.toLowerCase().includes(q) || clg.courses.some(course => course.toLowerCase().includes(q)) || clg.exams.some(exam => exam.toLowerCase().includes(q))) &&
         (selectedState    === "All States"  || clg.state    === selectedState) &&
         (selectedCity     === "All Cities"  || clg.city     === selectedCity) &&
         (selectedCourse   === "All Courses" || clg.courses.includes(selectedCourse)) &&
-        (selectedCategory === "All"         || clg.category === selectedCategory) &&
+        categoryMatch &&
         (!showFeaturedOnly || clg.featured) &&
         modeMatch &&
         (clg.feeNumeric === 0 || clg.feeNumeric <= maxFee)
@@ -177,21 +241,28 @@ function ExplorePageContent() {
               Top / Featured Only
             </button> */}
 
-            {/* Category */}
+            {/* College Type */}
             <div className="space-y-1.5">
-              <label className="text-[7px] font-black text-zinc-600 uppercase tracking-[0.2em]">Category</label>
-              <div className="flex gap-1.5">
-                {["All", "Government", "Private"].map((cat) => (
+              <label className="text-[7px] font-black text-zinc-600 uppercase tracking-[0.2em]">College Type</label>
+              <div className="grid grid-cols-2 gap-1.5">
+                {[
+                  { id: "All", label: "All" },
+                  { id: "Government", label: "Govt" },
+                  { id: "Private", label: "Private" },
+                  { id: "Online", label: "Online" },
+                  { id: "Next Gen", label: "Next Gen" },
+                  { id: "Abroad", label: "Abroad" },
+                ].map((cat) => (
                   <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`flex-1 py-1.5 rounded-lg text-[8px] font-black tracking-widest uppercase border transition-all ${
-                      selectedCategory === cat
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`py-2 px-1.5 rounded-xl text-[8px] font-black tracking-wider uppercase border transition-all truncate text-center ${
+                      selectedCategory === cat.id
                         ? "bg-gradient-to-r from-[#2667ff] to-[#2667ff] text-white border-transparent shadow-md shadow-[#2667ff]/20"
-                        : "bg-transparent text-zinc-500 border-zinc-800 hover:border-[#2667ff]/40 hover:text-[#2667ff]"
+                        : "bg-transparent text-zinc-400 border-zinc-800 hover:border-[#2667ff]/40 hover:text-[#2667ff]"
                     }`}
                   >
-                    {cat === "Government" ? "Govt" : cat}
+                    {cat.label}
                   </button>
                 ))}
               </div>
@@ -309,6 +380,14 @@ function ExplorePageContent() {
                 Showing <span className="text-zinc-900">{filteredColleges.length}</span> institutes
               </p>
               <div className="flex items-center gap-2 flex-wrap">
+                {selectedCategory !== "All" && (
+                  <span className="inline-flex items-center gap-1 text-[8px] font-black uppercase tracking-widest bg-[#2667ff]/10 text-[#2667ff] px-2.5 py-1 rounded-full border border-[#2667ff]/30">
+                    Type: {selectedCategory}
+                    <button onClick={() => setSelectedCategory("All")} className="ml-0.5 hover:text-red-500 transition-colors">
+                      <X size={8} />
+                    </button>
+                  </span>
+                )}
                 {selectedModes.map((m) => (
                   <span
                     key={m}
@@ -358,13 +437,14 @@ function ExplorePageContent() {
                               <Star size={7} className="fill-amber-500" /> Featured
                             </span>
                           )}
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.15em] border ${
-                            clg.category === "Government"
-                              ? "bg-gradient-to-r from-[#2667ff]/8 to-[#2667ff]/8 text-[#2667ff] border-[#2667ff]/20"
-                              : "bg-indigo-50 text-indigo-600 border-indigo-200"
-                          }`}>
-                            {clg.category}
-                          </span>
+                          {(() => {
+                            const badge = getCategoryBadge(clg.category);
+                            return (
+                              <span className={`inline-flex items-center px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.15em] border ${badge.className}`}>
+                                {badge.label}
+                              </span>
+                            );
+                          })()}
                           <span className="text-[9px] font-black uppercase tracking-[0.15em] text-zinc-700 flex items-center gap-1">
                             <MapPin size={9} /> {clg.city}, {clg.state}
                           </span>

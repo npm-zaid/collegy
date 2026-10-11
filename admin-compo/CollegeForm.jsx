@@ -604,7 +604,20 @@ export default function CollegeForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
           <FormGroup label="College ID *"><Input placeholder="e.g. IITB-001" value={form.collegeId} onChange={set("collegeId")} /></FormGroup>
           <FormGroup label="College Name *"><Input placeholder="e.g. IIT Bombay" value={form.collegeName} onChange={set("collegeName")} /></FormGroup>
-          <FormGroup label="College Type"><Select options={["Private", "Government", "Semi-Government", "Other"]} value={form.collegeType} onChange={set("collegeType")} placeholder="Select Type" /></FormGroup>
+          <FormGroup label="College Type">
+            <Select
+              options={[
+                "Government",
+                "Private",
+                "Online",
+                "Next Gen",
+                "Abroad",
+              ]}
+              value={form.collegeType}
+              onChange={set("collegeType")}
+              placeholder="Select College Type"
+            />
+          </FormGroup>
           <FormGroup label="Annual Fees (₹)"><Input type="number" placeholder="e.g. 300000 (= 3 Lakh)" value={form.annualFees} onChange={set("annualFees")} /></FormGroup>
           <FormGroup label="Study Modes">
             <div className="flex flex-wrap gap-4 mt-1.5">

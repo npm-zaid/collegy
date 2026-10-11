@@ -18,11 +18,20 @@ const formatFee = (val) => {
 
 /* ─── Tiny atoms ─────────────────────────────────────────────────────────── */
 
-function EyebrowBadge({ children }) {
+function EyebrowBadge({ children, category = "" }) {
+  const cat = (category || "").toLowerCase();
+  const theme = cat.includes("online")
+    ? { bg: "bg-cyan-50 border-cyan-200 text-cyan-700", dot: "bg-cyan-500" }
+    : cat.includes("next gen")
+    ? { bg: "bg-violet-50 border-violet-200 text-violet-700", dot: "bg-violet-500" }
+    : cat.includes("abroad")
+    ? { bg: "bg-amber-50 border-amber-200 text-amber-800", dot: "bg-amber-500" }
+    : { bg: "bg-[#2667ff]/10 border-[#2667ff]/20 text-[#2667ff]", dot: "bg-[#2667ff]" };
+
   return (
-    <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2667ff]/10 border border-[#2667ff]/20 w-fit mb-5">
-      <div className="w-1.5 h-1.5 rounded-full bg-[#2667ff]" />
-      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#2667ff]">{children}</span>
+    <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full border w-fit mb-5 ${theme.bg}`}>
+      <div className={`w-1.5 h-1.5 rounded-full ${theme.dot}`} />
+      <span className="text-[10px] font-black uppercase tracking-[0.3em]">{children}</span>
     </div>
   );
 }
@@ -183,7 +192,7 @@ export default function CollegeDetailPage() {
             HERO SECTION — Buzzar-style header block
         ══════════════════════════════════════════════════════ */}
         <header className="relative mb-14 flex flex-col items-start">
-          <EyebrowBadge>
+          <EyebrowBadge category={college.category}>
             {college.category} · Est. {college.estd}
           </EyebrowBadge>
 

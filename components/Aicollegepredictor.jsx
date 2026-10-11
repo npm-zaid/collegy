@@ -634,7 +634,13 @@ export default function AiCollegePredictor() {
                           </span>
                         )}
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-[0.15em] border ${
-                          clg.category === "Government"
+                          clg.category?.toLowerCase().includes("online")
+                            ? "bg-cyan-50 text-cyan-700 border-cyan-200"
+                            : clg.category?.toLowerCase().includes("next gen")
+                            ? "bg-violet-50 text-violet-700 border-violet-200"
+                            : clg.category?.toLowerCase().includes("abroad")
+                            ? "bg-amber-50 text-amber-800 border-amber-200"
+                            : clg.category === "Government"
                             ? "bg-gradient-to-r from-[#2667ff]/10 to-[#2667ff]/10 text-[#2667ff] border-[#2667ff]/20"
                             : "bg-zinc-100 text-zinc-600 border-zinc-200"
                         }`}>
