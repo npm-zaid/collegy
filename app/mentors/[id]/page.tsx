@@ -20,7 +20,7 @@ const groupSlots = (slots = []) => {
   const map = new Map();
   slots.forEach((s) => {
     const d = new Date(s);
-    if (isNaN(d)) return;
+    if (isNaN(d.getTime())) return;
     const key = d.toDateString();
     if (!map.has(key)) map.set(key, { date: d, items: [] });
     map.get(key).items.push({ iso: s, d });
@@ -39,12 +39,17 @@ export default function MentorDetailPage() {
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
-    fetchMentorById(id).then((m) => {
-      if (!active) return;
-      setMentor(m);
-      setLoading(false);
-    });
+    (async () => {
+      try {
+        const m = await fetchMentorById(id);
+        if (!active) return;
+        setMentor(m);
+      } catch (e) {
+        console.error("Failed to load mentor", e);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
     return () => { active = false; };
   }, [id]);
 

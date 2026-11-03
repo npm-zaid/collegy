@@ -83,15 +83,15 @@ const FAQS = [
   { q: "Is an agent necessary?", a: "No. You can apply directly. If you use a consultant, verify credentials and never pay for guaranteed admission." },
 ];
 const FALLBACK_UNIS = [
-  { id: "u1", name: "University of Toronto", where: "Toronto, Canada", flag: "🇨🇦", tone: "from-[#2667ff] to-[#3f8efc]" },
-  { id: "u2", name: "University of Melbourne", where: "Melbourne, Australia", flag: "🇦🇺", tone: "from-violet-500 to-indigo-500" },
-  { id: "u3", name: "Technical University of Munich", where: "Munich, Germany", flag: "🇩🇪", tone: "from-zinc-800 to-zinc-600" },
-  { id: "u4", name: "National University of Singapore", where: "Singapore", flag: "🇸🇬", tone: "from-amber-500 to-orange-400" },
+  { id: "u1", name: "University of Toronto", where: "Toronto, Canada", flag: "🇨🇦", tone: "from-[#2667ff] to-[#3f8efc]", image: undefined },
+  { id: "u2", name: "University of Melbourne", where: "Melbourne, Australia", flag: "🇦🇺", tone: "from-violet-500 to-indigo-500", image: undefined },
+  { id: "u3", name: "Technical University of Munich", where: "Munich, Germany", flag: "🇩🇪", tone: "from-zinc-800 to-zinc-600", image: undefined },
+  { id: "u4", name: "National University of Singapore", where: "Singapore", flag: "🇸🇬", tone: "from-amber-500 to-orange-400", image: undefined },
 ];
 const TONES = ["from-[#2667ff] to-[#3f8efc]", "from-violet-500 to-indigo-500", "from-zinc-800 to-zinc-600", "from-amber-500 to-orange-400"];
 
 // ─── atoms (design.md §6) ─────────────────────────────────────────────────────
-function Eyebrow({ children, icon: Icon }) {
+function Eyebrow({ children, icon: Icon = null }) {
   return (
     <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border w-fit mb-5 bg-[#2667ff]/10 border-[#2667ff]/20 text-[#2667ff]">
       {Icon ? <Icon size={12} /> : <div className="w-1.5 h-1.5 rounded-full bg-[#2667ff]" />}
@@ -100,7 +100,7 @@ function Eyebrow({ children, icon: Icon }) {
   );
 }
 
-function Chapter({ n, eyebrow, title, accent, sub, className = "" }) {
+function Chapter({ n, eyebrow, title, accent, sub = undefined, className = "" }) {
   return (
     <div className={`relative ${className}`}>
       <span className="absolute -top-10 -left-2 text-[9rem] leading-none font-black italic tracking-tighter text-[#2667ff]/[0.07] select-none pointer-events-none">{n}</span>

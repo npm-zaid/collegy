@@ -82,7 +82,7 @@ const FALLBACK_COLLEGES = [
 ];
 
 // ─── atoms (design.md §6) ─────────────────────────────────────────────────────
-function EyebrowBadge({ children, icon: Icon, tone = "blue" }) {
+function EyebrowBadge({ children, icon: Icon = null, tone = "blue" }) {
   const t = tone === "cyan"
     ? "bg-cyan-50 border-cyan-200 text-cyan-700"
     : tone === "emerald"
@@ -96,7 +96,7 @@ function EyebrowBadge({ children, icon: Icon, tone = "blue" }) {
   );
 }
 
-function SectionHeader({ eyebrow, title, accent, sub, tone }) {
+function SectionHeader({ eyebrow, title, accent, sub = undefined, tone = "blue" }) {
   return (
     <div className="flex flex-col items-start mb-10">
       <EyebrowBadge tone={tone}>{eyebrow}</EyebrowBadge>
@@ -282,7 +282,7 @@ export default function OnlineCollegesPage() {
       .filter((c) =>
         !q || c.name.toLowerCase().includes(q) || c.city.toLowerCase().includes(q) || c.programs.some((p) => p.toLowerCase().includes(q))
       )
-      .sort((a, b) => parseFloat(b.rating || 0) - parseFloat(a.rating || 0));
+      .sort((a, b) => parseFloat(b.rating || "0") - parseFloat(a.rating || "0"));
   }, [colleges, query]);
 
   const hasFilters = !!query;

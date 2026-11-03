@@ -62,7 +62,7 @@ function Cover({ mentor, className = "h-36" }) {
   );
 }
 
-function FilterSelect({ icon: Icon, value, onChange, options, placeholder, disabled }) {
+function FilterSelect({ icon: Icon, value, onChange, options, placeholder, disabled = false }) {
   return (
     <div className={`relative flex-1 min-w-0 ${disabled ? "opacity-50" : ""}`}>
       <Icon size={18} className={`absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none ${disabled ? "text-zinc-300" : "text-[#2667ff]"}`} />
