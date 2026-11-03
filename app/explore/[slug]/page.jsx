@@ -75,47 +75,59 @@ export default function CollegeDetailPage() {
   useEffect(() => {
     const fetchCollege = async () => {
       try {
-        const res = await fetch("https://finale-beacon-backend.vercel.app/api/colleges");
-        const json = await res.json();
-        if (json.success) {
-          const mapped = json.data.map(c => ({
-            id: c._id || c.collegeId,
-            name: c.collegeName || "Unknown",
-            city: c.location?.city || "Unknown",
-            state: c.location?.state || "Unknown",
-            courses: c.courses || [],
-            category: c.collegeType || "Private",
-            featured: c.isFeatured || false,
-            fee: c.annualFees ? formatFee(c.annualFees) : (c.courses?.[0]?.fees?.totalFees ? formatFee(c.courses[0].fees.totalFees) : "N/A"),
-            rank: c.nirfRanking?.overallRank || "-",
-            seats: c.courses?.reduce((acc, curr) => acc + (curr.seatIntake || 0), 0) || 0,
-            type: c.collegeType || "Private",
-            estd: c.establishedYear || "Unknown",
-            accreditation: c.accreditation || "NA",
-            exams: c.exams || ["Merit Based"],
-            about: c.description || "No description available.",
-            website: c.website || "#",
-            image: c.media?.images?.[0]?.filename || null,
-            placements: {
-              avg: c.placement?.averagePackage?.amount ? `${c.placement.averagePackage.amount} ${c.placement.averagePackage.unit}` : "N/A",
-              highest: c.placement?.highestPackage?.amount ? `${c.placement.highestPackage.amount} ${c.placement.highestPackage.unit}` : "N/A",
-              companies: c.placement?.companiesVisited?.length || 0
-            },
-            slug: toSlug(c.collegeName),
-            raw: c,
-          }));
+        let allColleges = [];
+        let page = 1;
+        let totalPages = 1;
 
-          const found = mapped.find(c => c.slug === slug);
-          setCollege(found);
-
-          if (found) {
-            const foundCourseNames = found.courses.map(co => co.courseName);
-            const sim = mapped
-              .filter(c => c.id !== found.id && c.courses.some(co => foundCourseNames.includes(co.courseName)))
-              .sort((a, b) => (typeof a.rank === 'number' ? a.rank : 99999) - (typeof b.rank === 'number' ? b.rank : 99999))
-              .slice(0, 4);
-            setSimilar(sim);
+        do {
+          const res = await fetch(`https://finale-beacon-backend.vercel.app/api/colleges?page=${page}&limit=100`);
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data)) {
+            allColleges = [...allColleges, ...json.data];
+            totalPages = json.pagination?.totalPages || 1;
+            page++;
+          } else {
+            break;
           }
+        } while (page <= totalPages);
+
+        const mapped = allColleges.map(c => ({
+          id: c._id || c.collegeId,
+          name: c.collegeName || "Unknown",
+          city: c.location?.city || "Unknown",
+          state: c.location?.state || "Unknown",
+          courses: c.courses || [],
+          category: c.collegeType || "Private",
+          featured: c.isFeatured || false,
+          fee: c.annualFees ? formatFee(c.annualFees) : (c.courses?.[0]?.fees?.totalFees ? formatFee(c.courses[0].fees.totalFees) : "N/A"),
+          rank: c.nirfRanking?.overallRank || "-",
+          seats: c.courses?.reduce((acc, curr) => acc + (curr.seatIntake || 0), 0) || 0,
+          type: c.collegeType || "Private",
+          estd: c.establishedYear || "Unknown",
+          accreditation: c.accreditation || "NA",
+          exams: c.exams || ["Merit Based"],
+          about: c.description || "No description available.",
+          website: c.website || "#",
+          image: c.media?.images?.[0]?.filename || null,
+          placements: {
+            avg: c.placement?.averagePackage?.amount ? `${c.placement.averagePackage.amount} ${c.placement.averagePackage.unit}` : "N/A",
+            highest: c.placement?.highestPackage?.amount ? `${c.placement.highestPackage.amount} ${c.placement.highestPackage.unit}` : "N/A",
+            companies: c.placement?.companiesVisited?.length || 0
+          },
+          slug: toSlug(c.collegeName),
+          raw: c,
+        }));
+
+        const found = mapped.find(c => c.slug === slug);
+        setCollege(found);
+
+        if (found) {
+          const foundCourseNames = found.courses.map(co => co.courseName);
+          const sim = mapped
+            .filter(c => c.id !== found.id && c.courses.some(co => foundCourseNames.includes(co.courseName)))
+            .sort((a, b) => (typeof a.rank === 'number' ? a.rank : 99999) - (typeof b.rank === 'number' ? b.rank : 99999))
+            .slice(0, 4);
+          setSimilar(sim);
         }
       } catch (err) {
         console.error("Failed to fetch college", err);

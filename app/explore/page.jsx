@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo, useEffect, Suspense } from "react";
+import React, { useState, useMemo, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Search, MapPin, GraduationCap, BookOpen,
@@ -13,8 +13,6 @@ const formatFee = (val) => {
   if (val >= 1000)   return `₹${(val / 1000).toFixed(0)}K`;
   return `₹${val}`;
 };
-
-
 
 const STUDY_MODE_META = {
   Online:     { icon: Wifi,    color: "text-cyan-400",   active: "bg-cyan-500/20 text-cyan-300 border-cyan-500/40" },
@@ -56,6 +54,92 @@ export const getCategoryBadge = (cat = "") => {
   };
 };
 
+function DynamicCourseTags({ courses = [] }) {
+  const containerRef = useRef(null);
+  const [maxToShow, setMaxToShow] = useState(() => {
+    let charCount = 0;
+    let count = 0;
+    for (const c of courses) {
+      if (count > 0 && charCount + c.length > 30) break;
+      charCount += c.length;
+      count++;
+      if (count >= 3) break;
+    }
+    return Math.max(1, count);
+  });
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || !courses?.length) return;
+
+    const calculateFit = () => {
+      const availableWidth = el.parentElement?.offsetWidth || el.offsetWidth;
+      if (!availableWidth) return;
+
+      const badgeReserve = 75;
+      const gap = 6;
+      let usedWidth = 0;
+      let count = 0;
+
+      for (let i = 0; i < courses.length; i++) {
+        const name = courses[i];
+        const estimatedBadgeWidth = Math.ceil(name.length * 6.5) + 24;
+        const isLastItem = (i === courses.length - 1);
+        const neededWidth = isLastItem 
+          ? usedWidth + estimatedBadgeWidth 
+          : usedWidth + estimatedBadgeWidth + gap + badgeReserve;
+
+        if (count > 0 && neededWidth > availableWidth) {
+          break;
+        }
+
+        usedWidth += estimatedBadgeWidth + gap;
+        count++;
+
+        if (count >= 4) break;
+      }
+
+      setMaxToShow(Math.max(1, count));
+    };
+
+    calculateFit();
+
+    const ro = new ResizeObserver(() => {
+      calculateFit();
+    });
+    ro.observe(el);
+
+    return () => ro.disconnect();
+  }, [courses]);
+
+  if (!courses || courses.length === 0) return null;
+
+  const visible = courses.slice(0, maxToShow);
+  const remaining = courses.length - visible.length;
+
+  return (
+    <div ref={containerRef} className="flex items-center gap-1.5 flex-nowrap overflow-hidden w-full">
+      {visible.map((c) => (
+        <span
+          key={c}
+          className="bg-white border border-zinc-200 text-zinc-500 text-[8px] font-black uppercase tracking-[0.12em] px-2.5 py-1 rounded-lg whitespace-nowrap shrink-0 truncate max-w-[200px]"
+          title={c}
+        >
+          {c}
+        </span>
+      ))}
+      {remaining > 0 && (
+        <span
+          className="bg-[#2667ff]/10 border border-[#2667ff]/20 text-[#2667ff] text-[8px] font-black uppercase tracking-[0.12em] px-2 py-1 rounded-lg whitespace-nowrap shrink-0 cursor-default"
+          title={courses.slice(maxToShow).join(", ")}
+        >
+          +{remaining} more
+        </span>
+      )}
+    </div>
+  );
+}
+
 function ExplorePageContent() {
   const router = useRouter();
 
@@ -65,33 +149,45 @@ function ExplorePageContent() {
   useEffect(() => {
     const fetchColleges = async () => {
       try {
-        const res = await fetch("https://finale-beacon-backend.vercel.app/api/colleges");
-        const json = await res.json();
-        if (json.success) {
-          const mapped = json.data.map(c => ({
-            id: c._id || c.collegeId,
-            name: c.collegeName || "Unknown",
-            city: c.location?.city || "Unknown",
-            state: c.location?.state || "Unknown",
-            courses: c.courses?.map(co => co.courseName) || [],
-            exams: c.exams || [],
-            category: c.collegeType || "Private",
-            featured: c.isFeatured || false,
-            studyMode: c.modes || [],
-            feeNumeric: c.annualFees || (() => {
-              const feesList = c.courses?.map(co => co.fees?.yearlyFees || co.fees?.totalFees || 0).filter(f => f > 0) || [];
-              return feesList.length > 0 ? Math.min(...feesList) : 0;
-            })(),
-            fee: c.annualFees ? formatFee(c.annualFees) : (c.courses?.[0]?.fees?.totalFees ? formatFee(c.courses[0].fees.totalFees) : "N/A"),
-            rank: c.nirfRanking?.overallRank || "-",
-            seats: c.courses?.reduce((acc, curr) => acc + (curr.seatIntake || 0), 0) || 0,
-            type: c.collegeType || "Private",
-            estd: c.establishedYear || "Unknown",
-            image: c.media?.images?.[0]?.filename || null,
-            raw: c,
-          }));
-          setColleges(mapped);
-        }
+        let allColleges = [];
+        let page = 1;
+        let totalPages = 1;
+
+        do {
+          const res = await fetch(`https://finale-beacon-backend.vercel.app/api/colleges?page=${page}&limit=100`);
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data)) {
+            allColleges = [...allColleges, ...json.data];
+            totalPages = json.pagination?.totalPages || 1;
+            page++;
+          } else {
+            break;
+          }
+        } while (page <= totalPages);
+
+        const mapped = allColleges.map(c => ({
+          id: c._id || c.collegeId,
+          name: c.collegeName || "Unknown",
+          city: c.location?.city || "Unknown",
+          state: c.location?.state || "Unknown",
+          courses: c.courses?.map(co => co.courseName) || [],
+          exams: c.exams || [],
+          category: c.collegeType || "Private",
+          featured: c.isFeatured || false,
+          studyMode: c.modes || [],
+          feeNumeric: c.annualFees || (() => {
+            const feesList = c.courses?.map(co => co.fees?.yearlyFees || co.fees?.totalFees || 0).filter(f => f > 0) || [];
+            return feesList.length > 0 ? Math.min(...feesList) : 0;
+          })(),
+          fee: c.annualFees ? formatFee(c.annualFees) : (c.courses?.[0]?.fees?.totalFees ? formatFee(c.courses[0].fees.totalFees) : "N/A"),
+          rank: c.nirfRanking?.overallRank || "-",
+          seats: c.courses?.reduce((acc, curr) => acc + (curr.seatIntake || 0), 0) || 0,
+          type: c.collegeType || "Private",
+          estd: c.establishedYear || "Unknown",
+          image: c.media?.images?.[0]?.filename || null,
+          raw: c,
+        }));
+        setColleges(mapped);
       } catch (err) {
         console.error("Failed to fetch colleges", err);
       } finally {
@@ -429,7 +525,7 @@ function ExplorePageContent() {
                         <div className="w-full md:w-32 md:h-32 bg-zinc-100 rounded-2xl shrink-0 flex items-center justify-center text-zinc-300 border border-zinc-200"><ImageIcon size={32} /></div>
                       )}
 
-                      <div className="space-y-2.5 flex-1">
+                      <div className="space-y-2.5 flex-1 min-w-0">
                         {/* Badges */}
                         <div className="flex items-center flex-wrap gap-2">
                           {clg.featured && (
@@ -471,14 +567,8 @@ function ExplorePageContent() {
                           </h2>
                         </div>
 
-                        {/* Courses */}
-                        <div className="flex flex-wrap gap-1.5">
-                          {clg.courses.map((c) => (
-                            <span key={c} className="bg-white border border-zinc-200 text-zinc-500 text-[8px] font-black uppercase tracking-[0.12em] px-2.5 py-1 rounded-lg">
-                              {c}
-                            </span>
-                          ))}
-                        </div>
+                        {/* Courses (Dynamic 1-line fit) */}
+                        <DynamicCourseTags courses={clg.courses} />
 
                         {/* Meta */}
                         <div className="flex flex-wrap gap-5 pt-1">

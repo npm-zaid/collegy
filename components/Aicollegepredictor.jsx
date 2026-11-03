@@ -339,7 +339,7 @@ export default function AiCollegePredictor() {
   useEffect(() => {
     const fetchColleges = async () => {
       try {
-        const res = await fetch("https://finale-beacon-backend.vercel.app/api/colleges");
+        const res = await fetch("https://finale-beacon-backend.vercel.app/api/colleges?limit=100");
         const json = await res.json();
         if (json.success) {
           const mapped = json.data.map(c => ({
